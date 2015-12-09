@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>File load test</title>
+	<script type="text/javascript" src="stuquery.js"></script> 
+	<script>
+
+	function ajax(url,attrs){
+		if(typeof url!=="string") return false;
+		if(!attrs) attrs = {};
+		attrs['_file'] = url;
+
+		E('#output').append("<p>readFile <em>"+url+"</em></p>");
+
+		// code for IE7+/Firefox/Chrome/Opera/Safari or for IE6/IE5
+		var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+		oReq.addEventListener("load", complete);
+		oReq.addEventListener("error", error);
+
+		try{ oReq.open('GET', url); }
+		catch(err){ error(err); }
+
+		function complete(evt) {
+			var data = (attrs['json']) ? JSON.parse(oReq.responseText) : oReq.responseText;
+			E('#output').append("<p>The transfer of <em>"+url+"</em> is complete.</p>");
+			E('#output').append("<textarea>"+data+"</textarea>");
+			if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this),data,attrs);
+		}
+
+		function error(evt){
+			E('#output').append("<p>An error occurred getting file <em>"+url+"</em>.</p>");
+			console.log(evt);
+			if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),"",attrs);
+		}
+
+		try{ oReq.send(); }
+		catch(err){ error(err); }
+
+		return this;
+	}
+
+	function readFile(file,fn,attrs){
+		if(!attrs) attrs = {};
+		attrs['_file'] = file;
+
+		E('#output').append("<p>readFile <em>"+file+"</em></p>");
+
+		// code for IE7+/Firefox/Chrome/Opera/Safari or for IE6/IE5
+		var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+		oReq.addEventListener("progress", progress);
+		oReq.addEventListener("load", complete);
+		oReq.addEventListener("error", error);
+
+		try{ oReq.open('GET', file); }
+		catch(err){ error(err); }
+
+		E('#output').append("<p>Added event listeners</p>")
+
+		// progress on transfers from the server to the client (downloads)
+		function progress (oEvent){
+			E('#output').append("<p>updateProgress of <em>"+file+"</em></p>")
+			if(oEvent.lengthComputable) {
+				var percentComplete = oEvent.loaded / oEvent.total;
+				E('#output').append("<p>"+file+" is "+(percentComplete*100)+"% complete</p>")
+				// ...
+			}else{
+				// Unable to compute progress information since the total size is unknown
+			}
+		}
+
+		function complete(evt) {
+			var data = (attrs['json']) ? JSON.parse(oReq.responseText) : oReq.responseText;
+			E('#output').append("<p>The transfer of <em>"+file+"</em> is complete.</p>");
+			E('#output').append("<textarea>"+data+"</textarea>");
+			if(typeof fn==="function") fn.call((attrs['this'] ? attrs['this'] : this),data,attrs);
+		}
+
+		function error(evt){
+			E('#output').append("<p>An error occurred getting file <em>"+file+"</em>.</p>");
+			console.log(evt);
+			if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),"",attrs);
+		}
+
+		try{ oReq.send(); }
+		catch(err){ error(err); }
+
+		return this;
+	}
+
+	// Add an event to be called when the document is loaded
+	E(document).ready(function(){
+
+		function success(d,a){
+			E('#output').append('<p>Success for <em>'+a._file+'</em></p>');
+		}
+		ajax("file.txt",{'complete': success });
+		ajax("nofile.txt",{'complete': success });
+
+	});
+
+	</script>
+</head>
+<body>
+	<div id="output">
+	</div>
+</body>
+</html>
