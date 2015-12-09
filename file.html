@@ -22,10 +22,12 @@
 		catch(err){ error(err); }
 
 		function complete(evt) {
-			var data = (attrs['json']) ? JSON.parse(oReq.responseText) : oReq.responseText;
-			E('#output').append("<p>The transfer of <em>"+url+"</em> is complete.</p>");
-			E('#output').append("<textarea>"+data+"</textarea>");
-			if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this),data,attrs);
+			if(oReq.status === 200) {
+				var data = (attrs['json']) ? JSON.parse(oReq.responseText) : oReq.responseText;
+				E('#output').append("<p>The transfer of <em>"+url+"</em> is complete.</p>");
+				E('#output').append("<textarea>"+data+"</textarea>");
+				if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this),data,attrs);
+			}else error(evt);
 		}
 
 		function error(evt){
