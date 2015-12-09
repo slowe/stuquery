@@ -76,10 +76,11 @@ function E(e){
 		if(html) for(var i = 0; i < this.e.length; i++) this.e[i].innerHTML += html;
 		return this;	
 	}
+	/*
 	stuQuery.prototype.setCache = function(a){
 		eventcache = a;
 		return;
-	}
+	}*/
 	function NodeMatch(a,el){
 		if(a && a.length > 0){
 			for(var i = 0; i < a.length; i++){
