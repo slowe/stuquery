@@ -4,7 +4,10 @@ A lightweight DOM manipulator. I created this because jQuery was getting far too
 
 ## Functions
 
-* E(document).ready(function)
+```javascript
+E(document).ready(function)
+```
+
 * E(selector).html(html)
 * E(selector).append(html)
 * E(selector).off(event) - Try to remove an event with attached data and supplied function, fn.
