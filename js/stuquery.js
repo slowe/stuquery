@@ -3,30 +3,30 @@
 var eventcache = {};
 function E(e){
 	
-	function matchSelector(e,selector){
+	function matchSelector(e,s){
 		var result = false;
-		// Does this one element match the selector
-		if(selector[0] == '.'){
-			selector = selector.substr(1);
-			for(var i = 0; i < e.classList.length; i++) if(e.classList[i] == selector) return true;
-		}else if(selector[0] == '#'){
-			if(e.id == selector.substr(1)) return true;
+		// Does this one element match the s
+		if(s[0] == '.'){
+			s = s.substr(1);
+			for(var i = 0; i < e.classList.length; i++) if(e.classList[i] == s) return true;
+		}else if(s[0] == '#'){
+			if(e.id == s.substr(1)) return true;
 		}else{
-			if(e.tagName == selector.substr(1).toUpperCase()) return true;
+			if(e.tagName == s.substr(1).toUpperCase()) return true;
 		}
 		return false;
 	}
-	function getBy(e,selector){
+	function getBy(e,s){
 		var i = -1;
 		var result = new Array();
-		if(selector.indexOf(':eq') > 0){
-			var m = selector.replace(/(.*)\:eq\(([0-9]+)\)/,'$1 $2').split(" ");
-			selector = m[0];
+		if(s.indexOf(':eq') > 0){
+			var m = s.replace(/(.*)\:eq\(([0-9]+)\)/,'$1 $2').split(" ");
+			s = m[0];
 			i = parseInt(m[1]);
 		}
-		if(selector[0] == '.') els = e.getElementsByClassName(selector.substr(1));
-		else if(selector[0] == '#') els = e.getElementById(selector.substr(1));
-		else els = e.getElementsByTagName(selector);
+		if(s[0] == '.') els = e.getElementsByClassName(s.substr(1));
+		else if(s[0] == '#') els = e.getElementById(s.substr(1));
+		else els = e.getElementsByTagName(s);
 		if(!els) els = [];
 		
 		// If it is a select field we don't want to select the options within it
