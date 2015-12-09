@@ -17,7 +17,7 @@
 			E('#fileoutput').append("<textarea>"+data+"<\/textarea>");
 		}
 		function error(e,a){
-			E('#fileoutput').append('Failed to load '+a.url);
+			E('#fileoutput').append('<p>Failed to load '+a.url+'<\/p>');
 		}
 		E().ajax("file.txt",{'complete': success, 'error': error });
 		E().ajax("nofile.txt",{'complete': success, 'error': error });
@@ -53,7 +53,7 @@
 	E('#output').append("&lt;textarea&gt;"+data+"&lt;\/textarea&gt;");
 }
 function error(e,a){
-	E('#output').append('Failed to load '+a.url);
+	E('#output').append('&lt;p&gt;Failed to load '+a.url+'&lt;\/p&gt;');
 }
 E().ajax("file.txt",{'complete': success, 'error': error });	// This file exists
 E().ajax("nofile.txt",{'complete': success, 'error': error });	// This file doesn't exist
