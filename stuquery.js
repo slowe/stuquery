@@ -317,37 +317,44 @@ function E(e){
 		for(var i = 0; i < this.e.length; i++) clone.e[0].parentNode.replaceChild(span, clone.e[0]);
   		return clone;
 	}
-	stuQuery.prototype.loadFile = function(file,fn,attrs){
+	//=========================================================
+	// ajax(url,{'complete':function,'error':function,'dataType':'json'})
+	// complete: function - a function executed on completion
+	// error: function - a function executed on an error
+	// dataType: json - will convert the text to JSON
+	stuQuery.prototype.ajax = function(url,attrs){
+		if(typeof url!=="string") return false;
 		if(!attrs) attrs = {};
-		attrs['_file'] = file;
+		attrs['url'] = url;
 
-		var httpRequest = new XMLHttpRequest();
-		function error(err){
-			console.log(err);
-			if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),"",attrs);
+		// code for IE7+/Firefox/Chrome/Opera/Safari or for IE6/IE5
+		var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+		oReq.addEventListener("load", complete);
+		oReq.addEventListener("error", error);
+
+		function complete(evt) {
+			if(oReq.status === 200) {
+				if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this), (attrs['dataType']=="json") ? JSON.parse(oReq.responseText) : oReq.responseText, attrs);
+			}else error(evt);
 		}
-		httpRequest.onreadystatechange = function() {
-			if(httpRequest.readyState === 4) {
-				if(httpRequest.status === 200) {
-					var data = (attrs['json']) ? JSON.parse(httpRequest.responseText) : httpRequest.responseText;
-					if(typeof fn==="function") fn.call((attrs['this'] ? attrs['this'] : this),data,attrs);
-				}else{
-					error('Error reading '+file)
-				}
-			}
-		};
-		try{ httpRequest.open('GET', file); }
-		catch(err){ error('Failed to open '+file); }
 
-		try{ httpRequest.send(); }
-		catch(err){ error('Failed to send request for '+file); }
-		
-		return this;	
+		function error(evt){
+			if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
+		}
+
+		try{ oReq.open('GET', url); }
+		catch(err){ error(err); }
+
+		try{ oReq.send(); }
+		catch(err){ error(err); }
+
+		return this;
 	}
-	stuQuery.prototype.loadJSON = function(file,fn,attrs){
+	stuQuery.prototype.loadJSON = function(url,fn,attrs){
 		if(!attrs) attrs = {};
-		attrs['json'] = true;
-		this.loadFile(file,fn,attrs);
+		attrs.dataType = "json";
+		attrs.complete = fn;
+		this.ajax(url,attrs);
 		return this;
 	}
 	return new stuQuery(e);

@@ -4,43 +4,6 @@
 	<title>File load test</title>
 	<script type="text/javascript" src="stuquery.js"></script> 
 	<script>
-	//=========================================================
-	// ajax(url,{'complete':function,'error':function,'dataType':'json'})
-	// complete: function - a function executed on completion
-	// error: function - a function executed on an error
-	// dataType: json - will convert the text to JSON
-	function ajax(url,attrs){
-		if(typeof url!=="string") return false;
-		if(!attrs) attrs = {};
-		attrs['url'] = url;
-
-		// code for IE7+/Firefox/Chrome/Opera/Safari or for IE6/IE5
-		var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-
-		oReq.addEventListener("load", complete);
-		oReq.addEventListener("error", error);
-
-		try{ oReq.open('GET', url); }
-		catch(err){ error(err); }
-
-		function complete(evt) {
-			if(oReq.status === 200) {
-				var data = (attrs['dataType']=="json") ? JSON.parse(oReq.responseText) : oReq.responseText;
-				if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this),data,attrs);
-			}else error(evt);
-		}
-
-		function error(evt){
-			console.log(evt);
-			if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
-		}
-
-		try{ oReq.send(); }
-		catch(err){ error(err); }
-
-		return this;
-	}
-
 	// Add an event to be called when the document is loaded
 	E(document).ready(function(){
 
@@ -51,8 +14,8 @@
 		function error(e,a){
 			E('#output').append('Failed to load '+a.url);
 		}
-		ajax("file.txt",{'complete': success, 'error': error });
-		ajax("nofile.txt",{'complete': success, 'error': error });
+		E().ajax("file.txt",{'complete': success, 'error': error });
+		E().ajax("nofile.txt",{'complete': success, 'error': error });
 
 	});
 	</script>
