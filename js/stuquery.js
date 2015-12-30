@@ -1,7 +1,7 @@
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
 var eventcache = {};
-function E(e){
+function S(e){
 	
 	function matchSelector(e,s){
 		var result = false;
@@ -63,7 +63,7 @@ function E(e){
 		this.e = els;
 		return this;
 	}
-	stuQuery.prototype.ready = function(f){ /in/.test(document.readyState)?setTimeout('E(document).ready('+f+')',9):f() }
+	stuQuery.prototype.ready = function(f){ /in/.test(document.readyState)?setTimeout('S(document).ready('+f+')',9):f() }
 	// Return HTML or set the HTML
 	stuQuery.prototype.html = function(html){
 		if(typeof html==="number") html = ''+html;
@@ -192,7 +192,7 @@ function E(e){
 			if(typeof this.e[i].remove==="function") this.e[i].remove();
 			else if(typeof this.e[i].parentElement.removeChild==="function") this.e[i].parentElement.removeChild(this.e[i]);
 		}
-		return E(this.e);
+		return S(this.e);
 	}
 	// Check if a DOM element has the specified class
 	stuQuery.prototype.hasClass = function(cls){
@@ -209,7 +209,7 @@ function E(e){
 			if(this.e[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this.e[i].className = this.e[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'');
 			else this.e[i].className = (this.e[i].className+' '+cls).replace(/^ /,'');
 		}
-		return E(this.e);
+		return S(this.e);
 	}
 	// Toggle a class on a DOM element
 	stuQuery.prototype.addClass = function(cls){
@@ -217,7 +217,7 @@ function E(e){
 		for(var i = 0; i < this.e.length; i++){
 			if(!this.e[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this.e[i].className = (this.e[i].className+' '+cls).replace(/^ /,'');
 		}
-		return E(this.e);
+		return S(this.e);
 	}
 	// Remove a class on a DOM element
 	stuQuery.prototype.removeClass = function(cls){
@@ -225,12 +225,13 @@ function E(e){
 		for(var i = 0; i < this.e.length; i++){
 			while(this.e[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this.e[i].className = this.e[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'').replace(/^ /,'');
 		}
-		return E(this.e);
+		return S(this.e);
 	}
 	stuQuery.prototype.css = function(css){
+		var styles;
 		for(var i = 0; i < this.e.length; i++){
 			// Read the currently set style
-			var styles = {};
+			styles = {};
 			var style = this.e[i].getAttribute('style');
 			if(style){
 				var bits = this.e[i].getAttribute('style').split(";");
@@ -239,23 +240,26 @@ function E(e){
 					if(pairs.length==2) styles[pairs[0]] = pairs[1];
 				}
 			}
-			// Add the user-provided style to what was there
-			for(key in css) styles[key] = css[key];
-			// Build the CSS string
-			var newstyle = '';
-			for(key in styles){
-				if(newstyle) newstyle += ';';
-				if(styles[key]) newstyle += key+':'+styles[key];
+			if(typeof css==="object"){
+				// Add the user-provided style to what was there
+				for(key in css) styles[key] = css[key];
+				// Build the CSS string
+				var newstyle = '';
+				for(key in styles){
+					if(newstyle) newstyle += ';';
+					if(styles[key]) newstyle += key+':'+styles[key];
+				}
+				// Update style
+				this.e[i].setAttribute('style',newstyle);
 			}
-			// Update style
-			this.e[i].setAttribute('style',newstyle);
 		}
-		return E(this.e);
+		if(this.e.length==1 && typeof css==="string") return styles[css];
+		return S(this.e);
 	}
 	stuQuery.prototype.parent = function(){
 		var tmp = [];
 		for(var i = 0; i < this.e.length; i++) tmp.push(this.e[i].parentElement);
-		return E(tmp);
+		return S(tmp);
 	}
 	// Only look one level down
 	stuQuery.prototype.children = function(c){
@@ -267,11 +271,11 @@ function E(e){
 					if(matchSelector(this.e[i].children[ch],c)) result.push(this.e[i].children[ch]);
 				}
 			}
-			return E(result);
+			return S(result);
 		}else{
 			// We are using an index
 			for(var i = 0; i < this.e.length; i++) this.e[i] = (this.e[i].children.length > c ? this.e[i].children[c] : this.e[i]);
-			return E(this.e);
+			return S(this.e);
 		}
 	}
 	stuQuery.prototype.find = function(selector){
@@ -282,7 +286,7 @@ function E(e){
 			for(k = 0; k < tmp.length; k++){ result.push(tmp[k]); }
 		}
 		// Return a new instance of stuQuery
-		return E(result);
+		return S(result);
 	}
 	stuQuery.prototype.attr = function(attr,val){
 		var tmp = [];
@@ -292,7 +296,7 @@ function E(e){
 		}
 		if(tmp.length==1) tmp = tmp[0];
 		if(typeof val==="undefined") return tmp;
-		else return E(this.e);
+		else return S(this.e);
 	}
 	stuQuery.prototype.prop = function(attr,val){
 		var tmp = [];
@@ -314,7 +318,7 @@ function E(e){
 	stuQuery.prototype.replaceWith = function(html){
 		var span = document.createElement("span");
 		span.innerHTML = html;
-		var clone = E(this.e);
+		var clone = S(this.e);
 		for(var i = 0; i < this.e.length; i++) clone.e[0].parentNode.replaceChild(span, clone.e[0]);
   		return clone;
 	}
