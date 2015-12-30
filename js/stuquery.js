@@ -12,7 +12,7 @@ function S(e){
 		}else if(s[0] == '#'){
 			if(e.id == s.substr(1)) return true;
 		}else{
-			if(e.tagName == s.substr(1).toUpperCase()) return true;
+			if(e.tagName == s.toUpperCase()) return true;
 		}
 		return false;
 	}
