@@ -37,7 +37,7 @@
 
 		<h1>stuQuery</h1>
 	
-		<p>I often use jQuery but it was becoming too big for most of my use cases. I only needed a few basic features. So I've gone back to basics and made my own small library. The aim was to make the usage be as similar to jQuery as possible so that I can switch back-and-forth if I need to. To avoid conflicts, rather than <code>$</code> I've used <code>E</code>.</p>
+		<p>I often use jQuery but it was becoming too big for most of my use cases. I only needed a few basic features. So I've gone back to basics and made my own small library. The aim was to make the usage be as similar to jQuery as possible so that I can switch back-and-forth if I need to. To avoid conflicts, rather than <code>$</code> I've used <code>S</code>.</p>
 
 		<h2>Basic example</h2>
 		<pre class="prettyprint lang-js">
@@ -46,6 +46,33 @@
 
 });</code></pre>
 
+		<h2>Selectors</h2>
+		<p>Selection is pretty simplistic. Selection doesn't work on compound selectors e.g. <code>ul#menu</code> won't work but <code>ul</code> and <code>#menu</code> will work individually.</p>
+		<pre class="prettyprint lang-js">
+<code>
+S('.cssClass');   // Get all elements with the class cssClass
+S('#menu');       // Get the element with the ID 'menu'
+S('li');          // Get all the list items
+S('#menu li');    // Get all the list items in the element with the ID 'menu'
+S('li').parent(); // Get the parent DOM element
+S('li').children('span'); // Get a child span element
+S('li').find('span'); // Get a descendent span element
+</code></pre>
+		
+		<h2>DOM manipulation</h2>
+		<pre class="prettyprint lang-js">
+<code>
+S('#menu').html();          // Returns the HTML of the selected DOM element
+S('#menu').html('HTML');    // Replaces content of DOM element(s)
+S('#menu').append('HTML');  // Appends provided content to DOM element
+S('img').attr('alt');       // Returns the value(s) of the attribute
+S('img').attr('alt','Alt'); // Sets the value(s) of the attribute
+S('div').toggleClass('a');  // Toggles the CSS class 'a'
+S('div').addClass('a');     // Adds the CSS class 'a'
+S('div').hasClass('a');     // Returns true if the DOM element has the class
+S('div').remove();          // Removes selected item(s)
+</code></pre>		
+		
 		<h2>File loading</h2>
 		<pre class="prettyprint lang-js">
 <code>function success(data,a){
