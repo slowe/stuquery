@@ -8,19 +8,19 @@
 	<script type="text/javascript" src="js/stuquery.js"></script> 
 	<script>
 	// Add an event to be called when the document is loaded
-	E(document).ready(function(){
+	S(document).ready(function(){
 	
 		prettyPrint();
 
 		function success(data,a){
-			E('#fileoutput').append('<p>Success for <em>'+a.url+'<\/em><\/p>');
-			E('#fileoutput').append("<textarea>"+data+"<\/textarea>");
+			S('#fileoutput').append('<p>Success for <em>'+a.url+'<\/em><\/p>');
+			S('#fileoutput').append("<textarea>"+data+"<\/textarea>");
 		}
 		function error(e,a){
-			E('#fileoutput').append('<p>Failed to load '+a.url+'<\/p>');
+			S('#fileoutput').append('<p>Failed to load '+a.url+'<\/p>');
 		}
-		E().ajax("file.txt",{'complete': success, 'error': error });
-		E().ajax("nofile.txt",{'complete': success, 'error': error });
+		S().ajax("file.txt",{'complete': success, 'error': error });
+		S().ajax("nofile.txt",{'complete': success, 'error': error });
 	});
 	</script>
 </head>
@@ -41,7 +41,7 @@
 
 		<h2>Basic example</h2>
 		<pre class="prettyprint lang-js">
-<code>E(document).ready(function(){
+<code>S(document).ready(function(){
 	// Things that happen once the document is loaded
 
 });</code></pre>
@@ -49,14 +49,14 @@
 		<h2>File loading</h2>
 		<pre class="prettyprint lang-js">
 <code>function success(data,a){
-	E('#output').append('&lt;p&gt;Success for &lt;em&gt;'+a.url+'&lt;\/em&gt;&lt;\/p&gt;');
-	E('#output').append("&lt;textarea&gt;"+data+"&lt;\/textarea&gt;");
+	S('#output').append('&lt;p&gt;Success for &lt;em&gt;'+a.url+'&lt;\/em&gt;&lt;\/p&gt;');
+	S('#output').append("&lt;textarea&gt;"+data+"&lt;\/textarea&gt;");
 }
 function error(e,a){
-	E('#output').append('&lt;p&gt;Failed to load '+a.url+'&lt;\/p&gt;');
+	S('#output').append('&lt;p&gt;Failed to load '+a.url+'&lt;\/p&gt;');
 }
-E().ajax("file.txt",{'complete': success, 'error': error });	// This file exists
-E().ajax("nofile.txt",{'complete': success, 'error': error });	// This file doesn't exist
+S().ajax("file.txt",{'complete': success, 'error': error });	// This file exists
+S().ajax("nofile.txt",{'complete': success, 'error': error });	// This file doesn't exist
 </code></pre>
 		<div id="fileoutput" class="output">
 		</div>
