@@ -1,20 +1,26 @@
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
 var eventcache = {};
+
 function S(e){
 	
-	function matchSelector(e,s){
-		var result = false;
-		// Does this one element match the s
-		if(s[0] == '.'){
-			s = s.substr(1);
-			for(var i = 0; i < e.classList.length; i++) if(e.classList[i] == s) return true;
-		}else if(s[0] == '#'){
-			if(e.id == s.substr(1)) return true;
-		}else{
-			if(e.tagName == s.toUpperCase()) return true;
-		}
-		return false;
+	function querySelector(els,selector){
+		var result = new Array();
+		var a,els2,i,j,k,tmp;
+		if(selector.indexOf(':eq') >= 0){
+			a = selector.split(' ');
+			for(i = 0; i < a.length; i++){
+				if(i==0){
+					tmp = getBy(els,a[i]);
+				}else{
+					els2 = new Array();
+					for(j = 0; j < tmp.length; j++) els2 = els2.concat(getBy(tmp[j],a[i]));
+					tmp = els2.splice(0);
+				}
+			}
+		}else tmp = els.querySelectorAll(selector);					// We can use the built-in selector
+		for(k = 0; k < tmp.length; k++){ result.push(tmp[k]); }
+		return result;
 	}
 	function getBy(e,s){
 		var i = -1;
@@ -28,7 +34,6 @@ function S(e){
 		else if(s[0] == '#') els = e.getElementById(s.substr(1));
 		else els = e.getElementsByTagName(s);
 		if(!els) els = [];
-		
 		// If it is a select field we don't want to select the options within it
 		if(els.nodeName && els.nodeName=="SELECT") result.push(els);
 		else{
@@ -41,26 +46,25 @@ function S(e){
 		}
 		return result;
 	}
+	function matchSelector(e,s){
+		var result = false;
+		// Does this one element match the s
+		if(s[0] == '.'){
+			s = s.substr(1);
+			for(var i = 0; i < e.classList.length; i++) if(e.classList[i] == s) return true;
+		}else if(s[0] == '#'){
+			if(e.id == s.substr(1)) return true;
+		}else{
+			if(e.tagName == s.toUpperCase()) return true;
+		}
+		return false;
+	}
 
 	// Make our own fake, tiny, version of jQuery simulating the parts we need
 	function stuQuery(els){
-		if(typeof els==="string"){
-			var a,els,els2,i,j,k,tmp;
-			a = els.split(' ');
-			for(i = 0; i < a.length; i++){
-				if(i==0){
-					els = getBy(document,a[i]);
-				}else{
-					els2 = new Array();
-					for(j = 0; j < els.length; j++) els2 = els2.concat(getBy(els[j],a[i]));
-					els = els2.splice(0);
-				}
-			}
-		}
-		this.e = [];
-		if(!els) return this;
-		if(typeof els.length!=="number") els = [els];
-		this.e = els;
+		var elements;
+		if(typeof els==="string") this.e = querySelector(document,els);
+		else if(typeof els==="object") this.e = (typeof els.length=="number") ? els : [els];
 		return this;
 	}
 	stuQuery.prototype.ready = function(f){ /in/.test(document.readyState)?setTimeout('S(document).ready('+f+')',9):f() }
@@ -76,11 +80,6 @@ function S(e){
 		if(html) for(var i = 0; i < this.e.length; i++) this.e[i].innerHTML += html;
 		return this;	
 	}
-	/*
-	stuQuery.prototype.setCache = function(a){
-		eventcache = a;
-		return;
-	}*/
 	function NodeMatch(a,el){
 		if(a && a.length > 0){
 			for(var i = 0; i < a.length; i++){
@@ -280,11 +279,8 @@ function S(e){
 	}
 	stuQuery.prototype.find = function(selector){
 		var tmp = [];
-		var result = [];
-		for(var i = 0; i < this.e.length; i++){
-			tmp = getBy(this.e[i],selector);
-			for(k = 0; k < tmp.length; k++){ result.push(tmp[k]); }
-		}
+		var result = new Array();
+		for(var i = 0; i < this.e.length; i++) result = result.concat(querySelector(this.e[i],selector));
 		// Return a new instance of stuQuery
 		return S(result);
 	}

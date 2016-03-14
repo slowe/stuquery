@@ -22,9 +22,12 @@
 		jQuery(document).ready(function($) {
 			function checkSelector(selector,message){
 
-				var a = $(selector);
+				var a = jQuery(selector);
+				console.log(selector,a)
 				var b = S(selector);
+				console.log(selector,b)
 				
+
 				equal(a.length,b.e.length,message + ' - check length');
 				for(var i = 0 ; i < a.length; i++){
 					equal(a[i],b.e[i],message + ' - '+i+' element matches');
@@ -64,6 +67,8 @@
 				checkSelector('#holder','Selector: single element by ID');
 				checkSelector('div','Selector: div tags');
 				checkSelector('li','Selector: li tags');
+				console.log('here')
+				checkSelector('.test li:eq(0)','Selector: using :eq(0)');
 				checkSelector('.test li','Selector: li tags within a list with a specified class');
 				checkSelector('.checkme','Selector: by class');
 				
@@ -80,15 +85,15 @@
 				
 				var a = $('dfn').parent();
 				var b = S('dfn').parent();
-				equal(a[0],b.e[0],'.parent() returns the correct DOM element')
+				equal(a[0],b.e[0],'.parent() returns the correct DOM element');
 
 				var a = $('.test').children('li');
 				var b = S('.test').children('li');
-				equal(a.length,b.e.length,'.children(selector) returns the same number of elements ('+a.length+')');
+				equal(a.length,b.e.length,'.children(.test) returns the same number of elements ('+a.length+')');
 
 				var a = $('#holder2').find('.checkme');
 				var b = S('#holder2').find('.checkme');
-				equal(a.length,b.e.length,'.find(selector) returns the same number of elements ('+a.length+')');
+				equal(a.length,b.e.length,'.find(selector) returns the same number of elements ('+a.length+' vs '+b.length+')');
 
 			});
 					
