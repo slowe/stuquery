@@ -23,14 +23,11 @@
 			function checkSelector(selector,message){
 
 				var a = jQuery(selector);
-				console.log(selector,a)
 				var b = S(selector);
-				console.log(selector,b)
 				
-
-				equal(a.length,b.e.length,message + ' - check length');
+				equal(a.length,b.length,message + ' - check length');
 				for(var i = 0 ; i < a.length; i++){
-					equal(a[i],b.e[i],message + ' - '+i+' element matches');
+					equal(a[i],b[i],message + ' - '+i+' element matches');
 				}
 			
 			}	
@@ -85,15 +82,15 @@
 				
 				var a = $('dfn').parent();
 				var b = S('dfn').parent();
-				equal(a[0],b.e[0],'.parent() returns the correct DOM element');
+				equal(a[0],b[0],'.parent() returns the correct DOM element');
 
 				var a = $('.test').children('li');
 				var b = S('.test').children('li');
-				equal(a.length,b.e.length,'.children(.test) returns the same number of elements ('+a.length+')');
+				equal(a.length,b.length,'.children(.test) returns the same number of elements ('+a.length+')');
 
 				var a = $('#holder2').find('.checkme');
 				var b = S('#holder2').find('.checkme');
-				equal(a.length,b.e.length,'.find(selector) returns the same number of elements ('+a.length+' vs '+b.length+')');
+				equal(a.length,b.length,'.find(selector) returns the same number of elements ('+a.length+' vs '+b.length+')');
 
 			});
 					
@@ -101,7 +98,7 @@
 				testHTML('#holder','Get HTML contents of a selector')
 				testHTML('#holder','Set HTML contents of a selector','Replacement content');
 				appendHTML('#holder','Add HTML contents to a selector',' - appended content');
-				equal($('.removeable').length,S('.removeable').e.length,'Same number of .removeable items ('+$('.removeable').length+')');
+				equal($('.removeable').length,S('.removeable').length,'Same number of .removeable items ('+$('.removeable').length+')');
 				S('.removeable').remove();
 				equal($('.removeable').length,0,'.remove(\'.removeable\') has removed all items of the class')
 				equal($('#holder2').attr('data-lat'),S('#holder2').attr('data-lat'),'.attr(\'data-lat\') returns correct value ('+$('#holder2').attr('data-lat')+')')
@@ -124,8 +121,38 @@
 					equal(e.test,a.test,"Loaded content")
 					start();
 				});
+				
+				stop();
+				var _obj = this;
+				console.log('test.noexist')
+				S().ajax('test.noexist',{
+					'complete':function(e){
+						equal(e,'{ "test": "blah" }',"Loaded content")
+						start();
+					},
+					'this':this,
+					'error':function(e){
+						equal(_obj,this,"Failed to load content")
+						start();
+					}
+				});
 
 			});
+			test("Events",function(){
+				var rtn = 0;
+				function click(e){ console.log('click',e.data.me); rtn = e.data.me; }
+				S('#holder').on('click',{me:1},click);
+				S('#holder').trigger('click');
+				equal(rtn,1,'Trigger click event and return data property');
+				S('#holder').off('click').on('click',{me:2},click);
+				S('#holder').append('blah');
+				S('#holder').trigger('click');
+				equal(rtn,2,'Trigger click event after appending content to container');
+				S('#holder').off('click').on('click',{me:3},click);
+				S('#holder').html('Replaced content');
+				S('#holder').trigger('click');
+				equal(rtn,3,'Trigger click event after replacing content in container');
+			});			
 			
 		});
 	</script>

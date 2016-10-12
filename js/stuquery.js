@@ -1,9 +1,10 @@
+/*!
+ * stuQuery v1.0.3
+ */
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
 var eventcache = {};
-
 function S(e){
-	
 	function querySelector(els,selector){
 		var result = new Array();
 		var a,els2,i,j,k,tmp;
@@ -65,20 +66,40 @@ function S(e){
 		var elements;
 		if(typeof els==="string") this.e = querySelector(document,els);
 		else if(typeof els==="object") this.e = (typeof els.length=="number") ? els : [els];
+		for(var it in this.e) this[it] = this.e[it];
+		this.length = (this.e ? this.e.length : 0);
 		return this;
 	}
 	stuQuery.prototype.ready = function(f){ /in/.test(document.readyState)?setTimeout('S(document).ready('+f+')',9):f() }
 	// Return HTML or set the HTML
 	stuQuery.prototype.html = function(html){
 		if(typeof html==="number") html = ''+html;
-		if(typeof html!=="string" && this.e.length == 1) return this.e[0].innerHTML;
-		if(typeof html==="string") for(var i = 0; i < this.e.length; i++) this.e[i].innerHTML = html;
+		if(typeof html!=="string" && this.length == 1) return this[0].innerHTML;
+		if(typeof html==="string") for(var i = 0; i < this.length; i++) this[i].innerHTML = html;
 		return this;
 	}
 	stuQuery.prototype.append = function(html){
-		if(!html && this.e.length == 1) return this.e[0].innerHTML;
-		if(html) for(var i = 0; i < this.e.length; i++) this.e[i].innerHTML += html;
+		if(!html && this.length == 1) return this[0].innerHTML;
+		if(html) for(var i = 0; i < this.length; i++) this[i].innerHTML += html;
 		return this;	
+	}
+	stuQuery.prototype.prepend = function(j){
+		if(!j && this.length==1) return this[0].innerHTML;
+		if(j) for(var e=0;e<this.length;e++) this[e].innerHTML = j+this[e].innerHTML;
+		return this;
+	}
+	stuQuery.prototype.before=function(t){
+		var d = document.createElement('div');
+		d.innerHTML = t;
+		var e = d.childNodes;
+		for(var i = 0 ; i < el.length ; i++){
+			for(var j = 0; j < e.length; j++) el[i].parentNode.insertBefore(e[j], el[i]);
+		}
+		return this;
+	}
+	stuQuery.prototype.after=function(t){
+		for(var i = 0 ; i < this.length ; i++) this[i].insertAdjacentHTML('afterend', t);
+		return this;
 	}
 	function NodeMatch(a,el){
 		if(a && a.length > 0){
@@ -119,10 +140,10 @@ function S(e){
 				}
 			}
 		}
-		for(var i = 0; i < this.e.length; i++){
+		for(var i = 0; i < this.length; i++){
 			var m = NodeMatch(eventcache[event],this.e[i]);
 			if(m.success){
-				this.e[i].removeEventListener(event,eventcache[event][m.match].fn2,false);
+				this[i].removeEventListener(event,eventcache[event][m.match].fn2,false);
 				eventcache[event].splice(m.match,1);
 			}
 		}
@@ -138,17 +159,21 @@ function S(e){
 		}
 		if(typeof fn !== "function") return this;
 
-		if(this.e.length > 0){
+		if(this.length > 0){
 			var _obj = this;
 			var a = function(b){
-				var e = getEvent({'currentTarget':this,'type':event,'data':data,'originalEvent':b});
+				var e = getEvent({'currentTarget':this,'type':event,'data':data,'originalEvent':b,'preventDefault':function(){ if(b.preventDefault) b.preventDefault(); },'stopPropagation':function(){
+					if(b.stopImmediatePropagation) b.stopImmediatePropagation();
+					if(b.stopPropagation) b.stopPropagation();
+					if(b.cancelBubble!=null) b.cancelBubble = true;
+				}});
 				if(typeof e.fn === "function") return e.fn.call(_obj,e.data);
 			}
 		
-			for(var i = 0; i < this.e.length; i++){
-				storeEvents(this.e[i],event,fn,a,data);
-				if(this.e[i].addEventListener) this.e[i].addEventListener(event, a, false); 
-				else if(this.e[i].attachEvent) this.e[i].attachEvent(event, a);
+			for(var i = 0; i < this.length; i++){
+				storeEvents(this[i],event,fn,a,data);
+				if(this[i].addEventListener) this[i].addEventListener(event, a, false); 
+				else if(this[i].attachEvent) this[i].attachEvent(event, a);
 			}
 		}
 		return this;
@@ -166,74 +191,74 @@ function S(e){
 
 		event.eventName = e;
 
-		for(var i = 0 ;  i < this.e.length ; i++){
-			if(document.createEvent) this.e[i].dispatchEvent(event);
-			else this.e[i].fireEvent("on" + event.eventType, event);
+		for(var i = 0 ;  i < this.length ; i++){
+			if(document.createEvent) this[i].dispatchEvent(event);
+			else this[i].fireEvent("on" + event.eventType, event);
 		}
 
 		return this;
 	}
 	// If there is only one element, we trigger the focus event
 	stuQuery.prototype.focus = function(){
-		if(this.e.length == 1) this.e[0].focus();
+		if(this.length == 1) this[0].focus();
 		return this;
 	}
 	// If there is only one element, we trigger the blur event
 	stuQuery.prototype.blur = function(){
-		if(this.e.length == 1) this.e[0].blur();
+		if(this.length == 1) this[0].blur();
 		return this;
 	}
 	// Remove DOM elements
 	stuQuery.prototype.remove = function(){
-		if(!this.e) return this;
-		for(var i = this.e.length-1; i >= 0; i--){
-			if(!this.e[i]) return;
-			if(typeof this.e[i].remove==="function") this.e[i].remove();
-			else if(typeof this.e[i].parentElement.removeChild==="function") this.e[i].parentElement.removeChild(this.e[i]);
+		if(this.length < 1) return this;
+		for(var i = this.length-1; i >= 0; i--){
+			if(!this[i]) return;
+			if(typeof this[i].remove==="function") this[i].remove();
+			else if(typeof this[i].parentElement.removeChild==="function") this[i].parentElement.removeChild(this[i]);
 		}
-		return S(this.e);
+		return this;
 	}
 	// Check if a DOM element has the specified class
 	stuQuery.prototype.hasClass = function(cls){
 		var result = true;
-		for(var i = 0; i < this.e.length; i++){
-			if(!this.e[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) result = false;
+		for(var i = 0; i < this.length; i++){
+			if(!this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) result = false;
 		}
 		return result;
 	}
 	// Toggle a class on a DOM element
 	stuQuery.prototype.toggleClass = function(cls){
 		// Remove/add it
-		for(var i = 0; i < this.e.length; i++){
-			if(this.e[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this.e[i].className = this.e[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'');
-			else this.e[i].className = (this.e[i].className+' '+cls).replace(/^ /,'');
+		for(var i = 0; i < this.length; i++){
+			if(this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this[i].className = this[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'');
+			else this[i].className = (this[i].className+' '+cls).replace(/^ /,'');
 		}
-		return S(this.e);
+		return this;
 	}
 	// Toggle a class on a DOM element
 	stuQuery.prototype.addClass = function(cls){
 		// Remove/add it
-		for(var i = 0; i < this.e.length; i++){
-			if(!this.e[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this.e[i].className = (this.e[i].className+' '+cls).replace(/^ /,'');
+		for(var i = 0; i < this.length; i++){
+			if(!this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this[i].className = (this[i].className+' '+cls).replace(/^ /,'');
 		}
-		return S(this.e);
+		return this;
 	}
 	// Remove a class on a DOM element
 	stuQuery.prototype.removeClass = function(cls){
 		// Remove/add it
-		for(var i = 0; i < this.e.length; i++){
-			while(this.e[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this.e[i].className = this.e[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'').replace(/^ /,'');
+		for(var i = 0; i < this.length; i++){
+			while(this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this[i].className = this[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'').replace(/^ /,'');
 		}
-		return S(this.e);
+		return this;
 	}
 	stuQuery.prototype.css = function(css){
 		var styles;
-		for(var i = 0; i < this.e.length; i++){
+		for(var i = 0; i < this.length; i++){
 			// Read the currently set style
 			styles = {};
-			var style = this.e[i].getAttribute('style');
+			var style = this[i].getAttribute('style');
 			if(style){
-				var bits = this.e[i].getAttribute('style').split(";");
+				var bits = this[i].getAttribute('style').split(";");
 				for(var b = 0; b < bits.length; b++){
 					var pairs = bits[b].split(":");
 					if(pairs.length==2) styles[pairs[0]] = pairs[1];
@@ -249,15 +274,15 @@ function S(e){
 					if(styles[key]) newstyle += key+':'+styles[key];
 				}
 				// Update style
-				this.e[i].setAttribute('style',newstyle);
+				this[i].setAttribute('style',newstyle);
 			}
 		}
-		if(this.e.length==1 && typeof css==="string") return styles[css];
-		return S(this.e);
+		if(this.length==1 && typeof css==="string") return styles[css];
+		return this;
 	}
 	stuQuery.prototype.parent = function(){
 		var tmp = [];
-		for(var i = 0; i < this.e.length; i++) tmp.push(this.e[i].parentElement);
+		for(var i = 0; i < this.length; i++) tmp.push(this[i].parentElement);
 		return S(tmp);
 	}
 	// Only look one level down
@@ -265,57 +290,56 @@ function S(e){
 		if(typeof c==="string"){
 			// We are using a selector
 			var result = [];
-			for(var i = 0; i < this.e.length; i++){
-				for(var ch = 0; ch < this.e[i].children.length; ch++){
-					if(matchSelector(this.e[i].children[ch],c)) result.push(this.e[i].children[ch]);
+			for(var i = 0; i < this.length; i++){
+				for(var ch = 0; ch < this[i].children.length; ch++){
+					if(matchSelector(this[i].children[ch],c)) result.push(this[i].children[ch]);
 				}
 			}
 			return S(result);
 		}else{
 			// We are using an index
-			for(var i = 0; i < this.e.length; i++) this.e[i] = (this.e[i].children.length > c ? this.e[i].children[c] : this.e[i]);
-			return S(this.e);
+			for(var i = 0; i < this.length; i++) this[i] = (this[i].children.length > c ? this[i].children[c] : this[i]);
+			return this;
 		}
 	}
 	stuQuery.prototype.find = function(selector){
 		var tmp = [];
 		var result = new Array();
-		for(var i = 0; i < this.e.length; i++) result = result.concat(querySelector(this.e[i],selector));
+		for(var i = 0; i < this.length; i++) result = result.concat(querySelector(this[i],selector));
 		// Return a new instance of stuQuery
 		return S(result);
 	}
-	stuQuery.prototype.attr = function(attr,val){
+	function getset(s,attr,val,typs){
 		var tmp = [];
-		for(var i = 0; i < this.e.length; i++){
-			tmp.push(this.e[i].getAttribute(attr));
-			if(typeof val==="string" || typeof val==="number") this.e[i].setAttribute(attr,val)
-		}
-		if(tmp.length==1) tmp = tmp[0];
-		if(typeof val==="undefined") return tmp;
-		else return S(this.e);
-	}
-	stuQuery.prototype.prop = function(attr,val){
-		var tmp = [];
-		for(var i = 0; i < this.e.length; i++){
-			tmp.push(this.e[i].getAttribute(attr));
-			if(typeof val==="boolean"){
-				if(val) this.e[i].setAttribute(attr,attr);
-				else this.e[i].removeAttribute(attr);
+		for(var i = 0; i < s.length; i++){
+			tmp.push(s[i].getAttribute(attr));
+			var ok = false;
+			for(var j in typs){ if(typeof val===typs[j]) ok = true; }
+			if(ok){
+				if(val) s[i].setAttribute(attr,val)
+				else s[i].removeAttribute(attr);
 			}
 		}
 		if(tmp.length==1) tmp = tmp[0];
-		return tmp;
+		if(typeof val==="undefined") return tmp;
+		else return s;
+	}
+	stuQuery.prototype.attr = function(attr,val){
+		return getset(this,attr,val,["string","number"]);
+	}
+	stuQuery.prototype.prop = function(attr,val){
+		return getset(this,attr,val,["boolean"]);
 	}
 	stuQuery.prototype.clone = function(){
 		var span = document.createElement('div');
-		span.appendChild(this.e[0].cloneNode(true));
+		span.appendChild(this[0].cloneNode(true));
 		return span.innerHTML;
 	}
 	stuQuery.prototype.replaceWith = function(html){
 		var span = document.createElement("span");
 		span.innerHTML = html;
 		var clone = S(this.e);
-		for(var i = 0; i < this.e.length; i++) clone.e[0].parentNode.replaceChild(span, clone.e[0]);
+		for(var i = 0; i < this.length; i++) clone[0].parentNode.replaceChild(span, clone[0]);
   		return clone;
 	}
 	//=========================================================
@@ -326,7 +350,7 @@ function S(e){
 	stuQuery.prototype.ajax = function(url,attrs){
 		if(typeof url!=="string") return false;
 		if(!attrs) attrs = {};
-		attrs['url'] = url;
+		attrs['url'] = url+(typeof attrs.cache==="boolean" && !attrs.cache ? '?'+(new Date()).valueOf():'');
 
 		// code for IE7+/Firefox/Chrome/Opera/Safari or for IE6/IE5
 		var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -335,6 +359,7 @@ function S(e){
 
 		function complete(evt) {
 			if(oReq.status === 200) {
+				attrs.header = oReq.getAllResponseHeaders();
 				if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this), (attrs['dataType']=="json") ? JSON.parse(oReq.responseText) : oReq.responseText, attrs);
 			}else error(evt);
 		}

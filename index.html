@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="css/prettify.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script type="text/javascript" src="js/prettify.js"></script>
-	<script type="text/javascript" src="js/stuquery.js"></script> 
+	<script type="text/javascript" src="js/stuquery.js"></script>
 	<script>
 	// Add an event to be called when the document is loaded
 	S(document).ready(function(){
@@ -31,11 +31,11 @@
 	<div id="content">
 
 		<section id="downloads">
-			<a href="js/stuquery.js">stuquery.js (12kB)</a>
-			<a href="js/stuquery.min.js">stuquery.min.js (7.3kB)</a>
+			<a href="js/stuquery.js">stuquery.js (13kB)</a>
+			<a href="js/stuquery.min.js">stuquery.min.js (8.2kB)</a>
 		</section>
 
-		<h1>stuQuery</h1>
+		<h1 data="Some data">stuQuery</h1>
 	
 		<p>I often use jQuery but it was becoming too big for most of my use cases. I only needed a few basic features. So I've gone back to basics and made my own small library. The aim was to make the usage be as similar to jQuery as possible so that I can switch back-and-forth if I need to. To avoid conflicts, rather than <code>$</code> I've used <code>S</code>. There are some <a href="tests/index.html">unit tests</a> to check it works correctly across browsers</a>.</p>
 
@@ -62,15 +62,41 @@ S('li').find('span'); // Get a descendent span element
 		<h2>DOM manipulation</h2>
 		<pre class="prettyprint lang-js">
 <code>
-S('#menu').html();          // Returns the HTML of the selected DOM element
-S('#menu').html('HTML');    // Replaces content of DOM element(s)
-S('#menu').append('HTML');  // Appends provided content to DOM element
-S('img').attr('alt');       // Returns the value(s) of the attribute
-S('img').attr('alt','Alt'); // Sets the value(s) of the attribute
-S('div').toggleClass('a');  // Toggles the CSS class 'a'
-S('div').addClass('a');     // Adds the CSS class 'a'
-S('div').hasClass('a');     // Returns true if the DOM element has the class
-S('div').remove();          // Removes selected item(s)
+// Return the HTML of the selected DOM element
+S('#menu').html();
+
+// Replace content of DOM element(s)
+S('#menu').html('HTML');
+
+// Append provided content to DOM element
+S('#menu').append('HTML');
+
+// Return the value(s) of the attribute
+S('img').attr('alt');
+
+// Set the value(s) of the attribute
+S('img').attr('alt','Alt');
+
+// Get a property of the attribute
+S('img').prop('alt');
+
+// Add the CSS class 'cls'
+S('div').addClass('cls');
+
+// Remove the CSS class 'cls'
+S('div').removeClass('cls');
+
+// Toggle the CSS class 'cls'
+S('div').toggleClass('cls');
+
+// Return true if the DOM element has the class 'cls'
+S('div').hasClass('cls');
+
+// Set the CSS properties
+S('div').css({'font-size':'0.8em'});
+
+// Removes selected item(s)
+S('div').remove();
 </code></pre>		
 		
 		<h2>File loading</h2>
