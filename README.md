@@ -1,6 +1,6 @@
 # stuquery
 
-A lightweight DOM manipulator. I created this because jQuery was getting far too big and I only needed a few basic features. I've tried to replicate the function names and calling methods from jQuery to make it easy to switch back-and-forth. Rather than `$` I've used `E`;
+A lightweight DOM manipulator. I created this because jQuery was getting far too big and I only needed a few basic features. I've tried to replicate the function names and calling methods from jQuery to make it easy to switch back-and-forth. Rather than `$` I've used `S`;
 
 ## Functions
 
