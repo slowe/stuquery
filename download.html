@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>stuQuery</title>
+	<link rel="stylesheet" href="css/style.css">
+	<script type="text/javascript" src="js/stuquery.js"></script>
+	<script type="text/javascript" src="js/stuquery.builder.js"></script>
+	<script type="text/javascript" src="js/uglify.js"></script>
+	<style>
+	pre {
+		font-family: monospace;
+	}
+	.fn {
+		color: #396bad;
+		background-color: #dfdfdf;
+	}
+	#builder {
+		-webkit-column-count: 4; /* Chrome, Safari, Opera */
+		-moz-column-count: 4; /* Firefox */
+		column-count: 4;
+		margin-bottom: 2em;
+	}
+	</style>
+</head>
+<body>
+
+	<a href="https://github.com/slowe/stuquery" id="forkme_banner">Fork Me on GitHub</a>
+
+	<div id="content">
+
+		<section id="downloads">
+			<a href="js/stuquery.js" id="save"><span id="file">stuquery.js</span> (<span id="size">13</span>kB)</a>
+			<a href="js/stuquery.min.js" id="minify"><span id="filemin">stuquery.min.js</span> (<span id="sizemin">8.2</span>kB)</a>
+		</section>
+
+		<h1 data="Some data">stuQuery builder</h1>
+	
+		<p>Even though the aim is to keep stuQuery small, you still might not need all of it. This page lets you build a custom version with the bare minimum you need.</p>
+
+		<form id="builder"></form>
+
+		<h2>Javascript</h2>
+		<pre id="output" class="prettyprint lang-js"></pre>
+
+	</div>
+</body>
+</html>
