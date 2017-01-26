@@ -1,5 +1,5 @@
 /*!
- * stuQuery v1.0.4
+ * stuQuery v1.0.6
  */
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
@@ -339,26 +339,52 @@ function S(e){
 		for(var i = 0; i < this.length; i++) clone[0].parentNode.replaceChild(span, clone[0]);
   		return clone;
 	}
+	stuQuery.prototype.outerWidth = function(){
+		if(this.length > 1) return;
+		var s = getComputedStyle(this[0]);
+		return this[0].offsetWidth + parseInt(s.marginLeft) + parseInt(s.marginRight);
+	}
+	stuQuery.prototype.offset = function(){
+		return this[0].getBoundingClientRect();
+	}
+	stuQuery.prototype.position = function(){
+		if(this.length > 1) return;
+		return {left: this[0].offsetLeft, top: this[0].offsetTop};
+	}
 	stuQuery.prototype.ajax = function(url,attrs){
 		//=========================================================
 		// ajax(url,{'complete':function,'error':function,'dataType':'json'})
 		// complete: function - a function executed on completion
 		// error: function - a function executed on an error
+		// cache: break the cache
 		// dataType: json - will convert the text to JSON
+		//           jsonp - will add a callback function and convert the results to JSON
 
 		if(typeof url!=="string") return false;
 		if(!attrs) attrs = {};
-		attrs['url'] = url+(typeof attrs.cache==="boolean" && !attrs.cache ? '?'+(new Date()).valueOf():'');
+		var cb = "",qs = "";
+		if(attrs['dataType']=="jsonp"){
+			cb = 'fn_'+(new Date()).getTime();
+			window[cb] = function(evt){ complete(evt); };
+		}
+		if(typeof attrs.cache==="boolean" && !attrs.cache) qs += (new Date()).valueOf();
+		if(cb) qs += (qs ? '&':'')+'callback='+cb;
+		if(attrs.data) qs += (qs ? '&':'')+attrs.data;
 
+		// Build the URL to query
+		attrs['url'] = url+(qs ? '?'+qs:'');
+		
 		// code for IE7+/Firefox/Chrome/Opera/Safari or for IE6/IE5
 		var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-		oReq.addEventListener("load", complete);
+		oReq.addEventListener("load", window[cb] || complete);
 		oReq.addEventListener("error", error);
 
 		function complete(evt) {
 			if(oReq.status === 200) {
 				attrs.header = oReq.getAllResponseHeaders();
-				if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this), (attrs['dataType']=="json") ? JSON.parse(oReq.responseText) : oReq.responseText, attrs);
+				var rsp = oReq.responseText;
+				if(attrs['dataType']=="json" || attrs['dataType']=="jsonp") rsp = JSON.parse(rsp);
+				if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this), rsp, attrs);
 			}else error(evt);
 		}
 

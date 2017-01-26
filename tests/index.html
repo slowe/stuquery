@@ -137,6 +137,17 @@
 					}
 				});
 
+				stop();
+				S().ajax('http://odileeds.org/projects/mote/data',{
+					'complete':function(e){
+						var a = { "test": "blah" }
+						equal(e.test,a.test,"Loaded content (JSONp)")
+						start();
+					},
+					'dataType':'jsonp',
+					'data': 'since=1485436597'
+				});
+
 			});
 			test("Events",function(){
 				var rtn = 0;
