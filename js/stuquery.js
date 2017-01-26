@@ -367,7 +367,7 @@ function S(e){
 			cb = 'fn_'+(new Date()).getTime();
 			window[cb] = function(evt){ complete(evt); };
 		}
-		if(typeof attrs.cache==="boolean" && !attrs.cache) qs += (new Date()).valueOf();
+		if(typeof attrs.cache==="boolean" && !attrs.cache) qs += (qs ? '&':'')+(new Date()).valueOf();
 		if(cb) qs += (qs ? '&':'')+'callback='+cb;
 		if(attrs.data) qs += (qs ? '&':'')+attrs.data;
 
@@ -392,7 +392,7 @@ function S(e){
 			if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
 		}
 
-		try{ oReq.open('GET', url); }
+		try{ oReq.open('GET', attrs['url']); }
 		catch(err){ error(err); }
 
 		try{ oReq.send(); }
