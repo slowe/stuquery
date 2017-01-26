@@ -383,6 +383,8 @@ function S(e){
 			if(oReq.status === 200) {
 				attrs.header = oReq.getAllResponseHeaders();
 				var rsp = oReq.responseText;
+				// Parse out content in the appropriate callback
+				if(attrs['dataType']=="jsonp") rsp = rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n");
 				if(attrs['dataType']=="json" || attrs['dataType']=="jsonp") rsp = JSON.parse(rsp);
 				if(typeof attrs.complete==="function") attrs.complete.call((attrs['this'] ? attrs['this'] : this), rsp, attrs);
 			}else error(evt);
