@@ -1,5 +1,5 @@
 /*!
- * stuQuery v1.0.6
+ * stuQuery v1.0.7
  */
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
@@ -60,6 +60,11 @@ function S(e){
 		}
 		return false;
 	}
+	function htmlToEl(html) {
+		var d = document.createElement('template');
+		d.innerHTML = html;
+		return d.content.firstChild;
+	}
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
 		var elements;
@@ -79,7 +84,7 @@ function S(e){
 	}
 	stuQuery.prototype.append = function(html){
 		if(!html && this.length == 1) return this[0].innerHTML;
-		if(html) for(var i = 0; i < this.length; i++) this[i].innerHTML += html;
+		if(html) for(var i = 0; i < this.length; i++) this[i].appendChild(htmlToEl(html));
 		return this;	
 	}
 	stuQuery.prototype.prepend = function(j){
