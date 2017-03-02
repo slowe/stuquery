@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="css/prettify.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/stuquery.barchart.css">
+	<script type="text/javascript" src="js/stuquery.js"></script>
+	<script type="text/javascript" src="js/stuquery.barchart.js"></script>
+	<script type="text/javascript" src="js/prettify.js"></script>
+	<script>
+	S(document).ready(function(){
+
+		prettyPrint();
+
+		var inc = 1;
+		// Create the barchart object
+		var chart = new S.barchart('#barchart', {
+			// Specify the formatting of the x-axis labels
+			// In this case we only display every decade
+			'formatKey': function(key){
+				return (key%10==0 ? key.substr(0,4) : '');
+			}
+		});
+
+		// Add some events
+		chart.on('barclick',function(e){
+			var b = S(e.event.currentTarget).attr('data-index');
+			this.toggleBin(b);
+		}).on('barover',function(e){
+			var b = S(e.event.currentTarget).attr('data-index');
+			S('.balloon').remove();
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[b].key+': '+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+		});
+		S('#barchart').on('mouseleave',function(e){
+			S('.balloon').remove();
+		});
+
+		// Add data
+		var data = [[1950,1],[1951,0],[1952,0],[1953,0],[1954,0],[1955,0],[1956,0],[1957,0],[1958,0],[1959,1],[1960,0],[1961,0],[1962,0],[1963,1],[1964,1],[1965,1],[1966,0],[1967,0],[1968,0],[1969,0],[1970,0],[1971,1],[1972,0],[1973,1],[1974,2],[1975,1],[1976,1],[1977,0],[1978,0],[1979,1],[1980,0],[1981,0],[1982,1],[1983,3],[1984,3],[1985,1],[1986,3],[1987,2],[1988,0],[1989,5],[1990,7],[1991,1],[1992,5],[1993,3],[1994,2],[1995,5],[1996,4],[1997,9],[1998,5],[1999,7],[2000,13],[2001,10],[2002,11],[2003,14],[2004,19],[2005,13],[2006,18],[2007,14],[2008,18],[2009,14],[2010,20],[2011,22],[2012,28],[2013,33],[2014,50],[2015,52],[2016,72],[2017,1]];
+		// Force the bins to be 1 year wide, set the data, and draw the chart
+		chart.setBins(data,{'inc':inc}).draw();
+
+		/*S('#random').on('click',function(){
+			var max = Math.random()*50;
+			for(var i = 0; i < data.length; i++) data[i][1] = Math.random()*max;
+			chart.setBins(data,{'inc':inc}).draw();
+		});*/
+		S('#year10').on('click',function(){ inc = 10; chart.setBins({'inc':inc}).draw(); });
+		S('#year5').on('click',function(){ inc = 5; chart.setBins({'inc':inc}).draw(); });
+		S('#year1').on('click',function(){ inc = 1; chart.setBins({'inc':inc}).draw(); });
+
+
+		// Create the barchart object
+		var data2 = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
+		var chart2 = new S.barchart('#barchart2');
+		chart2.setBins(data2,{ 'mintick': 5 }).draw();
+		chart2.on('barover',function(e){
+			var b = S(e.event.currentTarget).attr('data-index');
+			S('.balloon').remove();
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+(this.bins[b].key+' &rarr; '+(parseFloat(this.bins[b].key)+this.inc))+' = '+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+		});
+		S('#barchart2').on('mouseleave',function(e){
+			S('.balloon').remove();
+		});
+		S('#random2').on('click',function(){
+			var mydata = [];
+			var maxy = 50;
+			var maxx = Math.pow(10,Math.random()*5);
+			var cen = Math.random()*maxx;
+			var n = 100;
+			for(var i = 0; i < n; i++) mydata[i] = [(Math.random()*maxx)-cen,1];
+			chart2.setBins(mydata,{mintick:5}).draw();
+		})
+
+
+
+		// Create the barchart object
+		data3 = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
+		var chart3 = new S.barchart('#barchart3');
+		chart3.setBins(data3).draw();
+		S('#barchart3').on('mouseleave',function(e){
+			S('.balloon').remove();
+		});
+
+
+		// Create the barchart object
+		data4 = [["2014-04",1],["2014-05",9],["2014-06",4],["2014-07",10],["2014-08",1],["2014-09",6],["2014-10",9],["2014-11",7],["2014-12",12],["2015-01",13],["2015-02",14],["2015-03",17],["2015-04",20],["2015-05",16],["2015-06",23],["2015-07",14],["2015-08",4],["2015-09",20],["2015-10",15],["2015-11",24],["2015-12",9],["2016-01",16],["2016-02",20],["2016-03",11],["2016-04",16],["2016-05",19],["2016-06",19],["2016-07",21],["2016-08",3],["2016-09",15],["2016-10",17],["2016-11",14],["2016-12",7],["2017-01",8],["2017-02",12],["2017-03",1]];
+		var chart4 = new S.barchart('#barchart4',{
+			// Specify the formatting of the x-axis labels
+			// In this case we only display every decade
+			'formatKey': function(key){
+				return (key.indexOf('-01') > 0 ? key.substr(0,4) : '');
+			}
+		});
+		chart4.setBins(data4).draw();
+		chart4.on('barover',function(e){
+			var b = S(e.event.currentTarget).attr('data-index');
+			S('.balloon').remove();
+			var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+months[parseInt(this.bins[b].key.substring(5))-1]+' '+this.bins[b].key.substr(0,4)+': '+this.bins[b].value+'</div>')
+		});
+		S('#barchart4').on('mouseleave',function(e){
+			S('.balloon').remove();
+		});
+
+        S('.balloon').remove();
+
+
+	});
+	</script>
+	<style>
+	#barchart,#barchart2,#barchart3,#barchart4 {
+		height: 300px;
+	}
+	.balloon {
+		position: absolute;
+		background-color: white;
+		padding: 0.25em 0.5em;
+		left: 50%;
+		top: 0;
+		transform: translate3d(0%,-120%, 0);
+		white-space: nowrap;
+		margin-right: -50%;
+		text-align: center;
+		z-index: 100;
+		box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
+	}
+	.balloon::after {
+		content: '';
+		position: absolute;
+		bottom: auto;
+		width: 0;
+		height: 0;
+		border: 0.5em solid transparent;
+		left: 0;
+		border-left-color: white;
+		bottom: -0.5em;
+	}
+	</style>
+	<link rel="StyleSheet" href="stuquery.barchart.css" type="text/css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>IoT Sector Mapping</title>
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:site" content="@ODILeeds">
+	<meta name="twitter:url" property="og:url" content="https://odileeds.org/projects/iot/">
+	<meta name="twitter:title" property="og:title" content="IoT Sector Mapping">
+	<meta name="twitter:description" property="og:description" content="...">
+	<meta name="twitter:image" property="og:image" content="https://odileeds.org/resources/images/odileeds.png">
+	<meta name="keywords" content="open,data,IoT,internet of things,sector,UK,mapping,businesses">
+</head>
+<body>
+
+	<a href="https://github.com/slowe/stuquery" id="forkme_banner">Fork Me on GitHub</a>
+
+	<div id="content">
+
+		<section id="downloads">
+			<a href="js/stuquery.barchart.js">stuquery.barchart.js (8.6kB)</a>
+			<a href="js/stuquery.barchart.min.js">minified (5.6kB)</a>
+			<a href="css/stuquery.barchart.css">css (1.6kB)</a>
+		</section>
+
+		<h1>stuQuery bar chart</h1>
+		
+		<p>This is a simple HTML bar chart library that makes use of <a href="index.html">stuQuery</a>.</p>
+	
+		<h2>Test 1</h2>
+		<p>This chart shows year-based data binned by year and with labels only every decade.</p>
+		<div id="barchart" style="margin-bottom:1em;"></div>
+		<!--<button id="random">Randomise data</button>-->
+		<button id="year10">10 year bins</button>
+		<button id="year5">5 year bins</button>
+		<button id="year1">1 year bins</button>
+		<pre class="prettyprint lang-js">
+<code>// Create the barchart object attached to the element with id="barchart"
+var chart = new S.barchart('#barchart', {
+	// Only display an x-axis label every decade
+	'formatKey': function(key){
+		return (key%10==0 ? key.substr(0,4) : '');
+	}
+});
+
+// Add events
+chart.on('barclick',function(e){
+	// Get the bin
+	var b = S(e.event.currentTarget).attr('data-index');
+	this.toggleBin(b);
+}).on('barover',function(e){
+	// Get the bin
+	var b = S(e.event.currentTarget).attr('data-index');
+	// Remove any existing information balloon
+	S('.balloon').remove();
+	// Add a new information balloon
+	S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[b].key+': '+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+});
+
+// Remove the information balloon when we leave the chart
+S('#barchart').on('mouseleave',function(e){
+	S('.balloon').remove();
+});
+
+// Define data
+var data = [[1950,1],[1951,0],[1952,0],[1953,0],[1954,0],[1955,0]...
+
+// Force the bins to be 1 year wide, set the data, and draw the chart
+chart.setBins(data,{'inc':1}).draw();
+
+// Attach event to button
+S('#year5').on('click',function(){
+
+	// Set the bin size to 5 years
+	chart.setBins({'inc':5});
+
+	// Re-draw the chart
+	chart.draw();
+});
+</code></pre>
+		
+
+		<h2>Test 2</h2>
+		<p>This chart displays random data with an auto scaling to test negative values.</p>
+		<div id="barchart2" style="margin-bottom:1em;"></div>
+		<button id="random2">Randomise data</button>
+
+		<pre class="prettyprint lang-js">
+<code>// Create the barchart object
+var chart = new S.barchart('#barchart');
+
+// Define the data;
+var data = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
+
+// Send the data array and bin size then draw the chart
+chart.setBins(data,{ 'mintick': 5 }).draw();
+
+// Add event
+chart.on('barover',function(e){
+	var b = S(e.event.currentTarget).attr('data-index');
+	S('.balloon').remove();
+	S(e.event.currentTarget).find('.bar').append(
+		"&lt;div class=\"balloon\"&gt;"
+		+(this.bins[b].key
+		+" &amp;rarr; "
+		+(parseFloat(this.bins[b].key)+this.inc))
+		+" = "
+		+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")
+		+"&lt;/div&gt;"
+	);
+});
+
+// Remove the information balloon when we leave the chart
+S('#barchart').on('mouseleave',function(e){
+	S('.balloon').remove();
+});
+</code></pre>
+
+		<h2>Test 3</h2>
+		<p>This chart shows category bins.</p>
+		<div id="barchart3" style="margin-bottom:1em;"></div>
+
+		<pre class="prettyprint lang-js">
+<code>// Define the data
+var data = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
+
+// Create the barchart object
+var chart = new S.barchart('#barchart');
+
+// Add the data and draw the chart
+chart.setBins(data).draw();
+
+// Remove the information balloon
+S('#barchart').on('mouseleave',function(e){
+	S('.balloon').remove();
+});
+</code></pre>
+
+
+		<h2>Test 4</h2>
+		<p>This chart shows monthly bins using categories.</p>
+		<div id="barchart4" style="margin-bottom:1em;"></div>
+
+		<pre class="prettyprint lang-js">
+<code>// Define the data
+var data = [["2014-04",1],["2014-05",9],["2014-06",4],["2014-07",10],["2014-08",1],["2014-09",6],["2014-10",9],["2014-11",7],["2014-12",12],["2015-01",13],["2015-02",14],["2015-03",17],["2015-04",20],["2015-05",16],["2015-06",23],["2015-07",14],["2015-08",4],["2015-09",20],["2015-10",15],["2015-11",24],["2015-12",9],["2016-01",16],["2016-02",20],["2016-03",11],["2016-04",16],["2016-05",19],["2016-06",19],["2016-07",21],["2016-08",3],["2016-09",15],["2016-10",17],["2016-11",14],["2016-12",7],["2017-01",8],["2017-02",12],["2017-03",1]];
+
+// Make the chart
+var chart = new S.barchart('#barchart',{
+	// Specify the formatting of the x-axis labels
+	// In this case we only display every decade
+	'formatKey': function(key){
+		return (key.indexOf('-01') > 0 ? key.substr(0,4) : '');
+	}
+});
+
+// Set the data and draw the chart
+chart.setBins(data).draw();
+
+// Add events
+chart.on('barover',function(e){
+	var b = S(e.event.currentTarget).attr('data-index');
+	S('.balloon').remove();
+	var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+	S(e.event.currentTarget).find('.bar').append(
+		'&lt;div class="balloon"&gt;'
+		+months[parseInt(this.bins[b].key.substring(5))-1]
+		+' '
+		+this.bins[b].key.substr(0,4)
+		+': '
+		+this.bins[b].value
+		+'&lt;/div&gt;'
+	)
+});
+
+// Remove the information balloon
+S('#barchart').on('mouseleave',function(e){
+	S('.balloon').remove();
+});
+</code></pre>
+
+	</div>
+
+</body>
+</html>
+

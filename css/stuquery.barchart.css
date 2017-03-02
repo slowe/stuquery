@@ -1,0 +1,80 @@
+.barchart {
+	width: 100%;
+	display: block;
+	margin: auto;
+	text-align: center;
+	position: relative;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.barchart table {
+	width: 96%;
+}
+
+.barchart table td {
+	border-right: 1px solid transparent;
+	position: relative;
+	padding-bottom: 1.5em;
+}
+.barchart table td:hover {
+	cursor: pointer;
+}
+.barchart table .bar {
+	width: 100%;
+	background-color: #FF6700;
+	border-bottom: 1px solid #5b5b5b;
+	cursor: pointer;
+	position: relative;
+	vertical-align: baseline;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.barchart table td:hover .bar { background: rgba(255,123,20,1); }
+.barchart table td:hover .antibar { background: rgba(0,0,0,0.1); }
+.barchart table td.deselected:hover .bar { background: rgba(91,91,91,1); }
+.barchart table td.deselected .bar {
+	background-color: #333333;
+}
+.barchart .info-box {
+	position: absolute;
+	background: white;
+	padding: 0.5em;
+	border: 1px solid #5b5b5b;
+	left: 1em;
+	top: 1em;
+	width: auto;
+}
+.barchart table .label {
+	position: absolute;
+	left: 0px;
+	border-left: 1px solid #5b5b5b;
+	padding-left: 0.25em;
+	padding-top: 0.25em;
+	line-height: 1em;
+}
+.barchart .grid {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+.barchart:hover .grid .line {
+	opacity: 1;
+}
+.barchart .grid .line {
+	width: 100%;
+	border-bottom: 1px solid #5b5b5b;
+	color: #5b5b5b;
+	opacity: 0.3;
+	position: absolute;
+	text-align: right;
+}
+.barchart .grid .line span {
+}
+.barchart:after {
+	content: "";
+	clear: both;
+}
