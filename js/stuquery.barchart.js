@@ -115,7 +115,7 @@
 			binning.bins = Math.ceil(binning.range/binning.inc)+1;
 			if(binning.max != this.max || binning.min != this.min || binning.inc != this.inc) this.drawn = false;
 			if(this.inc && binning.inc != this.inc) this.drawn = false;
-			if(!this.drawn) this.bins = [];
+			if(binning.inc != this.inc) this.bins = [];
 
 			// Set main value		
 			this.max = binning.max;
