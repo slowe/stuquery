@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.2";
+		var ver = "0.3";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -83,6 +83,7 @@
 					this.drawn = false;
 				}
 			}
+			f = 0;
 			// Populate bins
 			for(var r = 0; r < this.data.length; r++){
 				if(!fields[this.data[r][0]]){
@@ -106,6 +107,7 @@
 				binning.max = (attr.max) ? attr.max : e;
 				binning.min = (attr.min) ? attr.min : s;
 				binning.inc = attr.inc;
+				this.drawn = false;
 			}else{
 				binning = this.getGrid(s,e,attr.mintick);
 			}
@@ -113,6 +115,7 @@
 			binning.bins = Math.ceil(binning.range/binning.inc)+1;
 			if(binning.max != this.max || binning.min != this.min || binning.inc != this.inc) this.drawn = false;
 			if(this.inc && binning.inc != this.inc) this.drawn = false;
+			if(!this.drawn) this.bins = [];
 
 			// Set main value		
 			this.max = binning.max;
@@ -194,12 +197,14 @@
 			if(maketable){
 				// Add the table cells
 				S(this.target+' table tr').html(output);
+				S(this.target).on('mouseleave',{me:this},function(e){ e.data.me.trigger("mouseleave",{event:e}); })
+				S(this.target).on('mouseover',{me:this},function(e){ e.data.me.trigger("mouseover",{event:e}); })
 			}
 			// Attach the events
 			if(!this.drawn){
 				S(this.target+' .bar').parent()
-					.on('click',{me:this,parent:this.attr.parent},function(e){ e.data.me.trigger("barclick",{event:e});})
-					.on('mouseover',{me:this,parent:this.attr.parent},function(e){ e.data.me.trigger("barover",{event:e});});
+					.on('click',{me:this,parent:this.attr.parent},function(e){ e.data.me.trigger("barclick",{event:e}); })
+					.on('mouseover',{me:this,parent:this.attr.parent},function(e){ e.data.me.trigger("barover",{event:e}); });
 			}
 			this.drawn = true;
 		}
