@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="css/prettify.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script type="text/javascript" src="js/prettify.js"></script>
-	<script type="text/javascript" src="js/stuquery.min.js"></script>
+	<script type="text/javascript" src="js/stuquery.js"></script>
 	<script>
 	// Add an event to be called when the document is loaded
 	S(document).ready(function(){
@@ -37,7 +37,10 @@
 
 		<h1 data="Some data">stuQuery</h1>
 	
-		<p>I often use jQuery but it was becoming too big for most of my use cases. I only needed a few basic features. So I've gone back to basics and made my own small library. The aim was to make the usage be as similar to jQuery as possible so that I can switch back-and-forth if I need to. To avoid conflicts, rather than <code>$</code> I've used <code>S</code>. There are some <a href="tests/index.html">unit tests</a> to check it works correctly across browsers</a>.</p>
+		<p>I often use jQuery but it was becoming too big for most of my use cases. I only needed a few basic features. So I've gone back to basics and made my own small library. The aim was to make the usage be as similar to jQuery as possible so that I can switch back-and-forth if I need to. To avoid conflicts, rather than <code>$</code> I've used <code>S</code>. There are some <a href="tests/index.html">unit tests</a> to check it works correctly across browsers</a>. There is <a href="download.html">an experimental package builder</a> to remove parts you don't need. There is also a plugin:</p>
+		<ul>
+			<li><a href="barchart.html">stuQuery barchart</a></li>
+		</ul>
 
 		<h2>Basic example</h2>
 		<pre class="prettyprint lang-js">

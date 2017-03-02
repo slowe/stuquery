@@ -73,6 +73,11 @@ button:hover, button:focus, button.selected {
 	background-color: white!important;
 	color: black!important;
 }
+ul {
+	list-style: disc;
+	margin-left: 1.5em;
+	margin-bottom: 2em;
+}
 
 @media only screen and (max-width: 900px) {
 	#downloads {

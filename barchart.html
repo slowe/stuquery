@@ -284,8 +284,7 @@ var data = [["2014-04",1],["2014-05",9],["2014-06",4],["2014-07",10],["2014-08",
 
 // Make the chart
 var chart = new S.barchart('#barchart',{
-	// Specify the formatting of the x-axis labels
-	// In this case we only display every decade
+	// Only show x-axis labels when they are of the form YYYY-01
 	'formatKey': function(key){
 		return (key.indexOf('-01') > 0 ? key.substr(0,4) : '');
 	}
