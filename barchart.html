@@ -77,10 +77,14 @@
 
 
 		// Create the barchart object
-		data3 = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
+		data3 = [["Bradford Beck",0.2],["Lower Beck",0.4],["River Aire",0.5],["Flood alleviation",0.15]];
+		//data3 = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
 		chart3 = new S.barchart('#barchart3');
 		chart3.setData(data3).setBins().draw();
-		S('#barchart3').on('mouseleave',function(e){
+		chart3.on('barover',function(e){
+			S('.balloon').remove();
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+(this.bins[e.bin].key)+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+		}).on('mouseleave',function(e){
 			S('.balloon').remove();
 		});
 
@@ -140,6 +144,18 @@
 	#barchart2 .bar { background-color: #722EA5; }
 	#barchart2 td:hover .bar { background-color: #E6007C; }
 	#barchart2 td:hover .antibar { background-color: rgba(230,0,124,0.1); }
+	#barchart3 .bar {
+		background: radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 0 -28px,
+		radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
+		background-size: 50px 50px;
+		background-repeat:repeat-x;
+	}
+	#barchart3 td:hover .bar {
+		background: radial-gradient(circle closest-side, #dfdfdf 13px, rgba(255,255,255,0) 0) 0 -28px,
+		radial-gradient(circle closest-side, #dfdfdf 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
+		background-size: 50px 50px;
+		background-repeat:repeat-x;
+	}
 	</style>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>stuQuery barchart</title>
@@ -338,7 +354,7 @@ S('#random').on('click',function(){
 
 		<pre class="prettyprint lang-js">
 <code>// Define the data
-var data = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
+var data = [["Bradford Beck",0.2],["Lower Beck",0.4],["River Aire",0.5],["Flood alleviation",0.15]];
 
 // Create the barchart object
 var chart = new S.barchart('#barchart');
@@ -346,10 +362,32 @@ var chart = new S.barchart('#barchart');
 // Add the data and draw the chart
 chart.setData(data).setBins().draw();
 
-// Remove the information balloon
-S('#barchart').on('mouseleave',function(e){
+// Display information on hover events
+chart.on('barover',function(e){
+	S('.balloon').remove();
+	S(e.event.currentTarget).find('.bar').append(
+		'&lt;div class="balloon"&gt;'
+		+ (this.bins[e.bin].key)+': '
+		+ (this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")
+		+ '&lt;/div&gt;'
+	);
+}).on('mouseleave',function(e){
 	S('.balloon').remove();
 });
+</code></pre>
+		<pre class="prettyprint lang-css">
+<code>#barchart3 .bar {
+	background: radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 0 -28px,
+	radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
+	background-size: 50px 50px;
+	background-repeat:repeat-x;
+}
+#barchart3 td:hover .bar {
+	background: radial-gradient(circle closest-side, #dfdfdf 13px, rgba(255,255,255,0) 0) 0 -28px,
+	radial-gradient(circle closest-side, #dfdfdf 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
+	background-size: 50px 50px;
+	background-repeat:repeat-x;
+}
 </code></pre>
 
 
