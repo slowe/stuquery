@@ -13,7 +13,16 @@
 
 		prettyPrint();
 
+		// Add data
+		var data = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
 		var inc = 1;
+
+		// Create the barchart object
+		chart0 = new S.barchart('#barchartbasic');
+		chart0.setData(data).setBins({'mintick':5}).draw();
+
+		var data = [[1950,1],[1951,0],[1952,0],[1953,0],[1954,0],[1955,0],[1956,0],[1957,0],[1958,0],[1959,1],[1960,0],[1961,0],[1962,0],[1963,1],[1964,1],[1965,1],[1966,0],[1967,0],[1968,0],[1969,0],[1970,0],[1971,1],[1972,0],[1973,1],[1974,2],[1975,1],[1976,1],[1977,0],[1978,0],[1979,1],[1980,0],[1981,0],[1982,1],[1983,3],[1984,3],[1985,1],[1986,3],[1987,2],[1988,0],[1989,5],[1990,7],[1991,1],[1992,5],[1993,3],[1994,2],[1995,5],[1996,4],[1997,9],[1998,5],[1999,7],[2000,13],[2001,10],[2002,11],[2003,14],[2004,19],[2005,13],[2006,18],[2007,14],[2008,18],[2009,14],[2010,20],[2011,22],[2012,28],[2013,33],[2014,50],[2015,52],[2016,72],[2017,1]];
+
 		// Create the barchart object
 		chart = new S.barchart('#barchart', {
 			// Specify the formatting of the x-axis labels
@@ -35,8 +44,6 @@
 			S('.balloon').remove();
 		});
 
-		// Add data
-		var data = [[1950,1],[1951,0],[1952,0],[1953,0],[1954,0],[1955,0],[1956,0],[1957,0],[1958,0],[1959,1],[1960,0],[1961,0],[1962,0],[1963,1],[1964,1],[1965,1],[1966,0],[1967,0],[1968,0],[1969,0],[1970,0],[1971,1],[1972,0],[1973,1],[1974,2],[1975,1],[1976,1],[1977,0],[1978,0],[1979,1],[1980,0],[1981,0],[1982,1],[1983,3],[1984,3],[1985,1],[1986,3],[1987,2],[1988,0],[1989,5],[1990,7],[1991,1],[1992,5],[1993,3],[1994,2],[1995,5],[1996,4],[1997,9],[1998,5],[1999,7],[2000,13],[2001,10],[2002,11],[2003,14],[2004,19],[2005,13],[2006,18],[2007,14],[2008,18],[2009,14],[2010,20],[2011,22],[2012,28],[2013,33],[2014,50],[2015,52],[2016,72],[2017,1]];
 		// Force the bins to be 1 year wide, set the data, and draw the chart
 		chart.setData(data).setBins({'inc':inc}).draw();
 
@@ -103,7 +110,7 @@
 	});
 	</script>
 	<style>
-	#barchart,#barchart2,#barchart3,#barchart4 {
+	#barchart,#barchart2,#barchart3,#barchart4,#barchartbasic {
 		height: 300px;
 	}
 	.balloon {
@@ -158,7 +165,65 @@
 		
 		<p>This is a simple HTML barchart library that makes use of <a href="index.html">stuQuery</a>.</p>
 	
-		<h2>Test 1</h2>
+	
+		<h2>Basic example</h2>
+		<div id="barchartbasic" style="margin-bottom:1em;"></div>
+
+		<p>In the head of your page include the Javascript and CSS</p>
+		<pre class="prettyprint lang-js"><code>&lt;link rel="stylesheet" href="stuquery.barchart.css"&gt;
+&lt;script type="text/javascript" src="stuquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="stuquery.barchart.js"&gt;&lt;/script&gt;
+</code></pre>
+		<p>Create your Javascript</p>
+		<pre class="prettyprint lang-js">
+<code>S(document).ready(function(){
+	// Create your data array where each item is in the form [bin,value]
+	var data = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]]
+
+	// Build the barchart object attached to &lt;div id="barchart"&gt;
+	var chart = new S.barchart('#barchart');
+	
+	// Set the data
+	chart.setData(data);
+	
+	// Set the bins - if no values are provided here, they will be automatically generated
+	chart.setBins({'mintick':5});
+	
+	// Draw the chart
+	chart.draw();
+	
+	// Alternatively we could have chained those last three commands like so:
+	chart.setData(data).setBins().draw();
+});</code></pre>
+
+		<p>A chart can be created with any of the following options:</p>
+		<pre class="prettyprint lang-js">
+<code>// Build the barchart object with options set
+var chart = new S.barchart('#barchart', {
+	'units': string,       // Display a unit before the bin values
+	'formatKey': function, // A function that is called to format the key value
+	'parent': node,        // A value passed through to events as e.data.parent
+	'min': number,         // The minimum bin value
+	'max': number,         // The maximum bin value
+	'inc': number,         // The numerical size of the bin
+	'mintick': number,     // A minimum number of bins
+	'bin': function        // A function that returns the bin number given an input value
+});</code></pre>
+
+		<p>The <code>setBins</code> function can take the following options:</p>
+		<pre class="prettyprint lang-js">
+<code>chart.setBins({
+	'min': number,         // The minimum bin value
+	'max': number,         // The maximum bin value
+	'inc': number,         // The numerical size of the bin
+	'mintick': number     // A minimum number of bins
+});</code></pre>
+		
+		
+		
+		
+
+		<h2>Example 1</h2>
 		<p>This chart shows year-based data binned by year and with labels only every decade.</p>
 		<div id="barchart" style="margin-bottom:1em;"></div>
 		<!--<button id="random">Randomise data</button>-->
@@ -215,7 +280,7 @@ S('#year5').on('click',function(){
 </code></pre>
 		
 
-		<h2>Test 2</h2>
+		<h2>Example 2</h2>
 		<p>This chart displays random data with an auto scaling to test negative values.</p>
 		<div id="barchart2" style="margin-bottom:1em;"></div>
 		<button id="random">Randomise data</button>
@@ -265,7 +330,7 @@ S('#random').on('click',function(){
 })
 </code></pre>
 
-		<h2>Test 3</h2>
+		<h2>Example 3</h2>
 		<p>This chart shows category bins.</p>
 		<div id="barchart3" style="margin-bottom:1em;"></div>
 
@@ -286,7 +351,7 @@ S('#barchart').on('mouseleave',function(e){
 </code></pre>
 
 
-		<h2>Test 4</h2>
+		<h2>Example 4</h2>
 		<p>This chart shows monthly bins using categories.</p>
 		<div id="barchart4" style="margin-bottom:1em;"></div>
 
