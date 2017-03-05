@@ -8,13 +8,14 @@
 	<script type="text/javascript" src="js/stuquery.barchart.js"></script>
 	<script type="text/javascript" src="js/prettify.js"></script>
 	<script>
+	var chart,chart2,chart3,chart4;
 	S(document).ready(function(){
 
 		prettyPrint();
 
 		var inc = 1;
 		// Create the barchart object
-		var chart = new S.barchart('#barchart', {
+		chart = new S.barchart('#barchart', {
 			// Specify the formatting of the x-axis labels
 			// In this case we only display every decade
 			'formatKey': function(key){
@@ -24,12 +25,10 @@
 
 		// Add some events
 		chart.on('barclick',function(e){
-			var b = S(e.event.currentTarget).attr('data-index');
-			this.toggleBin(b);
+			this.toggleBin(e.bin);
 		}).on('barover',function(e){
-			var b = S(e.event.currentTarget).attr('data-index');
 			S('.balloon').remove();
-			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[b].key+': '+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[e.bin].key+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
 		});
 		S('#barchart').on('mouseleave',function(e){
 			S('.balloon').remove();
@@ -52,31 +51,30 @@
 
 		// Create the barchart object
 		var data2 = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
-		var chart2 = new S.barchart('#barchart2');
+		chart2 = new S.barchart('#barchart2');
 		chart2.setData(data2).setBins({ 'mintick': 5 }).draw();
 		chart2.on('barover',function(e){
-			var b = S(e.event.currentTarget).attr('data-index');
 			S('.balloon').remove();
-			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+(this.bins[b].key+' &rarr; '+(parseFloat(this.bins[b].key)+this.inc))+' = '+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+(this.bins[e.bin].key+' &rarr; '+(parseFloat(this.bins[e.bin].key)+this.inc))+' = '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
 		});
 		S('#barchart2').on('mouseleave',function(e){
 			S('.balloon').remove();
 		});
-		S('#random2').on('click',function(){
+		S('#random').on('click',function(){
 			var mydata = [];
 			var maxy = 50;
 			var maxx = Math.pow(10,Math.random()*5);
 			var cen = Math.random()*maxx;
 			var n = 100;
 			for(var i = 0; i < n; i++) mydata[i] = [(Math.random()*maxx)-cen,1];
-			chart2.setData(mydata).setBins({mintick:5}).draw();
+			chart2.setData(mydata).setBins({'update':true}).draw();
 		})
 
 
 
 		// Create the barchart object
 		data3 = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
-		var chart3 = new S.barchart('#barchart3');
+		chart3 = new S.barchart('#barchart3');
 		chart3.setData(data3).setBins().draw();
 		S('#barchart3').on('mouseleave',function(e){
 			S('.balloon').remove();
@@ -85,7 +83,7 @@
 
 		// Create the barchart object
 		data4 = [["2014-04",1],["2014-05",9],["2014-06",4],["2014-07",10],["2014-08",1],["2014-09",6],["2014-10",9],["2014-11",7],["2014-12",12],["2015-01",13],["2015-02",14],["2015-03",17],["2015-04",20],["2015-05",16],["2015-06",23],["2015-07",14],["2015-08",4],["2015-09",20],["2015-10",15],["2015-11",24],["2015-12",9],["2016-01",16],["2016-02",20],["2016-03",11],["2016-04",16],["2016-05",19],["2016-06",19],["2016-07",21],["2016-08",3],["2016-09",15],["2016-10",17],["2016-11",14],["2016-12",7],["2017-01",8],["2017-02",12],["2017-03",1]];
-		var chart4 = new S.barchart('#barchart4',{
+		chart4 = new S.barchart('#barchart4',{
 			// Specify the formatting of the x-axis labels
 			// In this case we only display every decade
 			'formatKey': function(key){
@@ -94,10 +92,9 @@
 		});
 		chart4.setData(data4).setBins().draw();
 		chart4.on('barover',function(e){
-			var b = S(e.event.currentTarget).attr('data-index');
 			S('.balloon').remove();
 			var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+months[parseInt(this.bins[b].key.substring(5))-1]+' '+this.bins[b].key.substr(0,4)+': '+this.bins[b].value+'</div>')
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+months[parseInt(this.bins[e.bin].key.substring(5))-1]+' '+this.bins[e.bin].key.substr(0,4)+': '+this.bins[e.bin].value+'</div>')
 		});
 		S('#barchart4').on('mouseleave',function(e){
 			S('.balloon').remove();
@@ -183,15 +180,12 @@ var chart = new S.barchart('#barchart', {
 // Add events
 chart.on('barclick',function(e){
 	// Get the bin
-	var b = S(e.event.currentTarget).attr('data-index');
-	this.toggleBin(b);
+	this.toggleBin(e.bin);
 }).on('barover',function(e){
-	// Get the bin
-	var b = S(e.event.currentTarget).attr('data-index');
 	// Remove any existing information balloon
 	S('.balloon').remove();
 	// Add a new information balloon
-	S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[b].key+': '+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+	S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[e.bin].key+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
 });
 
 // Remove the information balloon when we leave the chart
@@ -220,29 +214,28 @@ S('#year5').on('click',function(){
 		<h2>Test 2</h2>
 		<p>This chart displays random data with an auto scaling to test negative values.</p>
 		<div id="barchart2" style="margin-bottom:1em;"></div>
-		<button id="random2">Randomise data</button>
+		<button id="random">Randomise data</button>
 
 		<pre class="prettyprint lang-js">
-<code>// Create the barchart object
-var chart = new S.barchart('#barchart');
+<code>// Define some data
+var data2 = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
 
-// Define the data;
-var data = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
+// Create the barchart object
+var chart = new S.barchart('#barchart2');
 
 // Send the data array and bin size then draw the chart
-chart.setData(data).setBins({ 'mintick': 5 }).draw();
+chart.setData(data2).setBins({ 'mintick': 5 }).draw();
 
-// Add event
+// Add an event
 chart.on('barover',function(e){
-	var b = S(e.event.currentTarget).attr('data-index');
 	S('.balloon').remove();
 	S(e.event.currentTarget).find('.bar').append(
 		"&lt;div class=\"balloon\"&gt;"
-		+(this.bins[b].key
+		+(this.bins[e.bin].key
 		+" &amp;rarr; "
-		+(parseFloat(this.bins[b].key)+this.inc))
+		+(parseFloat(this.bins[e.bin].key)+this.inc))
 		+" = "
-		+(this.bins[b].value).toFixed(2).replace(/\.?0+$/,"")
+		+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")
 		+"&lt;/div&gt;"
 	);
 });
@@ -251,6 +244,21 @@ chart.on('barover',function(e){
 S('#barchart').on('mouseleave',function(e){
 	S('.balloon').remove();
 });
+
+// Add a button press event (id=random) which creates 
+// some new random data and updates the graph
+S('#random').on('click',function(){
+	var mydata = [];
+	var maxy = 50;
+	var maxx = Math.pow(10,Math.random()*5);
+	var cen = Math.random()*maxx;
+	var n = 100;
+	for(var i = 0; i < n; i++) mydata[i] = [(Math.random()*maxx)-cen,1];
+
+	// We've created data with different bins so we will force a 
+	// recalculation of the bins before redrawing
+	chart.setData(mydata).setBins({'update':true}).draw();
+})
 </code></pre>
 
 		<h2>Test 3</h2>
@@ -295,16 +303,15 @@ chart.setData(data).setBins().draw();
 
 // Add events
 chart.on('barover',function(e){
-	var b = S(e.event.currentTarget).attr('data-index');
 	S('.balloon').remove();
 	var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 	S(e.event.currentTarget).find('.bar').append(
 		'&lt;div class="balloon"&gt;'
-		+months[parseInt(this.bins[b].key.substring(5))-1]
+		+months[parseInt(this.bins[e.bin].key.substring(5))-1]
 		+' '
-		+this.bins[b].key.substr(0,4)
+		+this.bins[e.bin].key.substr(0,4)
 		+': '
-		+this.bins[b].value
+		+this.bins[e.bin].value
 		+'&lt;/div&gt;'
 	)
 });

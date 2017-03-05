@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.4";
+		var ver = "0.5";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -70,6 +70,7 @@
 
 		var typ = (this.data.length > 0 && typeof this.data[0][0]==="string") ? "string" : "number";
 		if(this.typ && typ!=this.typ) calc = true;
+		if(attr.update) calc = true;
 		// Update our record of the type of binning
 		this.typ = typ;
 
@@ -130,7 +131,8 @@
 					if(this.data[o][0] > e) e = this.data[o][0];
 				}
 				// Get binning of data
-				if(attr.inc){
+				// If we've set properties we use them, unless we're forcing a recalculation
+				if(attr.inc && !attr.update){
 					binning.max = (attr.max) ? attr.max : e;
 					binning.min = (attr.min) ? attr.min : s;
 					binning.inc = attr.inc;
@@ -158,6 +160,7 @@
 				this.bins[b].key = ''+(this.min + b*this.inc);
 			}
 		}
+		if(attr.mintick) this.mintick = attr.mintick;
 		// Populate bins
 		for(var r = 0; r < this.data.length; r++){
 			b = this.bin(this.data[r][0]);
@@ -225,10 +228,10 @@
 			// Attach the events
 			if(!this.drawn){
 				S(this.target+' .bar')
-					.on('focus',{me:this,parent:this.attr.parent},function(e){ e.currentTarget = e.currentTarget.parentNode; e.data.me.trigger("barover",{event:e}); })
+					.on('focus',{me:this,parent:this.attr.parent},function(e){ e.currentTarget = e.currentTarget.parentNode; e.data.me.trigger("barover",{event:e,bin:S(e.currentTarget).attr('data-index')}); })
 				.parent()
-					.on('click',{me:this,parent:this.attr.parent},function(e){ e.preventDefault(); e.data.me.trigger("barclick",{event:e}); })
-					.on('mouseover',{me:this,parent:this.attr.parent},function(e){ e.data.me.trigger("barover",{event:e}); });
+					.on('click',{me:this,parent:this.attr.parent},function(e){ e.preventDefault(); e.data.me.trigger("barclick",{event:e,bin:S(e.currentTarget).attr('data-index')}); })
+					.on('mouseover',{me:this,parent:this.attr.parent},function(e){ e.data.me.trigger("barover",{event:e,bin:S(e.currentTarget).attr('data-index')}); });
 			}
 			this.drawn = true;
 		}
