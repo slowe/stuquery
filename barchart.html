@@ -185,7 +185,11 @@ chart.on('barclick',function(e){
 	// Get the key for this bin
 	var key = parseInt(this.bins[e.bin].key);
 	// Add a new information balloon - if the bin size is >1 we show the bin range in the label
-	S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+(this.inc > 1 ? key+'&rarr;'+(key+this.inc) : key)+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+	S(e.event.currentTarget).find('.bar').append(
+		'&lt;div class="balloon"&gt;'
+		+ (this.inc > 1 ? key+'&amp;rarr;'+(key+this.inc) : key)
+		+ ': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")
+		+ '&lt;/div&gt');
 });
 
 // Remove the information balloon when we leave the chart
