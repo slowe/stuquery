@@ -28,7 +28,8 @@
 			this.toggleBin(e.bin);
 		}).on('barover',function(e){
 			S('.balloon').remove();
-			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[e.bin].key+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+			var key = parseFloat(this.bins[e.bin].key);
+			S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+(this.inc > 1 ? key+'&rarr;'+(key+this.inc) : key)+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
 		});
 		S('#barchart').on('mouseleave',function(e){
 			S('.balloon').remove();
@@ -41,6 +42,7 @@
 
 		S('#year10').on('click',function(){ inc = 10; chart.setBins({'inc':inc}).draw(); });
 		S('#year5').on('click',function(){ inc = 5; chart.setBins({'inc':inc}).draw(); });
+		S('#year2').on('click',function(){ inc = 2; chart.setBins({'inc':inc}).draw(); });
 		S('#year1').on('click',function(){ inc = 1; chart.setBins({'inc':inc}).draw(); });
 
 
@@ -162,6 +164,7 @@
 		<!--<button id="random">Randomise data</button>-->
 		<button id="year10">10 year bins</button>
 		<button id="year5">5 year bins</button>
+		<button id="year2">2 year bins</button>
 		<button id="year1">1 year bins</button>
 		<pre class="prettyprint lang-js">
 <code>// Create the barchart object attached to the element with id="barchart"
@@ -179,8 +182,10 @@ chart.on('barclick',function(e){
 }).on('barover',function(e){
 	// Remove any existing information balloon
 	S('.balloon').remove();
-	// Add a new information balloon
-	S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+this.bins[e.bin].key+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
+	// Get the key for this bin
+	var key = parseInt(this.bins[e.bin].key);
+	// Add a new information balloon - if the bin size is >1 we show the bin range in the label
+	S(e.event.currentTarget).find('.bar').append('<div class="balloon">'+(this.inc > 1 ? key+'&rarr;'+(key+this.inc) : key)+': '+(this.bins[e.bin].value).toFixed(2).replace(/\.?0+$/,"")+'</div>')
 });
 
 // Remove the information balloon when we leave the chart
