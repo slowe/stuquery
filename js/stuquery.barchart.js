@@ -140,7 +140,7 @@
 					binning = this.getGrid(s,e,attr.mintick);
 				}
 				binning.range = binning.max - binning.min;
-				binning.bins = Math.ceil(binning.range/binning.inc)+1;
+				binning.bins = Math.round(0.5 + binning.range/binning.inc);
 
 				this.drawn = false;
 				this.bins = [];
@@ -154,7 +154,7 @@
 			}
 			if(typeof this.nbins!=="number") this.nbins = Math.ceil(this.range/this.inc);
 			// Empty the bins
-			for(var b = 0 ; b <= this.nbins ; b++){
+			for(var b = 0 ; b < this.nbins ; b++){
 				if(!this.bins[b]) this.bins[b] = {'selected':true};
 				this.bins[b].value = 0;
 				this.bins[b].key = ''+(this.min + b*this.inc);
@@ -279,7 +279,7 @@
 		if(!mintick) mintick = 3;
 		var t_inc = Math.pow(base,Math.floor(Math.log(rg)/Math.log(base)));
 		t_inc *= 2;
-		var t_max = (Math.ceil(mx/t_inc))*t_inc;
+		var t_max = (Math.floor(mx/t_inc))*t_inc;
 		if(t_max < mx) t_max += t_inc;
 		var t_min = t_max;
 		var i = 0;

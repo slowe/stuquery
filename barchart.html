@@ -39,11 +39,6 @@
 		// Force the bins to be 1 year wide, set the data, and draw the chart
 		chart.setData(data).setBins({'inc':inc}).draw();
 
-		/*S('#random').on('click',function(){
-			var max = Math.random()*50;
-			for(var i = 0; i < data.length; i++) data[i][1] = Math.random()*max;
-			chart.setBins(data,{'inc':inc}).draw();
-		});*/
 		S('#year10').on('click',function(){ inc = 10; chart.setBins({'inc':inc}).draw(); });
 		S('#year5').on('click',function(){ inc = 5; chart.setBins({'inc':inc}).draw(); });
 		S('#year1').on('click',function(){ inc = 1; chart.setBins({'inc':inc}).draw(); });
