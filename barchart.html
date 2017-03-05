@@ -38,7 +38,7 @@
 		// Add data
 		var data = [[1950,1],[1951,0],[1952,0],[1953,0],[1954,0],[1955,0],[1956,0],[1957,0],[1958,0],[1959,1],[1960,0],[1961,0],[1962,0],[1963,1],[1964,1],[1965,1],[1966,0],[1967,0],[1968,0],[1969,0],[1970,0],[1971,1],[1972,0],[1973,1],[1974,2],[1975,1],[1976,1],[1977,0],[1978,0],[1979,1],[1980,0],[1981,0],[1982,1],[1983,3],[1984,3],[1985,1],[1986,3],[1987,2],[1988,0],[1989,5],[1990,7],[1991,1],[1992,5],[1993,3],[1994,2],[1995,5],[1996,4],[1997,9],[1998,5],[1999,7],[2000,13],[2001,10],[2002,11],[2003,14],[2004,19],[2005,13],[2006,18],[2007,14],[2008,18],[2009,14],[2010,20],[2011,22],[2012,28],[2013,33],[2014,50],[2015,52],[2016,72],[2017,1]];
 		// Force the bins to be 1 year wide, set the data, and draw the chart
-		chart.setBins(data,{'inc':inc}).draw();
+		chart.setData(data).setBins({'inc':inc}).draw();
 
 		/*S('#random').on('click',function(){
 			var max = Math.random()*50;
@@ -53,7 +53,7 @@
 		// Create the barchart object
 		var data2 = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
 		var chart2 = new S.barchart('#barchart2');
-		chart2.setBins(data2,{ 'mintick': 5 }).draw();
+		chart2.setData(data2).setBins({ 'mintick': 5 }).draw();
 		chart2.on('barover',function(e){
 			var b = S(e.event.currentTarget).attr('data-index');
 			S('.balloon').remove();
@@ -69,7 +69,7 @@
 			var cen = Math.random()*maxx;
 			var n = 100;
 			for(var i = 0; i < n; i++) mydata[i] = [(Math.random()*maxx)-cen,1];
-			chart2.setBins(mydata,{mintick:5}).draw();
+			chart2.setData(mydata).setBins({mintick:5}).draw();
 		})
 
 
@@ -77,7 +77,7 @@
 		// Create the barchart object
 		data3 = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
 		var chart3 = new S.barchart('#barchart3');
-		chart3.setBins(data3).draw();
+		chart3.setData(data3).setBins().draw();
 		S('#barchart3').on('mouseleave',function(e){
 			S('.balloon').remove();
 		});
@@ -92,7 +92,7 @@
 				return (key.indexOf('-01') > 0 ? key.substr(0,4) : '');
 			}
 		});
-		chart4.setBins(data4).draw();
+		chart4.setData(data4).setBins().draw();
 		chart4.on('barover',function(e){
 			var b = S(e.event.currentTarget).attr('data-index');
 			S('.balloon').remove();
@@ -155,9 +155,9 @@
 	<div id="content">
 
 		<section id="downloads">
-			<a href="js/stuquery.barchart.js">stuquery.barchart.js (8.6kB)</a>
-			<a href="js/stuquery.barchart.min.js">minified (5.6kB)</a>
-			<a href="css/stuquery.barchart.css">css (1.6kB)</a>
+			<a href="js/stuquery.barchart.js">stuquery.barchart.js (12kB)</a>
+			<a href="js/stuquery.barchart.min.js">minified (7.5kB)</a>
+			<a href="css/stuquery.barchart.css">css (1.7kB)</a>
 		</section>
 
 		<h1>stuQuery barchart</h1>
@@ -203,7 +203,7 @@ S('#barchart').on('mouseleave',function(e){
 var data = [[1950,1],[1951,0],[1952,0],[1953,0],[1954,0],[1955,0]...
 
 // Force the bins to be 1 year wide, set the data, and draw the chart
-chart.setBins(data,{'inc':1}).draw();
+chart.setData(data).setBins({'inc':1}).draw();
 
 // Attach event to button
 S('#year5').on('click',function(){
@@ -230,7 +230,7 @@ var chart = new S.barchart('#barchart');
 var data = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
 
 // Send the data array and bin size then draw the chart
-chart.setBins(data,{ 'mintick': 5 }).draw();
+chart.setData(data).setBins({ 'mintick': 5 }).draw();
 
 // Add event
 chart.on('barover',function(e){
@@ -265,7 +265,7 @@ var data = [["Category A",1],["Type B",4],["Section C",5],["Area D",1.5]];
 var chart = new S.barchart('#barchart');
 
 // Add the data and draw the chart
-chart.setBins(data).draw();
+chart.setData(data).setBins().draw();
 
 // Remove the information balloon
 S('#barchart').on('mouseleave',function(e){
@@ -291,7 +291,7 @@ var chart = new S.barchart('#barchart',{
 });
 
 // Set the data and draw the chart
-chart.setBins(data).draw();
+chart.setData(data).setBins().draw();
 
 // Add events
 chart.on('barover',function(e){
