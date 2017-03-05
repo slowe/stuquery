@@ -137,6 +137,9 @@
 		border-left-color: white;
 		bottom: -0.5em;
 	}
+	#barchart2 .bar { background-color: #722EA5; }
+	#barchart2 td:hover .bar { background-color: #E6007C; }
+	#barchart2 td:hover .antibar { background-color: rgba(230,0,124,0.1); }
 	</style>
 	<link rel="StyleSheet" href="stuquery.barchart.css" type="text/css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -285,6 +288,12 @@ S('#year5').on('click',function(){
 		<div id="barchart2" style="margin-bottom:1em;"></div>
 		<button id="random">Randomise data</button>
 
+		<p>We'll add some CSS to change the colours of the bars to purple with a pink hover.</p>
+		<pre class="prettyprint lang-css">
+<code>#barchart2 .bar { background-color: #722EA5; }
+#barchart2 td:hover .bar { background-color: #E6007C; }
+#barchart2 td:hover .antibar { background-color: rgba(230,0,124,0.1); }</code></pre>
+		<p>Here is the Javascript.</p>
 		<pre class="prettyprint lang-js">
 <code>// Define some data
 var data2 = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
