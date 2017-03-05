@@ -222,7 +222,7 @@
 			if(maketable){
 				// Add the table cells
 				S(this.target+' table tr').html(output);
-				S(this.target).on('mouseleave',{me:this},function(e){ e.data.me.trigger("mouseleave",{event:e}); })
+				S(this.target).on('mouseleave',{me:this},function(e){ if(e.data){ e.data.me.trigger("mouseleave",{event:e}); } })
 				S(this.target).on('mouseover',{me:this},function(e){ e.data.me.trigger("mouseover",{event:e}); })
 			}
 			// Attach the events
