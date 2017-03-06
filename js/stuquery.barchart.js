@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.5";
+		var ver = "0.6";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -192,7 +192,9 @@
 			if(!this.drawn) S(this.target).addClass('barchart').html('<div class="grid" style="height:'+(h)+'px;"></div><table style="height:'+this.height+'px"><tr style="vertical-align:bottom;"></tr></table><div style="clear:both;"></div>');
 
 			// Draw the grid
-			var grid = this.getGrid(0,mx);
+			if(this.attr.ymax && this.attr.ymax > mx) mx = this.attr.ymax;
+			mn = (this.attr.ymin) ? this.attr.ymin : 0;
+			var grid = this.getGrid(mn, mx);
 			var output = "";
 			for(var g = 0; g <= grid.max; g+= grid.inc) output += '<div class="line" style="bottom:'+(h*g/mx)+'px;"><span>'+(this.attr.units || "")+this.formatNumber(g)+'</span></div>';
 			S(this.target+' .grid').html(output);

@@ -11,6 +11,7 @@
 	var chart,chart2,chart3,chart4;
 	S(document).ready(function(){
 
+
 		prettyPrint();
 
 		// Add data
@@ -31,6 +32,9 @@
 				return (key%10==0 ? key.substr(0,4) : '');
 			}
 		});
+
+		S('h1').append(' v'+chart.version());
+
 
 		// Add some events
 		chart.on('barclick',function(e){
