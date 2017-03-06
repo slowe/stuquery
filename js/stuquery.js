@@ -1,5 +1,5 @@
 /*!
- * stuQuery v1.0.8
+ * stuQuery v1.0.9
  */
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
@@ -83,7 +83,8 @@ function S(e){
 			for(var i = 0; i < this.length; i++){
 				var d = document.createElement('template');
 				d.innerHTML = html;
-				while(d.content.childElementCount > 0) this[i].appendChild(d.content.childNodes[0]);
+				if(d.content.childElementCount > 0) while(d.content.childElementCount > 0) this[i].appendChild(d.content.childNodes[0]);
+				else this[i].append(html);
 			}
 		}
 		return this;	
