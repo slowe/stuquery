@@ -279,19 +279,19 @@ S('#year5').on('click',function(){
 
 		<p>We'll add some CSS to change the colours of the bars to purple with a pink hover.</p>
 		<pre class="prettyprint lang-css">
-<code>#barchart2 .bar { background-color: #722EA5; }
-#barchart2 td:hover .bar { background-color: #E6007C; }
-#barchart2 td:hover .antibar { background-color: rgba(230,0,124,0.1); }</code></pre>
+<code>#barchart .bar { background-color: #722EA5; }
+#barchart td:hover .bar { background-color: #E6007C; }
+#barchart td:hover .antibar { background-color: rgba(230,0,124,0.1); }</code></pre>
 		<p>Here is the Javascript.</p>
 		<pre class="prettyprint lang-js">
 <code>// Define some data
-var data2 = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
+var data = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
 
 // Create the barchart object
-var chart = new S.barchart('#barchart2');
+var chart = new S.barchart('#barchart');
 
 // Send the data array and bin size then draw the chart
-chart.setData(data2).setBins({ 'mintick': 5 }).draw();
+chart.setData(data).setBins({ 'mintick': 5 }).draw();
 
 // Add an event
 chart.on('barover',function(e){
@@ -356,13 +356,13 @@ chart.on('barover',function(e){
 });
 </code></pre>
 		<pre class="prettyprint lang-css">
-<code>#barchart3 .bar {
+<code>#barchart .bar {
 	background: radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 0 -28px,
 	radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
 	background-size: 50px 50px;
 	background-repeat:repeat-x;
 }
-#barchart3 td:hover .bar {
+#barchart td:hover .bar {
 	background: radial-gradient(circle closest-side, #dfdfdf 13px, rgba(255,255,255,0) 0) 0 -28px,
 	radial-gradient(circle closest-side, #dfdfdf 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
 	background-size: 50px 50px;
