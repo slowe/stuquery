@@ -11,7 +11,6 @@
 .barchart table {
 	width: 96%;
 }
-
 .barchart table td {
 	border-right: 1px solid transparent;
 	position: relative;
@@ -73,9 +72,31 @@
 	position: absolute;
 	text-align: right;
 }
-.barchart .grid .line span {
-}
 .barchart:after {
 	content: "";
 	clear: both;
+}
+.barchart .balloon {
+	position: absolute;
+	background-color: white;
+	padding: 0.25em 0.5em;
+	left: 50%;
+	top: 0;
+	transform: translate3d(0%,-120%, 0);
+	white-space: nowrap;
+	margin-right: -50%;
+	text-align: center;
+	z-index: 100;
+	box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
+}
+.barchart .balloon::after {
+	content: '';
+	position: absolute;
+	bottom: auto;
+	width: 0;
+	height: 0;
+	border: 0.5em solid transparent;
+	left: 0;
+	border-left-color: white;
+	bottom: -0.5em;
 }
