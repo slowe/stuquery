@@ -59,7 +59,7 @@
 
 		// Create the barchart object
 		var data2 = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
-		chart2 = new S.barchart('#barchart2');
+		chart2 = new S.barchart('#barchart2',{formatBar:function(key){ return (key < 0 ? "negative":""); }});
 		chart2.setData(data2).setBins({ 'mintick': 5 }).draw();
 		chart2.on('barover',function(e){
 			S('.balloon').remove();
@@ -124,6 +124,11 @@
 	#barchart2 .bar { background-color: #722EA5; }
 	#barchart2 td:hover .bar { background-color: #E6007C; }
 	#barchart2 td:hover .antibar { background-color: rgba(230,0,124,0.1); }
+	#barchart2 td.negative .bar {
+		background-color: #722EA5;
+		background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
+	}
+	#barchart2 td.negative:hover .bar { background-color: #E6007C; }
 	#barchart3 .bar {
 		background: radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 0 -28px,
 		radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
@@ -154,8 +159,8 @@
 	<div id="content">
 
 		<section id="downloads">
-			<a href="js/stuquery.barchart.js">stuquery.barchart.js (12kB)</a>
-			<a href="js/stuquery.barchart.min.js">minified (7.8kB)</a>
+			<a href="js/stuquery.barchart.js">stuquery.barchart.js (12.5kB)</a>
+			<a href="js/stuquery.barchart.min.js">minified (8.2kB)</a>
 			<a href="css/stuquery.barchart.css">css (2.1kB)</a>
 		</section>
 
@@ -273,7 +278,7 @@ S('#year5').on('click',function(){
 		
 
 		<h2 id="ex2">Example 2</h2>
-		<p>This chart displays random data with an auto scaling to test negative values.</p>
+		<p>This chart displays random data with an auto scaling to test negative values. Negative values are given a different bar style.</p>
 		<div id="barchart2" style="margin-bottom:1em;"></div>
 		<button id="random">Randomise data</button>
 
@@ -281,14 +286,24 @@ S('#year5').on('click',function(){
 		<pre class="prettyprint lang-css">
 <code>#barchart .bar { background-color: #722EA5; }
 #barchart td:hover .bar { background-color: #E6007C; }
-#barchart td:hover .antibar { background-color: rgba(230,0,124,0.1); }</code></pre>
+#barchart td:hover .antibar { background-color: rgba(230,0,124,0.1); }
+#barchart td.negative .bar {
+	background-color: #722EA5;
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
+}
+#barchart td.negative:hover .bar { background-color: #E6007C; }</code></pre>
 		<p>Here is the Javascript.</p>
 		<pre class="prettyprint lang-js">
 <code>// Define some data
 var data = [[-1.2,2],[-0.4,3],[-0.2,1],[0.2,4],[0.8,2.5],[1.2,2],[1.8,1],[2.2,1]];
 
-// Create the barchart object
-var chart = new S.barchart('#barchart');
+// Create the barchart object. We'll add a function to
+// customise the class of the bar depending on the key.
+var chart = new S.barchart('#barchart',{
+	formatBar: function(key){
+		return (key < 0 ? "negative":"");
+	}
+});
 
 // Send the data array and bin size then draw the chart
 chart.setData(data).setBins({ 'mintick': 5 }).draw();

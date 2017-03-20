@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.6";
+		var ver = "0.7";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -20,6 +20,7 @@
 		this.events = {resize:""};
 		this.attr.units = (typeof this.attr.units==="undefined") ? "" : this.attr.units;
 		this.attr.formatKey = (typeof this.attr.formatKey==="undefined") ? function(key){ return key; } : this.attr.formatKey;
+		this.attr.formatBar = (typeof this.attr.formatBar==="undefined") ? function(key){ return ""; } : this.attr.formatBar;
 		this.parent = (typeof this.attr.parent==="undefined") ? this : this.attr.parent;
 	
 		this.drawn = false;
@@ -211,10 +212,12 @@
 				if(hb < 1) ha--;
 				idbar = id+'-bar-'+(typeof key==="string" ? b : key.replace(/ /g,'-'));
 				this.bins[b].id = idbar;
-				if(maketable) output += '<td id="'+idbar+'" style="width:'+(100/this.nbins).toFixed(3)+'%;" class="'+(!this.bins[b].selected ? ' deselected' : '')+'" data-index="'+b+'"><div class="antibar" style="height:'+ha+'px;"></div><a href="#" class="bar" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].value)+'" style="height:'+hb+'px;"></a>'+(((typeof key==="string" && key.indexOf('-01')) || key.indexOf('-')==-1) ? '<span class="label">'+this.attr.formatKey.call(this,key)+'</span>' : '')+'</td>';
+				cls = (!this.bins[b].selected ? ' deselected' : '');
+				cls = (cls ? ' ':'') + this.attr.formatBar.call(this,key);
+				if(maketable) output += '<td id="'+idbar+'" style="width:'+(100/this.nbins).toFixed(3)+'%;" class="'+(!this.bins[b].selected ? ' deselected' : '')+cls+'" data-index="'+b+'"><div class="antibar" style="height:'+ha+'px;"></div><a href="#" class="bar" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].value)+'" style="height:'+hb+'px;"></a>'+(((typeof key==="string" && key.indexOf('-01')) || key.indexOf('-')==-1) ? '<span class="label">'+this.attr.formatKey.call(this,key)+'</span>' : '')+'</td>';
 				else{
 					p = S('#'+idbar+'');
-					p.attr('class',''+(!this.bins[b].selected ? 'deselected' : ''))
+					p.attr('class',''+(!this.bins[b].selected ? 'deselected' : '')+cls);
 					p.find('.bar').css({'height':hb+'px'}).attr('title',key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].value));
 					p.find('.antibar').css({'height':ha+'px'});
 					p.find('.label').html(this.attr.formatKey.call(this,key))
