@@ -198,6 +198,7 @@
 var chart = new S.barchart('#barchart', {
 	'units': string,       // Display a unit before the bin values
 	'formatKey': function, // A function that is called to format the key value
+	'formatBar': function, // A function that is called to add a class to a bar
 	'parent': node,        // A value passed through to events as e.data.parent
 	'min': number,         // The minimum bin value
 	'max': number,         // The maximum bin value
