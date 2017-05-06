@@ -1,4 +1,4 @@
-
+// Version 0.2
 function SVG(id){
 	if(!id) return this;
 	this.canvas = S('#'+id);
@@ -92,8 +92,17 @@ function SVG(id){
 		if(!this.attributes) this.attributes = {};
 		if(!this.el || this.el.length == 0) this.el = S('#'+this.id);
 		for(a in attr){
-			this.attributes[a] = attr[a];
-			this.el.attr(a,attr[a]);
+			b = a;
+			// If we are updating the path
+			if(a == "path" || a == "d"){
+				if(typeof attr[a]!=="string"){
+					var path = new Path(attr[a]);
+					attr[a] = path.path;
+				}
+				b = "d";
+			}
+			this.attributes[b] = attr[a];
+			this.el.attr(b,attr[a]);
 		}
 		this.orig.attributes = JSON.parse(JSON.stringify(this.attributes));
 		return this;
