@@ -140,7 +140,7 @@
 			});
 			test("Events",function(){
 				var rtn = 0;
-				function click(e){ console.log('click',e.data.me); rtn = e.data.me; }
+				function click(e){ rtn = e.data.me; }
 				S('#holder').on('click',{me:1},click);
 				S('#holder').trigger('click');
 				equal(rtn,1,'Trigger click event and return data property');
@@ -152,6 +152,12 @@
 				S('#holder').html('Replaced content');
 				S('#holder').trigger('click');
 				equal(rtn,3,'Trigger click event after replacing content in container');
+				S('#holder').off('click').on('click touch',{me:4},click);
+				S('#holder').trigger('click');
+				equal(rtn,4,'Add click and touch event, then trigger the click event and return data property');
+				rtn = 0;
+				S('#holder').trigger('touch');
+				equal(rtn,4,'Trigger the touch event and return data property');
 			});			
 			
 		});
