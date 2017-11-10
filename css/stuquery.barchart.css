@@ -23,7 +23,6 @@
 	display: block;
 	width: 100%;
 	background-color: #FF6700;
-	border-bottom: 1px solid #5b5b5b;
 	cursor: pointer;
 	position: relative;
 	vertical-align: baseline;
@@ -33,6 +32,7 @@
 }
 .barchart table td:hover .bar,.barchart table td .bar:focus { background: #FF7F29; }
 .barchart table td:hover .antibar { background: rgba(0,0,0,0.1); }
+.barchart table .barbase { height: 0px; border-bottom: 1px solid #5b5b5b; }
 .barchart table td.deselected:hover .bar, .barchart table td.deselected .bar:focus { background: #5b5b5b; }
 .barchart table td.deselected .bar {
 	background-color: #333333;

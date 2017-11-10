@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.7";
+		var ver = "0.8";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -20,7 +20,7 @@
 		this.events = {resize:""};
 		this.attr.units = (typeof this.attr.units==="undefined") ? "" : this.attr.units;
 		this.attr.formatKey = (typeof this.attr.formatKey==="undefined") ? function(key){ return key; } : this.attr.formatKey;
-		this.attr.formatBar = (typeof this.attr.formatBar==="undefined") ? function(key){ return ""; } : this.attr.formatBar;
+		this.attr.formatBar = (typeof this.attr.formatBar==="undefined") ? function(key,val){ return ""; } : this.attr.formatBar;
 		this.parent = (typeof this.attr.parent==="undefined") ? this : this.attr.parent;
 	
 		this.drawn = false;
@@ -184,9 +184,12 @@
 			if(!this.height) this.height = S(this.target)[0].offsetHeight || 200;
 			h = this.height-this.lineheight;
 
+			mn = (this.attr.ymin) ? this.attr.ymin : 0;
+
 			// Find the peak value
 			for(var b = 0; b < this.nbins; b++){
 				if(this.bins[b].value > mx) mx = this.bins[b].value;
+				if(this.bins[b].value < 0) mn = this.bins[b].value;
 			}
 
 			// Build the basic graph structure
@@ -194,33 +197,44 @@
 
 			// Draw the grid
 			if(this.attr.ymax && this.attr.ymax > mx) mx = this.attr.ymax;
-			mn = (this.attr.ymin) ? this.attr.ymin : 0;
 			var grid = this.getGrid(mn, mx);
 			var output = "";
-			for(var g = 0; g <= grid.max; g+= grid.inc) output += '<div class="line" style="bottom:'+(h*g/mx)+'px;"><span>'+(this.attr.units || "")+this.formatNumber(g)+'</span></div>';
+			var key,hbar,ha,hb,idbar, p;	
+			var r = mx-mn;
+			for(var g = 0; g <= grid.max; g+= grid.inc) output += '<div class="line" style="bottom:'+(h*(g-mn)/r)+'px;"><span>'+(this.attr.units || "")+this.formatNumber(g)+'</span></div>';
 			S(this.target+' .grid').html(output);
 
 			var maketable = (S(this.target+' table td').length == 0);
 			output = "";
 
-			var key,hbar,ha,hb,idbar, p;	
+			h--;
+			horig = -1;
 			for(var b = 0; b < this.nbins; b++){
 				key = this.bins[b].key;
-				hbar = (mx > 0 ? (h*this.bins[b].value/mx).toFixed(1) : 0);
-				ha = Math.round(h-hbar);
-				hb = h-ha;
+				hbar = h*(mx > 0 ? Math.abs(this.bins[b].value/r) : 0);
+				htop = h*((this.bins[b].value < 0 ? mx : mx-this.bins[b].value)/r);
+				ha = Math.round(htop);
+				hb = Math.round(hbar);
+				if(horig < 0) horig = ha+hb;
+				if(this.bins[b].value >= 0 && ha+hb != horig) ha = (horig-hb);
+				hc = h-ha-hb;
 				if(hb < 1) ha--;
+				if(ha < 0) ha = 0;
+				if(hc < 0) hc = 0;
+				// If the value is negative we shift it down a pixel to see the zero line
+				if(this.bins[b].value < 0){ ha++; hb--; }
 				idbar = id+'-bar-'+(typeof key==="string" ? b : key.replace(/ /g,'-'));
+
 				this.bins[b].id = idbar;
 				cls = (!this.bins[b].selected ? ' deselected' : '');
-				cls = (cls ? ' ':'') + this.attr.formatBar.call(this,key);
-				if(maketable) output += '<td id="'+idbar+'" style="width:'+(100/this.nbins).toFixed(3)+'%;" class="'+(!this.bins[b].selected ? ' deselected' : '')+cls+'" data-index="'+b+'"><div class="antibar" style="height:'+ha+'px;"></div><a href="#" class="bar" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].value)+'" style="height:'+hb+'px;"></a>'+(((typeof key==="string" && key.indexOf('-01')) || key.indexOf('-')==-1) ? '<span class="label">'+this.attr.formatKey.call(this,key)+'</span>' : '')+'</td>';
+				cls = (cls ? ' ':'') + this.attr.formatBar.call(this,key,this.bins[b].value);
+				if(maketable) output += '<td id="'+idbar+'" style="width:'+(100/this.nbins).toFixed(3)+'%;" class="'+(!this.bins[b].selected ? ' deselected' : '')+cls+'" data-index="'+b+'"><div class="antibar" style="height:'+ha+'px;"></div><a href="#" class="bar" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].value)+'" style="height:'+hb+'px;"></a><div class="antibar" style="height:'+hc+'px;"></div><div class="barbase"></div>'+(((typeof key==="string" && key.indexOf('-01')) || key.indexOf('-')==-1) ? '<span class="label">'+this.attr.formatKey.call(this,key)+'</span>' : '')+'</td>';
 				else{
 					p = S('#'+idbar+'');
 					p.attr('class',''+(!this.bins[b].selected ? 'deselected' : '')+cls);
 					p.find('.bar').css({'height':hb+'px'}).attr('title',key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].value));
 					p.find('.antibar').css({'height':ha+'px'});
-					p.find('.label').html(this.attr.formatKey.call(this,key))
+					p.find('.label').html(this.attr.formatKey.call(this,key));
 				}
 			}
 
