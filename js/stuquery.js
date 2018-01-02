@@ -1,5 +1,5 @@
 /*!
- * stuQuery v1.0.11
+ * stuQuery v1.0.12
  */
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
@@ -416,14 +416,14 @@ stuQuery.prototype.ajax = function(url,attrs){
 	var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 	oReq.addEventListener("load", window[cb] || complete);
 	oReq.addEventListener("error", error);
+	if(attrs.beforeSend) oReq = attrs.beforeSend.call((attrs['this'] ? attrs['this'] : this), oReq, attrs);
 
 	function complete(evt) {
 		if(oReq.status === 200) {
 			attrs.header = oReq.getAllResponseHeaders();
-			var rsp = oReq.responseText;
+			var rsp = oReq.response || oReq.responseText;
 			// Parse out content in the appropriate callback
-			if(attrs['dataType']=="jsonp") rsp = rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n");
-			if(attrs['dataType']=="json" || attrs['dataType']=="jsonp") rsp = JSON.parse(rsp);
+			if(attrs['dataType']=="jsonp") try { rsp = JSON.parse(rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n")) } catch(e){};
 			if(attrs['dataType']=="script"){
 				var fileref=document.createElement('script');
 				fileref.setAttribute("type","text/javascript");
@@ -442,6 +442,8 @@ stuQuery.prototype.ajax = function(url,attrs){
 	function error(evt){
 		if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
 	}
+
+	if(attrs['dataType']) oReq.responseType = attrs['dataType'];
 
 	try{ oReq.open('GET', attrs['url']); }
 	catch(err){ error(err); }
