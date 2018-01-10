@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.8";
+		var ver = "0.9";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -234,7 +234,6 @@
 				// If the value is negative we shift it down a pixel to see the zero line
 				if(this.bins[b].value < 0){ ha++; hb--; }
 				idbar = id+'-bar-'+(typeof key==="string" ? b : key.replace(/ /g,'-'));
-//BLAH
 				this.bins[b].id = idbar;
 
 				cls = (!this.bins[b].selected ? ' deselected' : '');
