@@ -98,7 +98,7 @@ stuQuery.prototype.prepend = function(j){
 	if(j) for(var e=0;e<this.length;e++) this[e].innerHTML = j+this[e].innerHTML;
 	return this;
 }
-stuQuery.prototype.before=function(t){
+stuQuery.prototype.before = function(t){
 	var i,d,e,j
 	for(i = 0 ; i < this.length ; i++){
 		d = document.createElement('div');

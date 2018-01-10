@@ -20,7 +20,7 @@
 		this.events = {resize:""};
 		this.attr.units = (typeof this.attr.units==="undefined") ? "" : this.attr.units;
 		this.attr.formatKey = (typeof this.attr.formatKey==="undefined") ? function(key){ return key; } : this.attr.formatKey;
-		this.attr.formatBar = (typeof this.attr.formatBar==="undefined") ? function(key,val){ return ""; } : this.attr.formatBar;
+		this.attr.formatBar = (typeof this.attr.formatBar==="undefined") ? function(key,val,series){ return ""; } : this.attr.formatBar;
 		this.parent = (typeof this.attr.parent==="undefined") ? this : this.attr.parent;
 	
 		this.drawn = false;
@@ -110,7 +110,6 @@
 					}
 					b = this.fields[this.data[r][0]];
 					if(!this.bins[b]) this.bins[b] = {'selected':true};
-					//this.bins[b].value = 0;
 					if(this.bins[b].key != this.data[r][0]){
 						this.bins[b].key = this.data[r][0];
 						this.drawn = false;
@@ -119,7 +118,10 @@
 				this.nbins = f;
 			}
 			// Empty bins
-			for(var b in this.bins) this.bins[b].value = 0;
+			for(var b in this.bins){
+				this.bins[b].value = 0;
+				this.bins[b].values = [];
+			}
 		}else{
 			// We are in a number based binning regime
 			if(calc){
@@ -158,6 +160,7 @@
 			for(var b = 0 ; b < this.nbins ; b++){
 				if(!this.bins[b]) this.bins[b] = {'selected':true};
 				this.bins[b].value = 0;
+				this.bins[b].values = [];
 				this.bins[b].key = ''+(this.min + b*this.inc);
 			}
 		}
@@ -165,7 +168,14 @@
 		// Populate bins
 		for(var r = 0; r < this.data.length; r++){
 			b = this.bin(this.data[r][0]);
-			this.bins[b].value += this.data[r][1];
+			if(this.data[r][1].length > 1){
+				for(var s = 0; s < this.data[r][1].length; s++){
+					// If no series bin has been defined, define it now
+					if(typeof this.bins[b].values[s]!=="number") this.bins[b].values[s] = 0;
+					this.bins[b].value += this.data[r][1][s];
+					this.bins[b].values[s] += this.data[r][1][s];
+				}
+			}else this.bins[b].value += this.data[r][1];
 		}
 		return this;
 	}
@@ -208,8 +218,8 @@
 			output = "";
 
 			h--;
-			horig = -1;
 			for(var b = 0; b < this.nbins; b++){
+				horig = -1;
 				key = this.bins[b].key;
 				hbar = h*(mx > 0 ? Math.abs(this.bins[b].value/r) : 0);
 				htop = h*((this.bins[b].value < 0 ? mx : mx-this.bins[b].value)/r);
@@ -224,8 +234,9 @@
 				// If the value is negative we shift it down a pixel to see the zero line
 				if(this.bins[b].value < 0){ ha++; hb--; }
 				idbar = id+'-bar-'+(typeof key==="string" ? b : key.replace(/ /g,'-'));
-
+//BLAH
 				this.bins[b].id = idbar;
+
 				cls = (!this.bins[b].selected ? ' deselected' : '');
 				cls = (cls ? ' ':'') + this.attr.formatBar.call(this,key,this.bins[b].value);
 				if(maketable) output += '<td id="'+idbar+'" style="width:'+(100/this.nbins).toFixed(3)+'%;" class="'+(!this.bins[b].selected ? ' deselected' : '')+cls+'" data-index="'+b+'"><div class="antibar" style="height:'+ha+'px;"></div><a href="#" class="bar" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].value)+'" style="height:'+hb+'px;"></a><div class="antibar" style="height:'+hc+'px;"></div><div class="barbase"></div>'+(((typeof key==="string" && key.indexOf('-01')) || key.indexOf('-')==-1) ? '<span class="label">'+this.attr.formatKey.call(this,key)+'</span>' : '')+'</td>';
@@ -244,10 +255,24 @@
 				S(this.target).on('mouseleave',{me:this},function(e){ if(e.data){ e.data.me.trigger("mouseleave",{event:e}); } })
 				S(this.target).on('mouseover',{me:this},function(e){ e.data.me.trigger("mouseover",{event:e}); })
 			}
+			// Build individual series if necessary
+			for(var b = 0; b < this.nbins; b++){
+				if(this.bins[b].values.length > 0){
+					idbar = id+'-bar-'+(typeof key==="string" ? b : key.replace(/ /g,'-'));
+					key = this.bins[b].key;
+					var html = "";
+					for(var s = this.bins[b].values.length - 1; s >= 0; s--){
+						hb = Math.floor(h*(mx > 0 ? Math.abs(this.bins[b].values[s]/r) : 0));
+						html += '<a href="#" class="bar '+this.attr.formatBar.call(this,key,this.bins[b].values[s],s)+'" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s])+'" data-index-series="'+s+'" style="height:'+hb+'px;"></a>';
+					}
+					S('#'+idbar).find('.bar').remove();
+					S(S('#'+idbar).find('.antibar')[0]).after(html);
+				}
+			}
 			// Attach the events
 			if(!this.drawn){
 				S(this.target+' .bar')
-					.on('focus',{me:this,parent:this.attr.parent},function(e){ e.currentTarget = e.currentTarget.parentNode; e.data.me.trigger("barover",{event:e,bin:S(e.currentTarget).attr('data-index')}); })
+					.on('focus',{me:this,parent:this.attr.parent},function(e){ e.currentTarget = e.currentTarget.parentNode; e.data.me.trigger("barover",{event:e,bin:S(e.currentTarget).attr('data-index'),series:S(e.currentTarget).attr('data-index-series')}); })
 				.parent()
 					.on('click',{me:this,parent:this.attr.parent},function(e){ e.preventDefault(); e.data.me.trigger("barclick",{event:e,bin:S(e.currentTarget).attr('data-index')}); })
 					.on('mouseover',{me:this,parent:this.attr.parent},function(e){ e.data.me.trigger("barover",{event:e,bin:S(e.currentTarget).attr('data-index')}); });

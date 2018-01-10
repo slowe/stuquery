@@ -8,9 +8,8 @@
 	<script type="text/javascript" src="js/stuquery.barchart.js"></script>
 	<script type="text/javascript" src="js/prettify.js"></script>
 	<script>
-	var chart,chart2,chart3,chart4,chart5;
+	var chart,chart2,chart3,chart4,chart5,chart6;
 	S(document).ready(function(){
-
 
 		prettyPrint();
 
@@ -113,11 +112,8 @@
 		});
 
 
-		data5 = [["00:00",0],["00:30",0],["01:00",0],["01:30",0],["02:00",0],["02:30",0],["03:00",0],["03:30",0],["04:00",0],["04:30",1.8],["05:00",0.8],["05:30",0.7],["06:00",8.1],["06:30",5.3],["07:00",0.3],["07:30",1.9],["08:00",0.5],["08:30",0.7],["09:00",4.1],["09:30",3.2],["10:00",0],["10:30",0],["11:00",0],["11:30",-2],["12:00",0.3],["12:30",0.9],["13:00",3.3],["13:30",5.7],["14:00",0.6],["14:30",0.6],["15:00",0.6],["15:30",0.9],["16:00",3],["16:30",3.5],["17:00",3.4],["17:30",2.6],["18:00",3.6],["18:30",2],["19:00",0.7],["19:30",0],["20:00",0],["20:30",0.6],["21:00",5.5],["21:30",16],["22:00",13.6],["22:30",2.8],["23:00",0.6],["23:30",0.2],["00:00",0]];
-
 		// Create the barchart object
-
-
+		data5 = [["00:00",0],["00:30",0],["01:00",0],["01:30",0],["02:00",0],["02:30",0],["03:00",0],["03:30",0],["04:00",0],["04:30",1.8],["05:00",0.8],["05:30",0.7],["06:00",8.1],["06:30",5.3],["07:00",0.3],["07:30",1.9],["08:00",0.5],["08:30",0.7],["09:00",4.1],["09:30",3.2],["10:00",0],["10:30",0],["11:00",0],["11:30",-2],["12:00",0.3],["12:30",0.9],["13:00",3.3],["13:30",5.7],["14:00",0.6],["14:30",0.6],["15:00",0.6],["15:30",0.9],["16:00",3],["16:30",3.5],["17:00",3.4],["17:30",2.6],["18:00",3.6],["18:30",2],["19:00",0.7],["19:30",0],["20:00",0],["20:30",0.6],["21:00",5.5],["21:30",16],["22:00",13.6],["22:30",2.8],["23:00",0.6],["23:30",0.2],["00:00",0]];
 		chart5 = new S.barchart('#barchart5', {
 			// Only display an x-axis label every decade
 			'formatKey': function (key) {
@@ -142,12 +138,38 @@
 		//  draw the chart
 		chart5.setData(data5).setBins().draw();
 
-        S('.balloon').remove();
+		// Create the barchart object
+		data6 = [["Big Gas Co.",[5,100,0,0]],["Friendly Energy Co.",[40,40,15,5]],["Energetique",[30,80,5,5]],["Helios Power",[0,0,0,20]]];
+		series6 = ["Coal","Gas","Wind","Solar"];
+		chart6 = new S.barchart('#barchart6', {
+			'formatBar':function(key,val,series){ return (typeof series==="number" ? "series-"+series : ""); }
+		});
 
+		// Add events
+		chart6.on('barover', function (e) {
+			// Get the bin
+			var b = S(e.event.currentTarget).attr('data-index');
+			var s = S(e.event.currentTarget).attr('data-index-series');
+			console.log(e,this.bins[b],e.event.currentTarget)
+
+
+			// Remove any existing information balloon
+			S('.balloon').remove();
+			// Add a new information balloon
+			S(S(e.event.currentTarget).find('.bar')[0]).append('<div class="balloon">' + this.bins[b].key + ': ' + (this.bins[b].value) + ' kWh</div>')
+
+
+		});
+		//  draw the chart
+		chart6.setData(data6).setBins().draw();
+
+
+
+        S('.balloon').remove();
 	});
 	</script>
 	<style>
-	#barchart,#barchart2,#barchart3,#barchart4,#barchart5,#barchartbasic {
+	#barchart,#barchart2,#barchart3,#barchart4,#barchart5,#barchart6,#barchartbasic {
 		height: 300px;
 	}
 	#barchart2 .bar { background-color: #722EA5; }
@@ -171,6 +193,13 @@
 		background-repeat:repeat-x;
 	}
 	#barchart5 td.negative .bar { background-color: #F9BC26; }
+	.series-0 { background-color: #999999!important; }
+	.series-1 { background-color: #722EA5!important; }
+	.series-2 { background-color: #1DD3A7!important; }
+	.series-3 { background-color: #F9BC26!important; }
+	.key ul { list-style: none; margin: 0px; }
+	.key li { display: inline-block; line-height: 1em;}
+	.key .item { width: 1em; height: 1em; display: inline-block; top: 0.15em; position: relative;  }
 	</style>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>stuQuery barchart</title>
@@ -495,6 +524,55 @@ chart.setData(data).setBins().draw();
 </code></pre>
 
 <pre class="prettyprint lang-css"><code>#barchart td.negative .bar { background-color: #F9BC26; }</code></pre>
+
+
+
+
+
+		<h2 id="ex6">Example 6</h2>
+		<p>This is an example of a stacked bar chart.</p>
+		<div id="barchart6" style="margin-bottom:1em;"></div>
+		<div id="barchart6-key" class="key">
+			<ul>
+				<li><span class="item series-0"></span> Coal</li>
+				<li><span class="item series-1"></span> Gas</li>
+				<li><span class="item series-2"></span> Wind</li>
+				<li><span class="item series-3"></span> Solar</li>
+			</ul>
+		</div>
+
+		<pre class="prettyprint lang-js">
+<code>// Define the data
+data = [["Big Gas Co.",[5,100,0,0]],["Friendly Energy Co.",[40,40,15,5]],["Energetique",[30,80,5,5]],["Helios Power",[0,0,0,20]]];
+chart = new S.barchart('#barchart', {
+	'formatBar':function(key,val,series){ return (typeof series==="number" ? "series-"+series : ""); }
+});
+
+// Add events
+chart.on('barover', function (e) {
+	// Get the bin
+	var b = S(e.event.currentTarget).attr('data-index');
+
+	// Remove any existing information balloon
+	S('.balloon').remove();
+	// Add a new information balloon
+	S(S(e.event.currentTarget).find('.bar')[0]).append('<div class="balloon">' + this.bins[b].key + ': ' + (this.bins[b].value) + ' kWh</div>')
+
+
+});
+//  draw the chart
+chart.setData(data).setBins().draw();
+</code></pre>
+
+
+<pre class="prettyprint lang-css"><code>.series-0 { background-color: #999999!important; }
+.series-1 { background-color: #722EA5!important; }
+.series-2 { background-color: #1DD3A7!important; }
+.series-3 { background-color: #F9BC26!important; }
+.key ul { list-style: none; margin: 0px; }
+.key li { display: inline-block; line-height: 1em;}
+.key .item { width: 1em; height: 1em; display: inline-block; top: 0.15em; position: relative;  }
+</code></pre>
 
 	</div>
 
