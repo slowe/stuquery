@@ -530,7 +530,7 @@ chart.setData(data).setBins().draw();
 
 
 		<h2 id="ex6">Example 6</h2>
-		<p>This is an example of a stacked bar chart.</p>
+		<p>This is an example of a stacked bar chart. The key is hardcoded separately.</p>
 		<div id="barchart6" style="margin-bottom:1em;"></div>
 		<div id="barchart6-key" class="key">
 			<ul>
@@ -566,12 +566,9 @@ chart.setData(data).setBins().draw();
 
 
 <pre class="prettyprint lang-css"><code>.series-0 { background-color: #999999!important; }
-.series-1 { background-color: #722EA5!important; }
-.series-2 { background-color: #1DD3A7!important; }
-.series-3 { background-color: #F9BC26!important; }
-.key ul { list-style: none; margin: 0px; }
-.key li { display: inline-block; line-height: 1em;}
-.key .item { width: 1em; height: 1em; display: inline-block; top: 0.15em; position: relative;  }
+#barchart .bar .series-1 { background-color: #722EA5!important; }
+#barchart .bar .series-2 { background-color: #1DD3A7!important; }
+#barchart .bar .series-3 { background-color: #F9BC26!important; }
 </code></pre>
 
 	</div>
