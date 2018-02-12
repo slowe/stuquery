@@ -1,5 +1,5 @@
 /*!
- * stuQuery v1.0.12
+ * stuQuery v1.0.13
  */
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
@@ -98,7 +98,7 @@ stuQuery.prototype.prepend = function(j){
 	if(j) for(var e=0;e<this.length;e++) this[e].innerHTML = j+this[e].innerHTML;
 	return this;
 }
-stuQuery.prototype.before = function(t){
+stuQuery.prototype.before=function(t){
 	var i,d,e,j
 	for(i = 0 ; i < this.length ; i++){
 		d = document.createElement('div');
@@ -401,9 +401,12 @@ stuQuery.prototype.ajax = function(url,attrs){
 	if(typeof url!=="string") return false;
 	if(!attrs) attrs = {};
 	var cb = "",qs = "";
+	var oReq;
 	if(attrs['dataType']=="jsonp"){
 		cb = 'fn_'+(new Date()).getTime();
-		window[cb] = function(evt){ complete(evt); };
+		window[cb] = function(rsp){
+			if(typeof attrs.success==="function") attrs.success.call((attrs['this'] ? attrs['this'] : this), rsp, attrs);
+		};
 	}
 	if(typeof attrs.cache==="boolean" && !attrs.cache) qs += (qs ? '&':'')+(new Date()).valueOf();
 	if(cb) qs += (qs ? '&':'')+'callback='+cb;
@@ -411,9 +414,16 @@ stuQuery.prototype.ajax = function(url,attrs){
 
 	// Build the URL to query
 	attrs['url'] = url+(qs ? '?'+qs:'');
-	
+
+	if(attrs['dataType']=="jsonp"){
+		var script = document.createElement('script');
+		script.src = attrs['url'];
+		document.body.appendChild(script);
+		return this;
+	}
+
 	// code for IE7+/Firefox/Chrome/Opera/Safari or for IE6/IE5
-	var oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+	oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 	oReq.addEventListener("load", window[cb] || complete);
 	oReq.addEventListener("error", error);
 	if(attrs.beforeSend) oReq = attrs.beforeSend.call((attrs['this'] ? attrs['this'] : this), oReq, attrs);
@@ -423,7 +433,7 @@ stuQuery.prototype.ajax = function(url,attrs){
 			attrs.header = oReq.getAllResponseHeaders();
 			var rsp = oReq.response || oReq.responseText;
 			// Parse out content in the appropriate callback
-			if(attrs['dataType']=="jsonp") try { rsp = JSON.parse(rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n")) } catch(e){};
+			if(attrs['dataType']=="json") try { rsp = JSON.parse(rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n")) } catch(e){};
 			if(attrs['dataType']=="script"){
 				var fileref=document.createElement('script');
 				fileref.setAttribute("type","text/javascript");

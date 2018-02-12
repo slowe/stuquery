@@ -110,15 +110,28 @@
 				stop();
 				S().ajax('test.json',{
 					'complete':function(e){
-						equal(e,'{ "test": "blah" }',"Loaded content")
+					console.log('content',e)
+						equal(e,'{ "test": "blah" }',"Loaded content from JSON file using ajax() as string")
+						start();
+					}
+				});
+				
+				stop();
+				S().ajax('test.json',{
+					'dataType':'json',
+					'complete':function(e){
+					console.log('content',e)
+						var a = { "test": "blah" }
+						equal(e.test,a.test,"Loaded content from JSON file using ajax() as JSON")
 						start();
 					}
 				});
 
 				stop();
 				S().loadJSON('test.json',function(e){
+					console.log('content',e)
 					var a = { "test": "blah" }
-					equal(e.test,a.test,"Loaded content")
+					equal(e.test,a.test,"Loaded content with loadJSON() as JSON")
 					start();
 				});
 				
@@ -127,12 +140,12 @@
 				console.log('test.noexist')
 				S().ajax('test.noexist',{
 					'complete':function(e){
-						equal(e,'{ "test": "blah" }',"Loaded content")
+						equal(e,'{ "test": "blah" }',"Loaded content that doesn't exist")
 						start();
 					},
 					'this':this,
 					'error':function(e){
-						equal(_obj,this,"Failed to load content")
+						equal(_obj,this,"Failed to load content because it doesn't exist")
 						start();
 					}
 				});
