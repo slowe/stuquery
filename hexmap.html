@@ -270,7 +270,7 @@ S(document).ready(function(){
 
 		<section id="callback">
 			<h2>Adding callbacks</h2>
-			<p>You may want to make your hexes interactive. You can attach callback functions to events such as <code>click</code>, <code>mouseover</code>, and <code>mouseout</code>.</p>
+			<p>You may want to make your hexes interactive. You can attach callback functions to events such as <code>click</code>, <code>mouseover</code>, <code>mouseout</code>, and <code>focus</code>.</p>
 			<div class="example">
 <!-- HTML -->
 <div id="message-6">Click or hover on a hex</div>
@@ -309,6 +309,10 @@ S(document).ready(function(){
 	}).on('mouseout',function(e){
 
 		S('#message-6').html('You have left hex '+e.i)
+
+	}).on('focus',function(e){
+
+		S('#message-6').html('You have focussed on hex '+e.i)
 
 	});
 });
