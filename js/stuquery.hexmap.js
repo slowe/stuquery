@@ -35,16 +35,13 @@
 			'formatLabel': (typeof attr.formatLabel==="function" ? attr.formatLabel : "")
 		};
 		
-		id = "hexmap";
-
 		// We are dealing with a CSS ID
 		if(typeof el==="string"){
 			id = el;
 			this.container = S('#'+id);
 			el = this.container[0];
 		}else{
-			this.container = S(el);
-			id = this.container.attr('id');
+			return this;
 		}
 		this.tag = el.tagName.toLowerCase();
 		

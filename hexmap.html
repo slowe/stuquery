@@ -249,17 +249,17 @@ S(document).ready(function(){
 
 <!-- CSS -->
 <style>
-	/* Attach styles to hover and focus events */
-	.ex5 .hex:hover {
-		background-color: black;
-	}
-	.ex5 .hex:hover .hexinner, 
-	.ex5 .hex:focus .hexinner {
-		background: rgb(249, 188, 38);!important;
-		color: black;
-		margin: 10px;
-		cursor: pointer;
-	}
+/* Attach styles to hover and focus events */
+.ex5 .hex:hover {
+	background-color: black;
+}
+.ex5 .hex:hover .hexinner, 
+.ex5 .hex:focus .hexinner {
+	background: rgb(249, 188, 38);!important;
+	color: black;
+	margin: 10px;
+	cursor: pointer;
+}
 </style>
 </div>
 		</section>
@@ -316,21 +316,21 @@ S(document).ready(function(){
 
 <!-- CSS -->
 <style>
-	/* Attach styles to hover and focus events */
-	#message-6 {
-		position: relative;
-		display: inline-block;
-		left: 50%;
-		transform: translate3D(-50%,0,0);
-		background: black;
-		color: white;
-		padding: 0.25em 0.5em;
-		float: left;
-		z-index: 10;
-	}
-	.ex6 .hex {
-		cursor: pointer;
-	}	
+/* Attach styles to hover and focus events */
+#message-6 {
+	position: relative;
+	display: inline-block;
+	left: 50%;
+	transform: translate3D(-50%,0,0);
+	background: black;
+	color: white;
+	padding: 0.25em 0.5em;
+	float: left;
+	z-index: 10;
+}
+.ex6 .hex {
+	cursor: pointer;
+}	
 </style>
 </div>
 		</section>
@@ -364,6 +364,9 @@ S(document).ready(function(){
 		ex[i].innerHTML = ''+html+(showtitle ? '<h3>How to do it</h3>':'')+'<pre class="prettyprint lang-html">'+code+'</pre>';
 	}
 	prettyPrint();
+	var hexmap = S.hexmap();
+	S('h1').append(' v'+hexmap.version);
+
 	</script>
 
 </body>
