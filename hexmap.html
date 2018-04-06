@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="css/prettify.css">
+	<link rel="stylesheet" href="css/style.css">
+	<script type="text/javascript" src="js/prettify.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>stuQuery hexmap</title>
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:site" content="@astronomyblog">
+	<meta name="twitter:url" property="og:url" content="https://slowe.github.io/stuquery/hexmap">
+	<meta name="twitter:title" property="og:title" content="stuQuery hexmap">
+	<meta name="twitter:description" property="og:description" content="A simple HTML-based hexmap library that makes use of stuQuery">
+	<meta name="twitter:image" property="og:image" content="https://slowe.github.io/stuquery/images/hexmap.png">
+	<meta name="keywords" content="html,javascript,hexmap,hex,hexjson">
+	<style>
+	section:hover { background-color: #efefef; }
+	section:hover pre { background-color: #f9f9fa; }
+	section pre { margin-bottom: 0px; }
+	</style>
+</head>
+<body>
+
+	<a href="https://github.com/slowe/stuquery" id="forkme_banner">Fork Me on GitHub</a>
+
+	<div id="content">
+
+		<section id="downloads">
+			<a href="js/stuquery.hexmap.js">stuquery.hexmap.js (11kB)</a>
+			<a href="css/stuquery.hexmap.css">stuquery.hexmap.css (1kB)</a>
+		</section>
+
+		<h1>stuQuery hexmap</h1>
+		
+		<p>This is a simple HTML-based hexmapping library that makes use of <a href="index.html">stuQuery</a>. Being created from simple HTML elements, it is easy to style the hexes with CSS. Each hex is accessible via the keyboard too.</p>
+		<p>Make sure to include the relevant CSS and Javascript files in your HTML page:</p>
+
+		<div class="example" data-title="false">
+<script type="text/javascript" src="js/stuquery.js"></script>
+<script type="text/javascript" src="js/stuquery.hexmap.js"></script>
+<link rel="stylesheet" href="css/stuquery.hexmap.css">
+</div>
+		
+
+		<section id="basic">
+			<h2>Basic hex map</h2>
+			<p>Let's create a simple hex map. We define the hex map by embedding some <a href="https://odileeds.org/projects/hexmaps/hexjson">hexJSON</a> (that way the raw data is visible if Javascript fails).</p>
+			<div class="example">
+<div id="hexmap-1">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"Hex a","q":0,"r":0},
+		"B":{"n":"Hex b","q":0,"r":1},
+		"C":{"n":"Hex c","q":1,"r":0},
+		"D":{"n":"Hex d","q":1,"r":1},
+		"E":{"n":"Hex e","q":2,"r":0},
+		"F":{"n":"Hex f","q":2,"r":1},
+		"G":{"n":"Hex g","q":0,"r":2},
+		"H":{"n":"Hex h","q":1,"r":2},
+		"I":{"n":"Hex i","q":2,"r":2}
+	}
+}
+</code>
+</div>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+
+	// Create an object attached to a DOM element with the ID "hexmap-1"
+	var hexmap = S.hexmap('hexmap-1');
+
+	// Position the hexes and scale them to the container
+	hexmap.positionHexes().resize();
+
+});
+</script>
+</div>
+		</section>
+
+	
+		<section id="label">
+			<h2>Custom label on each hex</h2>
+			<p>Let's create a simple hex map but add a visible label to each hex.</p>
+			<div class="example">
+<div id="hexmap-2">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"Hex a","q":0,"r":0},
+		"B":{"n":"Hex b","q":0,"r":1},
+		"C":{"n":"Hex c","q":1,"r":0},
+		"D":{"n":"Hex d","q":1,"r":1},
+		"E":{"n":"Hex e","q":2,"r":0},
+		"F":{"n":"Hex f","q":2,"r":1},
+		"G":{"n":"Hex g","q":0,"r":2},
+		"H":{"n":"Hex h","q":1,"r":2},
+		"I":{"n":"Hex i","q":2,"r":2}
+	}
+}
+</code>
+</div>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-2',{
+		'formatLabel': function(id,hex){
+			// "id" = unique ID of the hex
+			// "hex" = object containing the properties of the specific hex
+			return hex.n;
+		}
+	});
+
+	hexmap.positionHexes().resize();
+});
+</script>
+</div>
+		</section>
+
+	
+		<section id="label-extra">
+			<h2>Extra labels on select</h2>
+			<p>Now we'll add labels to each hex which have elements that are always visible and elements that only appear when the hex is selected or hovered.</p>
+			<div class="example">
+<div id="hexmap-3">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"Hex a","q":0,"r":0},
+		"B":{"n":"Hex b","q":0,"r":1},
+		"C":{"n":"Hex c","q":1,"r":0},
+		"D":{"n":"Hex d","q":1,"r":1},
+		"E":{"n":"Hex e","q":2,"r":0},
+		"F":{"n":"Hex f","q":2,"r":1},
+		"G":{"n":"Hex g","q":0,"r":2},
+		"H":{"n":"Hex h","q":1,"r":2},
+		"I":{"n":"Hex i","q":2,"r":2}
+	}
+}
+</code>
+</div>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-3',{
+		'formatLabel': function(id,hex){
+			// "id" = unique ID of the hex
+			// "hex" = object containing the properties of the specific hex
+			str = hex.n
+			str += '<div class="default">Default</div>'
+			str += '<div class="when-selected">Hover</div>';
+			return str;
+		}
+	});
+
+	hexmap.positionHexes().resize();
+});
+</script>
+</div>
+		</section>
+
+	
+		<section id="label-extra">
+			<h2>Hex-specific colours</h2>
+			<p>Sometimes you might want to make your hex map into a heat map. To do that we send a callback function that returns an object of the form <code>{ 'background-color': '#ff0000', 'color': 'black' }</code></p>
+			<div class="example">
+<div id="hexmap-4">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"Hex a","q":0,"r":0},
+		"B":{"n":"Hex b","q":0,"r":1},
+		"C":{"n":"Hex c","q":1,"r":0},
+		"D":{"n":"Hex d","q":1,"r":1},
+		"E":{"n":"Hex e","q":2,"r":0},
+		"F":{"n":"Hex f","q":2,"r":1},
+		"G":{"n":"Hex g","q":0,"r":2},
+		"H":{"n":"Hex h","q":1,"r":2},
+		"I":{"n":"Hex i","q":2,"r":2}
+	}
+}
+</code>
+</div>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-4');
+
+	hexmap.positionHexes().resize();
+
+	hexmap.setColour(function(hex){
+		// The "hex" variable contains the properties of the specific hex
+		// The "this" variable references the hexmap object itself
+
+		var colours = ['#00B6FF','#EF3AAB','#F9BC26','#67E767','#08DEF9'];
+
+		// We will choose a colour which is the sum of the q and r coordinate
+		return {'background-color':colours[hex.q+hex.r],'color':'black'};
+	});
+
+});
+</script>
+</div>
+		</section>
+	
+	
+	
+	
+
+		<section id="hover-style">
+			<h2>Hover styling</h2>
+			<p>As the hexes are created as DOM elements, we can style them with CSS</p>
+			<div class="example">
+<!-- HTML -->
+<div id="hexmap-5" class="ex5">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"Hex a","q":0,"r":0},
+		"B":{"n":"Hex b","q":0,"r":1},
+		"C":{"n":"Hex c","q":1,"r":0},
+		"D":{"n":"Hex d","q":1,"r":1},
+		"E":{"n":"Hex e","q":2,"r":0},
+		"F":{"n":"Hex f","q":2,"r":1},
+		"G":{"n":"Hex g","q":0,"r":2},
+		"H":{"n":"Hex h","q":1,"r":2},
+		"I":{"n":"Hex i","q":2,"r":2}
+	}
+}
+</code>
+</div>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-5');
+	hexmap.positionHexes().resize();
+});
+</script>
+
+<!-- CSS -->
+<style>
+	/* Attach styles to hover and focus events */
+	.ex5 .hex:hover {
+		background-color: black;
+	}
+	.ex5 .hex:hover .hexinner, 
+	.ex5 .hex:focus .hexinner {
+		background: rgb(249, 188, 38);!important;
+		color: black;
+		margin: 10px;
+		cursor: pointer;
+	}
+</style>
+</div>
+		</section>
+
+
+
+
+
+		<section id="callback">
+			<h2>Adding callbacks</h2>
+			<p>You may want to make your hexes interactive. You can attach callback functions to events such as <code>click</code>, <code>mouseover</code>, and <code>mouseout</code>.</p>
+			<div class="example">
+<!-- HTML -->
+<div id="message-6">Click or hover on a hex</div>
+<div id="hexmap-6" class="ex6">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"Hex a","q":0,"r":0},
+		"B":{"n":"Hex b","q":0,"r":1},
+		"C":{"n":"Hex c","q":1,"r":0},
+		"D":{"n":"Hex d","q":1,"r":1},
+		"E":{"n":"Hex e","q":2,"r":0},
+		"F":{"n":"Hex f","q":2,"r":1},
+		"G":{"n":"Hex g","q":0,"r":2},
+		"H":{"n":"Hex h","q":1,"r":2},
+		"I":{"n":"Hex i","q":2,"r":2}
+	}
+}
+</code>
+</div>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-6');
+	hexmap.positionHexes().resize();
+	hexmap.on('click',function(e){
+
+		S('#message-6').html('You have clicked hex '+e.i)
+
+	}).on('mouseover',function(e){
+
+		S('#message-6').html('You have hovered over hex '+e.i)
+
+	}).on('mouseout',function(e){
+
+		S('#message-6').html('You have left hex '+e.i)
+
+	});
+});
+</script>
+
+<!-- CSS -->
+<style>
+	/* Attach styles to hover and focus events */
+	#message-6 {
+		position: relative;
+		display: inline-block;
+		left: 50%;
+		transform: translate3D(-50%,0,0);
+		background: black;
+		color: white;
+		padding: 0.25em 0.5em;
+		float: left;
+		z-index: 10;
+	}
+	.ex6 .hex {
+		cursor: pointer;
+	}	
+</style>
+</div>
+		</section>
+
+
+
+
+
+
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+	<script>
+	ex = S('.example');
+	for(var i = 0; i < ex.length; i++){
+		html = ex[i].innerHTML;
+		code = html.replace(/\</g,"&lt;").replace(/\>/g,"&gt;");
+		code = code.replace(/(src|href)=\"([^\"]+)\"/g,function(m,p1,p2){ return p1+'="<a href="'+p2+'">'+p2+'</a>"'; })
+		showtitle = true;
+		if(S(ex[i]).attr('data-title')=="false") showtitle = false;
+		
+		ex[i].innerHTML = ''+html+(showtitle ? '<h3>How to do it</h3>':'')+'<pre class="prettyprint lang-html">'+code+'</pre>';
+	}
+	prettyPrint();
+	</script>
+
+</body>
+</html>
+

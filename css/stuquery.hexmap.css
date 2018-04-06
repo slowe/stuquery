@@ -1,0 +1,40 @@
+.hexmap {
+	box-sizing: border-box;
+	display: block;
+	transform: scale(1);
+	position: relative;
+	max-width: 100%;
+}
+.hex {
+	box-sizing: border-box;
+	position: absolute;
+	width: 6em;
+	height: 7.125em;
+	background: #efefef;
+	-webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+	clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+	margin: 0;
+	z-index: 1;
+}
+.hexinner {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	margin: 1px;
+	background: #666;
+	-webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+	clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	color: white;
+	text-decoration: none; 
+}
+.hexcontent { padding: 0.25em; font-size: 0.8em; line-height: 1.2em;}
+.when-selected { display: none;}
+.hex:hover .when-selected, .hex:focus .when-selected { display: block; font-size: 1em; }
+.hex .when-selected .value { font-size: 2em; font-weight: 700; }
+.hex:hover .default, .hex:hover .no-hover, .hex:focus .default, .hex:focus .no-hover { display: none; }
