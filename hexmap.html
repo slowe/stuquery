@@ -203,7 +203,7 @@ S(document).ready(function(){
 		var colours = ['#00B6FF','#EF3AAB','#F9BC26','#67E767','#08DEF9'];
 
 		// We will choose a colour which is the sum of the q and r coordinate
-		return {'background-color':colours[hex.q+hex.r],'color':'black'};
+		return {'background-color':colours[Math.abs(hex.q+hex.r)],'color':'black'};
 	});
 
 });
