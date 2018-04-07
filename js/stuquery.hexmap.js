@@ -158,14 +158,23 @@
 		}
 		this.r = {'min':minr,'max':maxr};
 		this.q = {'min':minq,'max':maxq};
-		this.qoffset = [0,-0.5];
 
+		this.qoffset = [0,-0.5];
 		if(this.layout.indexOf('odd')==0 && Math.abs(this.r.min)%2==0){
 			this.qoffset = [0.5,0];
 		}
 
 		this.hex = {'wide':this.hexes[0].el[0].clientWidth,'tall':this.hexes[0].el[0].clientHeight};
-		this.wide = (maxq-minq + 1 + (this.layout.indexOf('odd')==0 ? this.qoffset[0] : this.qoffset[1]))*this.hex.wide;// + paddingWidth(this.container[0]);//marginWidth(this.container.find('.hexgrid')[0]);
+
+		for(var i = 0; i < hexes.length; i++){
+			if(this.layout.indexOf('odd')==0){
+				tq = this.hexes[i].q + (this.hexes[i].q % 2==1) ? 0 : -0.5;
+			}
+			if(tq < minq) minq =  tq;
+			if(tq > maxq) maxq =  tq;
+		}
+
+		this.wide = (maxq-minq + 1)*this.hex.wide;// + paddingWidth(this.container[0]);//marginWidth(this.container.find('.hexgrid')[0]);
 		this.tall = (maxr-minr + 1)*this.hex.tall*0.75 + this.hex.tall*0.25;// + paddingHeight(this.container[0]); // + marginHeight(this.container.find('.hexgrid')[0]);
 		
 		this.container.css({'width':this.wide+'px','height':this.tall.toFixed(1)+'px'}).find('.hexmap').css({'width':this.wide+'px','height':this.tall.toFixed(1)+'px'});
