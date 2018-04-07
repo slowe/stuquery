@@ -89,6 +89,7 @@ ul {
 }
 
 @media only screen and (max-width: 900px) {
+	body { padding: 2em 1em; }
 	#downloads {
 		float: none;
 		position: relative;
