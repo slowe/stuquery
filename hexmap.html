@@ -444,6 +444,7 @@ S(document).ready(function(){
 }
 </code>
 </div>
+<button id="button-8-terrain">Randomise terrain</button>
 
 <!-- Javascript -->
 <script>
@@ -468,8 +469,25 @@ S(document).ready(function(){
 		return str;
 	});
 	hexmap.setClass(function(id,hex){
-	console.log(id,hex)
 		return hex.type;
+	});
+
+	// Create button which randomises the terrain
+	S('#button-8-terrain').on('click',function(){
+
+		// Define the terrain types
+		var terrains = ['hills','pasture','mountains','fields','forest'];
+
+		// Create an array of terrains to populate
+		var t = new Array(hexmap.hexes.length);
+
+		// Randomly assign terrains
+		for(var i = 0; i < hexmap.hexes.length; i++) t[i] = terrains[Math.floor(Math.random()*terrains.length)];
+
+		// Update all the classes
+		for(var i = 0; i < hexmap.hexes.length; i++){
+			if(hexmap.hexes[i].n != "Robber") hexmap.hexes[i].setClass(t[i]);
+		}
 	});
 });
 </script>
@@ -480,6 +498,9 @@ S(document).ready(function(){
 	background-color: #66bbe2;
 	padding: 4em 6em;
 	clip-path: polygon(0% 50%, 25% 100%, 75% 100%, 100% 50%, 75% 0%, 25% 0%);
+}
+.ex-8 .hexinner {
+	margin: 0.5px;
 }
 .token {
 	font-family: serif;

@@ -75,7 +75,7 @@
 			var i = 0;
 			for(var id in json.hexes){
 				html += '<'+this.tag+' class="hex" tabindex="0" id="'+id+'" data-r="'+json.hexes[id].r+'" data-q="'+json.hexes[id].q+'"><div class="hexinner"><div class="hexcontent">'+(typeof this.options.formatLabel==="function" ? this.options.formatLabel(id,json.hexes[id]) : '')+'</div></div></'+this.tag+'>';
-				this.hexes[i] = new Hex(json.hexes[id],{'parent':this});
+				this.hexes[i] = new Hex(json.hexes[id],{'parent':this,'id':id});
 				this.lookup[id] = i;
 				i++;
 			}
@@ -206,9 +206,7 @@
 			var out;
 			for(var i = start; i <= end; i++){
 				out = colourise.call(this,this.hexes[i],{});
-				c = out['background-color'];
-				t = out['color'];
-				this.hexes[i].el.find('.hexinner').css({'background-color':c,'color':t});
+				this.hexes[i].setColour(out);
 			}
 		}
 		return this;
@@ -234,8 +232,8 @@
 
 			var out;
 			for(var i = start; i <= end; i++){
-				id = this.hexes[i].el.attr('id')
-				this.hexes[i].el.find('.hexcontent').html(this.options.formatLabel(id,this.json.hexes[id]));
+				id = this.hexes[i].el.attr('id');
+				this.hexes[i].setContent(this.options.formatLabel(id,this.json.hexes[id]));
 			}
 		}
 		return this;
@@ -260,7 +258,7 @@
 			for(var i = start; i <= end; i++){
 				id = this.hexes[i].el.attr('id')
 				c = cls.call(this,id,this.hexes[i]);
-				this.hexes[i].el.find('.hexinner').attr('class','').addClass('hexinner'+(c ? ' '+c:''));
+				this.hexes[i].setClass(c);
 			}
 		}
 		return this;
@@ -340,6 +338,11 @@
 		if(attr.r) this.r = parseInt(this.el.attr('data-r'));
 		if(attr.q) this.q = parseInt(this.el.attr('data-q'));
 		if(attr.n) this.n = this.el.find('.default').html();
+		if(attr.id) this.id = attr.id;
+
+		this.setColour = function(css){ this.el.find('.hexinner').css(css); }
+		this.setContent = function(html){ this.el.find('.hexcontent').html(html); }
+		this.setClass = function(c){ this.el.find('.hexinner').attr('class','').addClass('hexinner'+(c ? ' '+c:'')); }
 
 		return this;
 	}
