@@ -90,6 +90,8 @@ ul {
 
 @media only screen and (max-width: 900px) {
 	body { padding: 2em 1em; }
+	section { margin-top: 2em; padding: 0em; }
+	section:hover { background-color: transparent!important; }
 	#downloads {
 		float: none;
 		position: relative;
