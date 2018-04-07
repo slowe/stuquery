@@ -205,6 +205,33 @@
 		return this;
 	}
 	
+	
+	/*
+		Set the content of every hex tile 
+		
+		Inputs:
+		function  - a callback that is given the HexMap as the this context 
+		            and one parameter which is a specific hex. It should return
+		            a string of the new content to put in the hex
+		start     - the first hex in a range to be coloured (defaults to first hex)
+		end       - the last hex in a range to be coloured (defaults to last hex)
+	*/
+	HexMap.prototype.setContent = function(formatLabel,start,end){
+		if(!start){ start = 0; }
+		if(!end){ end = this.hexes.length-1; }
+		
+		if(typeof formatLabel==="function"){
+			this.options.formatLabel = formatLabel;
+
+			var out;
+			for(var i = start; i <= end; i++){
+				id = this.hexes[i].el.attr('id')
+				this.hexes[i].el.find('.hexcontent').html(this.options.formatLabel(id,this.json.hexes[id]));
+			}
+		}
+		return this;
+	}
+	
 	/*
 		Set the class of every hex tile 
 		
@@ -215,7 +242,6 @@
 		start     - the first hex in a range to be coloured (defaults to first hex)
 		end       - the last hex in a range to be coloured (defaults to last hex)
 	*/
-
 	HexMap.prototype.setClass = function(cls,start,end){
 		if(!start){ start = 0; }
 		if(!end){ end = this.hexes.length-1; }
@@ -223,7 +249,8 @@
 		if(typeof cls==="function"){
 			var c;
 			for(var i = start; i <= end; i++){
-				c = cls.call(this,this.hexes[i],{});
+				id = this.hexes[i].el.attr('id')
+				c = cls.call(this,id,this.hexes[i]);
 				this.hexes[i].el.find('.hexinner').attr('class','').addClass('hexinner'+(c ? ' '+c:''));
 			}
 		}

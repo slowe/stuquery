@@ -348,6 +348,166 @@ S(document).ready(function(){
 
 
 
+		<section id="setContent">
+			<h2>Update the content</h2>
+			<p>You may want to update the content of your hexes.</p>
+			<div class="example">
+<!-- HTML -->
+<div id="hexmap-7">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"Hex a","q":0,"r":0},
+		"B":{"n":"Hex b","q":0,"r":1},
+		"C":{"n":"Hex c","q":1,"r":0},
+		"D":{"n":"Hex d","q":1,"r":1},
+		"E":{"n":"Hex e","q":2,"r":0},
+		"F":{"n":"Hex f","q":2,"r":1},
+		"G":{"n":"Hex g","q":0,"r":2},
+		"H":{"n":"Hex h","q":1,"r":2},
+		"I":{"n":"Hex i","q":2,"r":2}
+	}
+}
+</code>
+</div>
+<button id="button-7-id">Show IDs</button>
+<button id="button-7-clear">Clear</button>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-7');
+	hexmap.positionHexes().resize();
+	
+
+	// Add event to button click
+	S('#button-7-id').on('click',function(){
+
+		// When the button is pressed we update the content of all the hexes
+		hexmap.setContent(function(id,hex){
+			// "id" = unique ID of the hex
+			// "hex" = object containing the properties of the specific hex
+			return id;
+		})
+
+	});
+
+	// Add event to button click
+	S('#button-7-clear').on('click',function(){
+
+		// When the button is pressed we clear the content of all the hexes
+		hexmap.setContent(function(id,hex){ return ''; });
+
+	});
+});
+</script>
+</div>
+		</section>
+
+
+
+
+
+
+
+		<section id="catan">
+			<h2>Settlers of Catan</h2>
+			<p>Some hexes styled like the starting map of the famous board game.</p>
+			<div class="example">
+<!-- HTML -->
+<div id="hexmap-8" class="ex-8">
+<code>
+{
+	"layout":"odd-r",
+	"hexes": {
+		"A":{"n":"A","q":0,"r":0,"dice":5,"type":"mountains"},
+		"B":{"n":"B","q":1,"r":0,"dice":2,"type":"fields"},
+		"C":{"n":"C","q":2,"r":0,"dice":6,"type":"forest"},
+		"D":{"n":"D","q":2,"r":1,"dice":3,"type":"mountains"},
+		"E":{"n":"E","q":3,"r":2,"dice":8,"type":"fields"},
+		"F":{"n":"F","q":2,"r":3,"dice":10,"type":"pasture"},
+		"G":{"n":"G","q":2,"r":4,"dice":9,"type":"fields"},
+		"H":{"n":"H","q":1,"r":4,"dice":12,"type":"pasture"},
+		"I":{"n":"I","q":0,"r":4,"dice":11,"type":"forest"},
+		"J":{"n":"J","q":-1,"r":3,"dice":4,"type":"hills"},
+		"Robber":{"n":"Robber","q":-1,"r":2,"dice":7,"type":"desert"},
+		"K":{"n":"K","q":-1,"r":1,"dice":8,"type":"hills"},
+		"L":{"n":"L","q":0,"r":1,"dice":10,"type":"pasture"},
+		"M":{"n":"M","q":1,"r":1,"dice":9,"type":"pasture"},
+		"N":{"n":"N","q":2,"r":2,"dice":4,"type":"forest"},
+		"O":{"n":"O","q":1,"r":3,"dice":5,"type":"hills"},
+		"P":{"n":"P","q":0,"r":3,"dice":6,"type":"mountains"},
+		"Q":{"n":"Q","q":0,"r":2,"dice":3,"type":"forest"},
+		"R":{"n":"R","q":1,"r":2,"dice":11,"type":"fields"}
+	}
+}
+</code>
+</div>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-8');
+	hexmap.positionHexes().resize();
+	hexmap.setContent(function(id,hex){
+		odds = [0,0,1,2,3,4,5,6,5,4,3,2,1];
+		ostr = '';
+		for(var i = 0; i < odds[hex.dice]; i++){
+			ostr += '&#9679;'
+		}
+		str = '<div class="token'+((hex.dice==8 || hex.dice == 6) ? ' token-red':'')+'">';
+		if(hex.n == "Robber"){
+			str += 'Robber';
+		}else{
+			str += '<div class="id">'+id+'</div>';
+			str += '<div class="dice">'+hex.dice+'</div>';
+			str += '<div class="odds">'+ostr+'</div>';
+		}
+		str += '</div>';
+		return str;
+	});
+	hexmap.setClass(function(id,hex){
+	console.log(id,hex)
+		return hex.type;
+	});
+});
+</script>
+
+<!-- CSS -->
+<style>
+.ex-8 {
+	background-color: #66bbe2;
+	padding: 4em 6em;
+	clip-path: polygon(0% 50%, 25% 100%, 75% 100%, 100% 50%, 75% 0%, 25% 0%);
+}
+.token {
+	font-family: serif;
+	border-radius: 100%;
+	background-color: wheat;
+	width: 4em;
+	height: 4em;
+	color: black;
+	display: table-cell;
+	vertical-align: middle;
+}
+.token.token-red { color: crimson; }
+.token .id, .token .odds { font-size: 0.5em; }
+.token .dice { font-size: 2em; }
+.hills { background-color: #c8906e; }
+.pasture { background-color: #b5c881; }
+.mountains { background-color: #778088; }
+.fields { background-color: #e9b66c; }
+.forest { background-color: #55855f; }
+.desert { background-color: #f5dcad; }
+</style>
+</div>
+		</section>
+
+
+
+
+
 
 
 	</div>
