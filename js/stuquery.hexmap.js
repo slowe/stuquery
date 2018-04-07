@@ -34,6 +34,7 @@
 			'showlabel':(typeof attr.showlabel==="boolean" ? attr.showlabel : true),
 			'formatLabel': (typeof attr.formatLabel==="function" ? attr.formatLabel : "")
 		};
+		this.attr = attr;
 		
 		// We are dealing with a CSS ID
 		if(typeof el==="string"){
@@ -135,10 +136,9 @@
 		var maxr = -1e12;
 		var maxq = -1e12;
 		var hexes = this.container.find('.hex');
-		//this.hexes = new Array(hexes.length);
 		for(var i = 0; i < hexes.length; i++){
 
-			this.hexes[i] = new Hex(this.hexes[i],{'el':hexes[i],'parent':this});
+			this.hexes[i] = new Hex(this.hexes[i],{'el':hexes[i],'parent':this,'width':this.attr.width});
 
 			if(this.hexes[i].r > maxr) maxr = this.hexes[i].r;
 			if(this.hexes[i].r < minr) minr = this.hexes[i].r;
@@ -164,8 +164,7 @@
 			this.qoffset = [0.5,0];
 		}
 
-		this.hex = {'wide':this.hexes[0].el[0].clientWidth,'tall':this.hexes[0].el[0].clientHeight};
-
+		this.hex = {'wide': this.hexes[0].el[0].clientWidth,'tall':this.hexes[0].el[0].clientHeight};
 		for(var i = 0; i < hexes.length; i++){
 			if(this.layout.indexOf('odd')==0){
 				tq = this.hexes[i].q + (this.hexes[i].q % 2==1) ? 0 : -0.5;
@@ -339,6 +338,8 @@
 		if(attr.q) this.q = parseInt(this.el.attr('data-q'));
 		if(attr.n) this.n = this.el.find('.default').html();
 		if(attr.id) this.id = attr.id;
+
+		if(typeof attr.width==="number") this.el.css({'width':attr.width+'em','height':(attr.width*7.125/6)+'em'});
 
 		this.setColour = function(css){ this.el.find('.hexinner').css(css); }
 		this.setContent = function(html){ this.el.find('.hexcontent').html(html); }
