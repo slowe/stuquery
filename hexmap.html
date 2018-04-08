@@ -147,7 +147,7 @@
 	<div id="content">
 
 		<section id="downloads">
-			<a href="js/stuquery.hexmap.js">stuquery.hexmap.js (11kB)</a>
+			<a href="js/stuquery.hexmap.js">stuquery.hexmap.js (13kB)</a>
 			<a href="css/stuquery.hexmap.css">stuquery.hexmap.css (1kB)</a>
 		</section>
 
@@ -155,6 +155,7 @@
 
 
 		<p>This is a simple HTML-based hexmapping library that makes use of <a href="index.html">stuQuery</a>. Being created from simple HTML elements, it is easy to style the hexes with CSS. Each hex is accessible via the keyboard too.</p>
+		<p>As HTML is based on rectangles, we've had to create hexagons using CSS's <code>clip-path</code>. We've simulated a border on each hexagon by nesting two elements and setting the <code>border-color</code> by using <code>background-color</code> on the outer element and <code>border-width</code> by using <code>margin</code> on the inner element</code>.</p>
 		<p>Make sure to include the relevant CSS and Javascript files in your HTML page:</p>
 
 		<div class="example" data-title="false">
@@ -377,6 +378,9 @@ S(document).ready(function(){
 }
 .ex5 .hex:hover .hexinner, 
 .ex5 .hex:focus .hexinner {
+	/* We have created the hexagon via clip-path so we have to simulate
+	a border using two nested elements. We can set the border colour
+	using "background" and the border width using "margin" */
 	background: rgb(249, 188, 38);!important;
 	color: black;
 	margin: 10px;
@@ -687,7 +691,7 @@ S(document).ready(function(){
 		showtitle = true;
 		if(S(ex[i]).attr('data-title')=="false") showtitle = false;
 		
-		ex[i].innerHTML = ''+html+(showtitle ? '<h3>How to do it</h3>':'')+'<h4>HTML</h4><pre class="prettyprint lang-html">'+code+'</pre>'+(css ? '<h4>CSS</h4><pre class="prettyprint lang-css">'+sanitise(css)+'</pre>':'')+(js ? '<h4>Javascript</h4><pre class="prettyprint lang-js">'+sanitise(js)+'</pre>':'');
+		ex[i].innerHTML = ''+html+(showtitle ? '<h3>How to do it</h3><h4>HTML</h4>':'')+'<pre class="prettyprint lang-html">'+code+'</pre>'+(css ? (showtitle ? '<h4>CSS</h4>':'')+'<pre class="prettyprint lang-css">'+sanitise(css)+'</pre>':'')+(js ? (showtitle ? '<h4>Javascript</h4>':'')+'<pre class="prettyprint lang-js">'+sanitise(js)+'</pre>':'');
 	}
 	prettyPrint();
 	var hexmap = S.hexmap();
