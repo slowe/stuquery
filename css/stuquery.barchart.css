@@ -97,6 +97,19 @@
 	height: 0;
 	border: 0.5em solid transparent;
 	left: 0;
+	border-color: transparent;
 	border-left-color: white;
 	bottom: -0.5em;
+}
+.barchart .bar-right .balloon {
+	right: 50%;
+	left: auto;
+	margin-left: -50%;
+	margin-right: auto;
+}
+.barchart .bar-right .balloon::after {
+	border-left-color: transparent;
+	border-right-color: inherit;
+	left: auto;
+	right: 0;
 }
