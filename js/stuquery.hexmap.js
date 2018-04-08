@@ -232,7 +232,7 @@
 			var out;
 			for(var i = start; i <= end; i++){
 				id = this.hexes[i].el.attr('id');
-				this.hexes[i].setContent(this.options.formatLabel(id,this.json.hexes[id]));
+				this.hexes[i].setContent(this.options.formatLabel(id,this.hexes[i]));
 			}
 		}
 		return this;
