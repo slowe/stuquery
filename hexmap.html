@@ -4,6 +4,7 @@
 	<link rel="stylesheet" href="css/prettify.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script type="text/javascript" src="js/prettify.js"></script>
+	<script type="text/javascript" src="js/lang-css.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>stuQuery hexmap</title>
 	<meta name="twitter:card" content="summary">
@@ -421,19 +422,19 @@ S(document).ready(function(){
 	hexmap.positionHexes().resize();
 	hexmap.on('click',function(e){
 
-		S('#message-6').html('You have clicked hex '+e.i)
+		S('#message-6').html('You have clicked hex '+e.i+' ('+e.hex.id+')')
 
 	}).on('mouseover',function(e){
 
-		S('#message-6').html('You have hovered over hex '+e.i)
+		S('#message-6').html('You have hovered over hex '+e.i+' ('+e.hex.id+')')
 
 	}).on('mouseout',function(e){
 
-		S('#message-6').html('You have left hex '+e.i)
+		S('#message-6').html('You have left hex '+e.i+' ('+e.hex.id+')')
 
 	}).on('focus',function(e){
 
-		S('#message-6').html('You have focussed on hex '+e.i)
+		S('#message-6').html('You have focussed on hex '+e.i+' ('+e.hex.id+')')
 
 	});
 });
@@ -532,8 +533,8 @@ S(document).ready(function(){
 
 
 
-		<section id="catan">
-			<h2>Settling Hex Island</h2>
+		<section id="game">
+			<h2>Settling hex island</h2>
 			<p>Some hexes styled like the starting map of a famous board game.</p>
 			<div class="example">
 <!-- HTML -->
@@ -665,14 +666,28 @@ S(document).ready(function(){
 
 	<script>
 	ex = S('.example');
+	function tidy(t){ return t.replace(/===NEWLINE===/g,"\n").replace(/\n*$/,""); }
+	function sanitise(t){ return t.replace(/\</g,"&lt;").replace(/\>/g,"&gt;"); }
 	for(var i = 0; i < ex.length; i++){
 		html = ex[i].innerHTML;
-		code = html.replace(/\</g,"&lt;").replace(/\>/g,"&gt;");
+		css = "";
+		js = "";
+		temp = html.replace(/\n/g,"===NEWLINE===");
+		temp = temp.replace(/<!-- Javascript -->/i,"").replace(/<script>(.*)<\/script>/,function(m,p1){
+			js = tidy(p1);
+			return "";
+		});
+		temp = temp.replace(/<!-- CSS -->/i,"").replace(/<style>(.*)<\/style>/,function(m,p1){
+			css = tidy(p1);
+			return "";
+		});
+		
+		code = sanitise(tidy(temp));
 		code = code.replace(/(src|href)=\"([^\"]+)\"/g,function(m,p1,p2){ return p1+'="<a href="'+p2+'">'+p2+'</a>"'; })
 		showtitle = true;
 		if(S(ex[i]).attr('data-title')=="false") showtitle = false;
 		
-		ex[i].innerHTML = ''+html+(showtitle ? '<h3>How to do it</h3>':'')+'<pre class="prettyprint lang-html">'+code+'</pre>';
+		ex[i].innerHTML = ''+html+(showtitle ? '<h3>How to do it</h3>':'')+'<h4>HTML</h4><pre class="prettyprint lang-html">'+code+'</pre>'+(css ? '<h4>CSS</h4><pre class="prettyprint lang-css">'+sanitise(css)+'</pre>':'')+(js ? '<h4>Javascript</h4><pre class="prettyprint lang-js">'+sanitise(js)+'</pre>':'');
 	}
 	prettyPrint();
 	var hexmap = S.hexmap();
