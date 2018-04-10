@@ -613,6 +613,7 @@ window['_pr_isIE6'] = function () {
   function makeTabExpander(tabWidth) {
     var SPACES = '                ';
     var charInLine = 0;
+    return function(plainText){ return plainText; };
 
     return function (plainText) {
       // walk over each character looking for tabs and newlines.
@@ -625,6 +626,8 @@ window['_pr_isIE6'] = function () {
 
         switch (ch) {
           case '\t':
+          	out.push('\t');
+          	/*
             if (!out) { out = []; }
             out.push(plainText.substring(pos, i));
             // calculate how much space we need in front of this part
@@ -636,7 +639,7 @@ window['_pr_isIE6'] = function () {
             for (; nSpaces >= 0; nSpaces -= SPACES.length) {
               out.push(SPACES.substring(0, nSpaces));
             }
-            pos = i + 1;
+            pos = i + 1;*/
             break;
           case '\n':
             charInLine = 0;

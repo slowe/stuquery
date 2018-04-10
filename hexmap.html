@@ -18,7 +18,9 @@
 	section:hover { background-color: #efefef; }
 	section:hover pre { background-color: #f9f9fa; }
 	section pre { margin-bottom: 0px; }
-	#content { top: 4em; }
+	pre { font-family: Courier; }
+	#main { top: 4em; }
+	h2 a:hover:before { content: "#"; left: -1em; position: absolute; color: #999; }
 	</style>
 </head>
 <body>
@@ -144,7 +146,7 @@
 		</div>
 	</header>
 		
-	<div id="content">
+	<div id="main">
 
 		<section id="downloads">
 			<a href="js/stuquery.hexmap.js">stuquery.hexmap.js (13kB)</a>
@@ -166,7 +168,7 @@
 		
 
 		<section id="basic">
-			<h2>Basic hex map</h2>
+			<h2><a href="#basic">Basic hex map</a></h2>
 			<p>Let's create a simple hex map. We define the hex map by embedding some <a href="https://odileeds.org/projects/hexmaps/hexjson">HexJSON</a> (that way the raw data is visible if Javascript fails).</p>
 			<div class="example">
 <div id="hexmap-1">
@@ -205,7 +207,7 @@ S(document).ready(function(){
 
 	
 		<section id="label">
-			<h2>Custom label on each hex</h2>
+			<h2><a href="#label">Custom label on each hex</a></h2>
 			<p>Let's create a simple hex map but add a visible label to each hex.</p>
 			<div class="example">
 <div id="hexmap-2">
@@ -246,7 +248,7 @@ S(document).ready(function(){
 
 	
 		<section id="label-extra">
-			<h2>Extra labels on select</h2>
+			<h2><a href="#label-extra">Extra labels on select</a></h2>
 			<p>Now we'll add labels to each hex which have elements that are always visible and elements that only appear when the hex is selected or hovered.</p>
 			<div class="example">
 <div id="hexmap-3">
@@ -289,8 +291,8 @@ S(document).ready(function(){
 		</section>
 
 	
-		<section id="label-extra">
-			<h2>Hex-specific colours</h2>
+		<section id="colours">
+			<h2><a href="#colours">Hex-specific colours</a></h2>
 			<p>Sometimes you might want to make your hex map into a heat map. To do that we send a callback function that returns an object of the form <code>{ 'background-color': '#ff0000', 'color': 'black' }</code></p>
 			<div class="example">
 <div id="hexmap-4">
@@ -338,8 +340,8 @@ S(document).ready(function(){
 	
 	
 
-		<section id="hover-style">
-			<h2>Hover styling</h2>
+		<section id="hover">
+			<h2><a href="#hover">Hover styling</a></h2>
 			<p>As the hexes are created as DOM elements, we can style them with CSS</p>
 			<div class="example">
 <!-- HTML -->
@@ -394,8 +396,8 @@ S(document).ready(function(){
 
 
 
-		<section id="callback">
-			<h2>Adding callbacks</h2>
+		<section id="callbacks">
+			<h2><a href="#callbacks">Adding callbacks</a></h2>
 			<p>You may want to make your hexes interactive. You can attach callback functions to events such as <code>click</code>, <code>mouseover</code>, <code>mouseout</code>, and <code>focus</code>.</p>
 			<div class="example">
 <!-- HTML -->
@@ -474,8 +476,8 @@ S(document).ready(function(){
 
 
 
-		<section id="setContent">
-			<h2>Update the content</h2>
+		<section id="content">
+			<h2><a href="#content">Update the content</a></h2>
 			<p>You may want to update the content of your hexes.</p>
 			<div class="example">
 <!-- HTML -->
@@ -538,7 +540,7 @@ S(document).ready(function(){
 
 
 		<section id="game">
-			<h2>Settling hex island</h2>
+			<h2><a href="#game">Settling hex island</a></h2>
 			<p>Some hexes styled like the starting map of a famous board game.</p>
 			<div class="example">
 <!-- HTML -->
@@ -579,12 +581,17 @@ S(document).ready(function(){
 S(document).ready(function(){
 	var hexmap = S.hexmap('hexmap-8');
 	hexmap.positionHexes().resize();
+
+	// Define the content of each hex
 	hexmap.setContent(function(id,hex){
+
+		// Define an abstract odds for outcomes 0-12 from rolling two dice
 		odds = [0,0,1,2,3,4,5,6,5,4,3,2,1];
 		ostr = '';
-		for(var i = 0; i < odds[hex.dice]; i++){
-			ostr += '&#9679;'
-		}
+		// Display circles to represent the odds
+		for(var i = 0; i < odds[hex.dice]; i++) ostr += '&#9679;'
+		
+		// Build the circular token that sits on a hex
 		str = '<div class="token'+((hex.dice==8 || hex.dice == 6) ? ' token-red':'')+'">';
 		if(hex.n == "Robber"){
 			str += 'Robber';
@@ -594,8 +601,11 @@ S(document).ready(function(){
 			str += '<div class="odds">'+ostr+'</div>';
 		}
 		str += '</div>';
+
 		return str;
 	});
+	
+	// Set the CSS class of each hex to be the hex type
 	hexmap.setClass(function(id,hex){
 		return hex.type;
 	});
@@ -610,8 +620,10 @@ S(document).ready(function(){
 		var t = new Array(hexmap.hexes.length);
 
 		// Randomly assign terrains
-		for(var i = 0; i < hexmap.hexes.length; i++) t[i] = terrains[Math.floor(Math.random()*terrains.length)];
-
+		for(var i = 0; i < hexmap.hexes.length; i++){
+			t[i] = terrains[Math.floor(Math.random()*terrains.length)];
+		}
+		
 		// Update all the classes
 		for(var i = 0; i < hexmap.hexes.length; i++){
 			if(hexmap.hexes[i].n != "Robber") hexmap.hexes[i].setClass(t[i]);
