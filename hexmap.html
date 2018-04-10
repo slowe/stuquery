@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="css/prettify.css">
+	<!--<link rel="stylesheet" href="css/prettify.css">-->
 	<link rel="stylesheet" href="css/style.css">
-	<script type="text/javascript" src="js/prettify.js"></script>
-	<script type="text/javascript" src="js/lang-css.js"></script>
+	<!--<script type="text/javascript" src="js/prettify.js"></script>
+	<script type="text/javascript" src="js/lang-css.js"></script>-->
+	<script type="text/javascript" src="js/highlight.pack.js"></script>
+	<link rel="stylesheet" href="css/tomorrow.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>stuQuery hexmap</title>
 	<meta name="twitter:card" content="summary">
@@ -705,7 +707,13 @@ S(document).ready(function(){
 		
 		ex[i].innerHTML = ''+html+(showtitle ? '<h3>How to do it</h3><h4>HTML</h4>':'')+'<pre class="prettyprint lang-html">'+code+'</pre>'+(css ? (showtitle ? '<h4>CSS</h4>':'')+'<pre class="prettyprint lang-css">'+sanitise(css)+'</pre>':'')+(js ? (showtitle ? '<h4>Javascript</h4>':'')+'<pre class="prettyprint lang-js">'+sanitise(js)+'</pre>':'');
 	}
-	prettyPrint();
+	
+	var code = S('.prettyprint');
+	for(var i = 0; i < code.length; i++){
+		hljs.highlightBlock(code[i]);
+	}
+    
+    
 	var hexmap = S.hexmap();
 	S('h1').append(' v'+hexmap.version);
 
