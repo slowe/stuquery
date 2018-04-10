@@ -1,5 +1,5 @@
 /*!
- * stuQuery v1.0.13
+ * stuQuery v1.0.14
  */
 // I don't like to pollute the global namespace 
 // but I can't get this to work any other way.
@@ -402,6 +402,14 @@ stuQuery.prototype.ajax = function(url,attrs){
 	if(!attrs) attrs = {};
 	var cb = "",qs = "";
 	var oReq;
+	// If part of the URL is query string we split that first
+	if(url.indexOf("?") > 0){
+		urlbits = url.split("?");
+		if(urlbits.length){
+			url = urlbits[0];
+			qs = urlbits[1];
+		}
+	}
 	if(attrs['dataType']=="jsonp"){
 		cb = 'fn_'+(new Date()).getTime();
 		window[cb] = function(rsp){
@@ -426,6 +434,7 @@ stuQuery.prototype.ajax = function(url,attrs){
 	oReq = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 	oReq.addEventListener("load", window[cb] || complete);
 	oReq.addEventListener("error", error);
+	oReq.addEventListener("progress", progress);
 	if(attrs.beforeSend) oReq = attrs.beforeSend.call((attrs['this'] ? attrs['this'] : this), oReq, attrs);
 
 	function complete(evt) {
@@ -452,6 +461,10 @@ stuQuery.prototype.ajax = function(url,attrs){
 	function error(evt){
 		if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
 	}
+	
+	function progress(evt){
+		if(typeof attrs.progress==="function") attrs.progress.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
+	}
 
 	if(attrs['dataType']) oReq.responseType = attrs['dataType'];
 
@@ -474,3 +487,4 @@ stuQuery.prototype.loadJSON = function(url,fn,attrs){
 function S(e) {
 	return new stuQuery(e);
 }
+
