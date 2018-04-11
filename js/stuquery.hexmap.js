@@ -21,7 +21,7 @@
 	// Main function
 	function HexMap(el,attr){
 	
-		this.version = "0.3";
+		this.version = "0.3.1";
 		this.idprefix = "hex-";
 		this.events = {resize:""};
 		this.zoom = 1;
@@ -53,6 +53,8 @@
 
 		this.layout = this.container.attr('data-layout') || "odd-r";
 
+		this.lookup = {};
+
 		// If we have HexJSON inside a <code> element we turn it into SVG
 		if(this.tag != "code" && this.container.find('code').length==1){
 
@@ -72,7 +74,6 @@
 			if(json.layout) this.layout = json.layout;
 
 			var html = '<div class="hexmap" data-layout="'+json.layout+'"><div class="hexmapinner">';
-			this.lookup = {};
 			var i = 0;
 			for(var id in json.hexes){
 				html += '<'+this.tag+' class="hex" tabindex="0" id="'+id+'" data-r="'+json.hexes[id].r+'" data-q="'+json.hexes[id].q+'"><div class="hexinner"><div class="hexcontent">'+(typeof this.options.formatLabel==="function" ? this.options.formatLabel(id,json.hexes[id]) : '')+'</div></div></'+this.tag+'>';
@@ -80,8 +81,38 @@
 				this.lookup[id] = i;
 				i++;
 			}
+			html += '</div></div>'
 
 			code[0].outerHTML = html;
+		}else{
+			// Get the hexes
+			hexes = this.container.find('.hex');
+
+			// Work out layout
+			this.layout = this.container.find('.hexmap').attr('data-layout');
+			json = {'layout':this.layout,'hexes':{}};
+
+			// Get the data from the hexes
+			for(var i = 0; i < hexes.length; i++){
+				hex = S(hexes[i]);
+				id = hex.attr('id');
+				hattr = hex[0].getAttributeNames();
+				if(id){
+					json.hexes[id] = {'n':(hex.attr('title') || "")};
+					for(var a = 0; a < hattr.length; a++){
+						if(hattr[a].indexOf('data-')==0){
+							key = hattr[a].substr(5);
+							json.hexes[id][key] = hex.attr(hattr[a]);
+							if(json.hexes[id][key].indexOf(/[^0-9]/) < 0){
+								json.hexes[id][key] = parseInt(json.hexes[id][key]);
+							}
+						}
+					}
+					this.hexes[i] = new Hex(json.hexes[id],{'parent':this,'id':id});
+					this.lookup[id] = i;
+				}
+			}
+			this.json = json;
 		}
 
 		var _obj = this;
@@ -165,6 +196,7 @@
 		}
 
 		this.hex = {'wide': this.hexes[0].el[0].clientWidth,'tall':this.hexes[0].el[0].clientHeight};
+
 		for(var i = 0; i < hexes.length; i++){
 			if(this.layout.indexOf('odd')==0){
 				tq = this.hexes[i].q + (this.hexes[i].q % 2==1) ? 0 : -0.5;
@@ -175,7 +207,7 @@
 
 		this.wide = (maxq-minq + 1)*this.hex.wide;// + paddingWidth(this.container[0]);//marginWidth(this.container.find('.hexgrid')[0]);
 		this.tall = (maxr-minr + 1)*this.hex.tall*0.75 + this.hex.tall*0.25;// + paddingHeight(this.container[0]); // + marginHeight(this.container.find('.hexgrid')[0]);
-		
+
 		this.container.css({'width':this.wide+'px','height':this.tall.toFixed(1)+'px'}).find('.hexmap').css({'width':this.wide+'px','height':this.tall.toFixed(1)+'px'});
 		return this;
 	}
@@ -275,7 +307,7 @@
 		}else{
 			this.container.css({'width':this.wide+'px','height':this.tall+'px'}).find('.hexmap').css({'width':this.wide+'px','height':this.tall+'px','transform':'scale(1)'});
 		}
-		this.container.find('.hexmapinner').css({'transform':'scale('+this.zoom.toFixed(4)+')','transform-origin':'bottom left','width':'100%','height':'100%'})
+		this.container.find('.hexmapinner').css({'transform':'scale('+this.zoom.toFixed(4)+')'});
 		return this;
 	}
 
@@ -322,7 +354,6 @@
 		for(var i = 0; i < this.hexes.length; i++){
 			el = this.hexes[i].el;
 			el.css({
-				'position':'absolute',
 				'left':this.getLeft(this.hexes[i].r,this.hexes[i].q)+'px',
 				'bottom':this.getBottom(this.hexes[i].r,this.hexes[i].q)+'px'
 			});

@@ -5,6 +5,14 @@
 	position: relative;
 	max-width: 100%;
 }
+.hexmapinner {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	transform-origin:bottom left;
+	width:100%;
+	height:100%
+}
 .hex {
 	box-sizing: border-box;
 	position: absolute;
