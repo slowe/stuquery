@@ -694,7 +694,7 @@ S(document).ready(function(){
 S(document).ready(function(){
 	var hexmap = S.hexmap('hexmap-9');
 	hexmap.setClass(function(id,hex){
-		return "forest";
+		return (id=="D" ? "forest":"");
 	});
 });
 </script>
