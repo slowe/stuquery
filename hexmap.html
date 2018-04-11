@@ -672,30 +672,30 @@ S(document).ready(function(){
 
 		<section id="html">
 			<h2><a href="#html">Hex map from HTML elements</a></h2>
-			<p></p>
+			<p>Sometimes you'd rather have a pre-generated hex map in the page as raw HTML rather than a JSON blob that gets converted. You can do that and attach a <code>hexmap</code> object to the element.</p>
 			<div class="example">
 <!-- HTML -->
-<div id="hexmap-9">
-	<div class="hexmap" data-layout="odd-r" style="width:336px;height:285px;transform:scale(1)">
-		<ul class="hexmapinner" style="transform:scale(1.0000);">
-			<li id="A" class="hex" data-q="0" data-r="0" title="Hex a" style="left:0px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex a</div></div></li>
-			<li id="B" class="hex" data-q="0" data-r="1" title="Hex b" style="left:48px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex b</div></div></li>
-			<li id="C" class="hex" data-q="1" data-r="0" title="Hex c" style="left:96px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex c</div></div></li>
-			<li id="D" class="hex" data-q="1" data-r="1" title="Hex d" style="left:144px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex d</div></div></li>
-			<li id="E" class="hex" data-q="2" data-r="0" title="Hex e" style="left:192px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex e</div></div></li>
-			<li id="F" class="hex" data-q="2" data-r="1" title="Hex f" style="left:240px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex f</div></div></li>
-			<li id="G" class="hex" data-q="0" data-r="2" title="Hex g" style="left:0px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex g</div></div></li>
-			<li id="H" class="hex" data-q="1" data-r="2" title="Hex h" style="left:96px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex h</div></div></li>
-			<li id="I" class="hex" data-q="2" data-r="2" title="Hex i" style="left:192px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex i</div></div></li>
-		</ul>
-	</div>
+<div id="hexmap-9" class="hexmap" data-layout="odd-r" style="width:336px;height:285px;transform:scale(1)">
+	<ul class="hexmapinner" style="transform:scale(1.0000);">
+		<li data-id="A" class="hex" data-q="0" data-r="0" title="Hex a" style="left:0px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex a</div></div></li>
+		<li data-id="B" class="hex" data-q="0" data-r="1" title="Hex b" style="left:48px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex b</div></div></li>
+		<li data-id="C" class="hex" data-q="1" data-r="0" title="Hex c" style="left:96px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex c</div></div></li>
+		<li data-id="D" class="hex" data-q="1" data-r="1" title="Hex d" style="left:144px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex d</div></div></li>
+		<li data-id="E" class="hex" data-q="2" data-r="0" title="Hex e" style="left:192px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex e</div></div></li>
+		<li data-id="F" class="hex" data-q="2" data-r="1" title="Hex f" style="left:240px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex f</div></div></li>
+		<li data-id="G" class="hex" data-q="0" data-r="2" title="Hex g" style="left:0px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex g</div></div></li>
+		<li data-id="H" class="hex" data-q="1" data-r="2" title="Hex h" style="left:96px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex h</div></div></li>
+		<li data-id="I" class="hex" data-q="2" data-r="2" title="Hex i" style="left:192px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex i</div></div></li>
+	</ul>
 </div>
 
 <!-- Javascript -->
 <script>
 S(document).ready(function(){
 	var hexmap = S.hexmap('hexmap-9');
-	hexmap.positionHexes().resize();
+	hexmap.setClass(function(id,hex){
+		return "forest";
+	});
 });
 </script>
 

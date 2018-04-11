@@ -76,7 +76,7 @@
 			var html = '<div class="hexmap" data-layout="'+json.layout+'"><div class="hexmapinner">';
 			var i = 0;
 			for(var id in json.hexes){
-				html += '<'+this.tag+' class="hex" tabindex="0" id="'+id+'" data-r="'+json.hexes[id].r+'" data-q="'+json.hexes[id].q+'"><div class="hexinner"><div class="hexcontent">'+(typeof this.options.formatLabel==="function" ? this.options.formatLabel(id,json.hexes[id]) : '')+'</div></div></'+this.tag+'>';
+				html += '<'+this.tag+' class="hex" tabindex="0" data-id="'+id+'" data-r="'+json.hexes[id].r+'" data-q="'+json.hexes[id].q+'"><div class="hexinner"><div class="hexcontent">'+(typeof this.options.formatLabel==="function" ? this.options.formatLabel(id,json.hexes[id]) : '')+'</div></div></'+this.tag+'>';
 				this.hexes[i] = new Hex(json.hexes[id],{'parent':this,'id':id});
 				this.lookup[id] = i;
 				i++;
@@ -95,7 +95,7 @@
 			// Get the data from the hexes
 			for(var i = 0; i < hexes.length; i++){
 				hex = S(hexes[i]);
-				id = hex.attr('id');
+				id = hex.attr('data-id');
 				hattr = hex[0].getAttributeNames();
 				if(id){
 					json.hexes[id] = {'n':(hex.attr('title') || "")};
@@ -263,7 +263,7 @@
 
 			var out;
 			for(var i = start; i <= end; i++){
-				id = this.hexes[i].el.attr('id');
+				id = this.hexes[i].el.attr('data-id');
 				this.hexes[i].setContent(this.options.formatLabel(id,this.hexes[i]));
 			}
 		}
@@ -287,7 +287,7 @@
 		if(typeof cls==="function"){
 			var c;
 			for(var i = start; i <= end; i++){
-				id = this.hexes[i].el.attr('id')
+				id = this.hexes[i].el.attr('data-id')
 				c = cls.call(this,id,this.hexes[i]);
 				this.hexes[i].setClass(c);
 			}
