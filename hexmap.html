@@ -596,9 +596,9 @@ S(document).ready(function(){
 		// Build the circular token that sits on a hex
 		str = '<div class="token'+((hex.dice==8 || hex.dice == 6) ? ' token-red':'')+'">';
 		if(hex.n == "Robber"){
-			str += 'Robber';
+			str += 'Robber '+hex.q+','+hex.r;
 		}else{
-			str += '<div class="id">'+id+'</div>';
+			str += '<div class="id">'+' '+hex.q+','+hex.r+'</div>';
 			str += '<div class="dice">'+hex.dice+'</div>';
 			str += '<div class="odds">'+ostr+'</div>';
 		}
@@ -669,30 +669,249 @@ S(document).ready(function(){
 
 
 
+		<section id="london">
+			<h2><a href="#london">London 1895</a></h2>
+			<p>Re-creating "The Unification of London: The Need and the Remedy", John Leighton, page 14, 1895 <a href="https://www.flickr.com/photos/12403504@N02/11233339935/in/photolist-i7DNAK-i7DAdZ-i7B3We-i7yTt8-i7y4Ws-i7xDLm-i7woFp-i7wSYe-i7vCp9-i7uZcH-i7uATJ-i7tUTL-i7sB3W-i7rZ5o-i7rPcP-i7q4y9-i7psYp-i7pAVM-hY7HLd-hY6rx4-hY5Z53-hY3HsB-hY2nrs-hXUzY2-hXMtVh-hXLsns">released by the British Library to the Public Domain</a>.</p>
+			<div class="example">
+<!-- HTML -->
+<figure class="ex-9">
+<div id="hexmap-9">
+<div class="compass compass-n">N</div>
+<div class="compass compass-e">E</div>
+<div class="compass compass-w">W</div>
+<div class="compass compass-s">S</div>
+<code>
+{
+	"layout":"odd-q",
+	"hexes": {
+		"A":{"n":"1a","q":0,"r":2,"label":"Horn<br />sey","type":"horizontal"},
+		"B":{"n":"2a","q":1,"r":2,"label":"Hack<br />ney","type":"horizontal"},
+		"C":{"n":"3a","q":2,"r":1,"label":"Old<br />Ford","type":"horizontal"},
+		"D":{"n":"4a","q":2,"r":0,"label":"Poplar","type":"horizontal"},
+		"E":{"n":"5a","q":2,"r":-1,"label":"Dept<br />ford","type":"horizontal"},
+		"F":{"n":"6a","q":1,"r":-1,"label":"Peck<br />ham","type":"horizontal"},
+		"G":{"n":"7a","q":0,"r":-2,"label":"Brix<br />ton","type":"horizontal"},
+		"H":{"n":"8a","q":-1,"r":-1,"label":"Batter<br />sea","type":"horizontal"},
+		"I":{"n":"9a","q":-2,"r":-1,"label":"Chel<br />sea","type":"horizontal"},
+		"J":{"n":"10a","q":-2,"r":0,"label":"Mary Le Bone","type":"horizontal"},
+		"K":{"n":"11a","q":-2,"r":1,"label":"S<sup>t</sup> John'<sup>s</sup> Wood","type":"horizontal"},
+		"L":{"n":"12a","q":-1,"r":2,"label":"Kentish Town","type":"horizontal"},
+		"M":{"n":"1","q":0,"r":1,"label":"Isling&middot;<br />ton","type":"vertical"},
+		"N":{"n":"2","q":1,"r":1,"label":"Bethnal Green","type":"vertical"},
+		"O":{"n":"3","q":1,"r":0,"label":"South&middot;<br />wark","type":"vertical"},
+		"P":{"n":"4","q":0,"r":-1,"label":"Kenning&middot;<br />ton","type":"vertical"},
+		"Q":{"n":"5","q":-1,"r":0,"label":"Westmin-<br />ster","type":"vertical"},
+		"R":{"n":"6","q":-1,"r":1,"label":"St Pan&middot;<br />cras","type":"vertical"},
+		"S":{"n":"","q":0,"r":0,"label":"The<br /><div>City</div>"}
+	}
+}
+</code>
+</div>
+<figcaption>London indexed by 2-mile hexagons</figcaption>
+</figure>
+
+<!-- Javascript -->
+<script>
+S(document).ready(function(){
+	var hexmap = S.hexmap('hexmap-9');
+	hexmap.positionHexes().resize();
+
+	// Define the content of each hex
+	hexmap.setContent(function(id,hex){
+
+		str = '';
+		
+		// Build the circular token that sits on a hex
+		str += '<div class="id">'+hex.n+'</div>';
+		str += '<div class="name">'+hex.label+'</div>';
+
+		return str;
+	})
+	
+	// Set the CSS class of each hex to be the hex type
+	hexmap.setClass(function(id,hex){
+		return hex.type;
+	});
+});
+</script>
+
+<!-- CSS -->
+<style>
+.ex-9 {
+	font-family: "Times New Roman", serif;
+	background-color: #fdedc6;
+	padding: 2em;
+	position: relative;
+	color: #675e50;
+}
+.compass {
+	position: absolute;
+	display: block;
+	padding: 0.06em 0.125em;
+	background-color: #fdedc6;
+	font-size: 2em;
+	font-weight: 700;
+	font-family: "Copperplate Gothic Bold", serif;
+}
+.compass-n {
+	left: 50%;
+	top: 0;
+	transform: translate3D(-50%,-50%,0);
+}
+.compass-s {
+	left: 50%;
+	top: 100%;
+	transform: translate3D(-50%,-50%,0);
+}
+.compass-e {
+	left: 100%;
+	top: 50%;
+	transform: translate3D(-50%,-50%,0);
+}
+.compass-w {
+	left: 0%;
+	top: 50%;
+	transform: translate3D(-50%,-50%,0);
+}
+.ex-9 figcaption {
+	margin-top: 2em;
+	text-align: center;
+}
+#hexmap-9 {
+	position: relative;
+	padding: 6% 10%;
+	margin: auto;
+	border-radius: 100%;
+	border: 2px solid rgba(0,0,0,0.5);
+}
+#hexmap-9 .outer {
+	border-radius: 100%;
+	position: relative;
+}
+#hexmap-9 .bigger {
+	position: absolute;
+	width: 110%;
+	height: 110%;
+	left: -5%;
+	top: -5%;
+	
+}
+#hexmap-9 .hex {
+	background-color: #675e50;
+	font-family: "Arial Black","Copperplate Gothic Bold","Times New Roman", serif;
+}
+#hexmap-9 .hex .hexinner {
+	background-color: #fdedc6;
+	color: inherit;
+	margin: 2px;
+}
+#hexmap-9 .hex .id, #hexmap-9 .hex .name {
+	font-weight: 700;
+	line-height: 1em;
+	text-shadow: 3px 3px 2px #fdedc6, -3px 3px 1px #fdedc6, -3px -3px 1px #fdedc6, 3px -3px 2px #fdedc6;
+}
+#hexmap-9 .hex .id {
+	font-size: 2em;
+}
+#hexmap-9 .hex .name {
+	font-size: 1.3em;
+	text-transform: uppercase;
+}
+#hexmap-9 .hex .name > div {
+	font-size: 1.6em;
+	line-height: 1.25em;
+}
+#hexmap-9 .hex:hover .hexinner {
+	/* We have created the hexagon via clip-path so we have to simulate
+	a border using two nested elements. We can set the border colour
+	using "background" and the border width using "margin" */
+	background: #675e50;
+	color: #fdedc6;
+}
+#hexmap-9 .hex:hover .id, #hexmap-9 .hex:hover .name {
+	text-shadow: none;
+}
+.vertical {
+	background-color: #fdedc6;
+	background-image: linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.15) 50%);
+	background-size: 4% 4%;
+}
+.horizontal {
+	background-color: #fdedc6;
+	background-image: linear-gradient(0deg, transparent 50%, rgba(0,0,0,0.15) 50%);
+	background-size: 4% 4%;
+}
+sup { top: -0.2em; }
+</style>
+</div>
+		</section>
+
+
+
+
+
 
 		<section id="html">
 			<h2><a href="#html">Hex map from HTML elements</a></h2>
 			<p>Sometimes you'd rather have a pre-generated hex map in the page as raw HTML rather than a JSON blob that gets converted. You can do that and attach a <code>hexmap</code> object to the element.</p>
 			<div class="example">
 <!-- HTML -->
-<div id="hexmap-9" class="hexmap" data-layout="odd-r" style="width:336px;height:285px;transform:scale(1)">
-	<ul class="hexmapinner" style="transform:scale(1.0000);">
-		<li data-id="A" class="hex" data-q="0" data-r="0" title="Hex a" style="left:0px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex a</div></div></li>
-		<li data-id="B" class="hex" data-q="0" data-r="1" title="Hex b" style="left:48px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex b</div></div></li>
-		<li data-id="C" class="hex" data-q="1" data-r="0" title="Hex c" style="left:96px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex c</div></div></li>
-		<li data-id="D" class="hex" data-q="1" data-r="1" title="Hex d" style="left:144px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex d</div></div></li>
-		<li data-id="E" class="hex" data-q="2" data-r="0" title="Hex e" style="left:192px;bottom:0px"><div class="hexinner"><div class="hexcontent">Hex e</div></div></li>
-		<li data-id="F" class="hex" data-q="2" data-r="1" title="Hex f" style="left:240px;bottom:85.5px"><div class="hexinner"><div class="hexcontent">Hex f</div></div></li>
-		<li data-id="G" class="hex" data-q="0" data-r="2" title="Hex g" style="left:0px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex g</div></div></li>
-		<li data-id="H" class="hex" data-q="1" data-r="2" title="Hex h" style="left:96px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex h</div></div></li>
-		<li data-id="I" class="hex" data-q="2" data-r="2" title="Hex i" style="left:192px;bottom:171px"><div class="hexinner"><div class="hexcontent">Hex i</div></div></li>
-	</ul>
+<div id="hexmap-10" class="hexmap pointy" data-layout="odd-r" style="width:336px;height:280px;transform:scale(1)">
+	<div class="hexmapinner" style="transform:scale(1.0000)">
+		<div class="hex" tabindex="0" data-id="A" data-r="0" data-q="0" style="left:0px;bottom:0px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="B" data-r="1" data-q="0" style="left:48px;bottom:84px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="C" data-r="0" data-q="1" style="left:96px;bottom:0px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="D" data-r="1" data-q="1" style="left:144px;bottom:84px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="E" data-r="0" data-q="2" style="left:192px;bottom:0px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="F" data-r="1" data-q="2" style="left:240px;bottom:84px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="G" data-r="2" data-q="0" style="left:0px;bottom:168px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="H" data-r="2" data-q="1" style="left:96px;bottom:168px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+		<div class="hex" tabindex="0" data-id="I" data-r="2" data-q="2" style="left:192px;bottom:168px;width:96px;height:112px">
+			<div class="hexinner">
+				<div class="hexcontent"></div>
+			</div>
+		</div>
+	</div>
 </div>
-
 <!-- Javascript -->
 <script>
+// Note that we only need to call any Javascript if we want to do
+// anything interactive with the HexMap. If not, we can skip it.
 S(document).ready(function(){
-	var hexmap = S.hexmap('hexmap-9');
+	var hexmap = S.hexmap('hexmap-10');
+	// No need to call hexmap.positionHexes() as we've already set the positions
 	hexmap.setClass(function(id,hex){
 		return (id=="D" ? "forest":"");
 	});

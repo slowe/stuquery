@@ -21,7 +21,7 @@
 	// Main function
 	function HexMap(el,attr){
 	
-		this.version = "0.3.1";
+		this.version = "0.3.2";
 		this.idprefix = "hex-";
 		this.events = {resize:""};
 		this.zoom = 1;
@@ -51,8 +51,12 @@
 			return {};
 		}
 
-		this.layout = this.container.attr('data-layout') || "odd-r";
-
+		// odd-r  shoves odd rows by +½ column
+		// even-r  shoves even rows by +½ column
+		// odd-q  shoves odd columns by +½ row
+		// even-q  shoves even columns by +½ row
+		this.setLayout(this.container.attr('data-layout'))
+		
 		this.lookup = {};
 
 		// If we have HexJSON inside a <code> element we turn it into SVG
@@ -71,9 +75,9 @@
 				if(children[c] == code) match = c;
 			}
 
-			if(json.layout) this.layout = json.layout;
+			if(json.layout) this.setLayout(json.layout);
 
-			var html = '<div class="hexmap" data-layout="'+json.layout+'"><div class="hexmapinner">';
+			var html = '<div class="hexmap '+this.type+'" data-layout="'+this.layout+'"><div class="hexmapinner">';
 			var i = 0;
 			for(var id in json.hexes){
 				html += '<'+this.tag+' class="hex" tabindex="0" data-id="'+id+'" data-r="'+json.hexes[id].r+'" data-q="'+json.hexes[id].q+'"><div class="hexinner"><div class="hexcontent">'+(typeof this.options.formatLabel==="function" ? this.options.formatLabel(id,json.hexes[id]) : '')+'</div></div></'+this.tag+'>';
@@ -89,7 +93,8 @@
 			hexes = this.container.find('.hex');
 
 			// Work out layout
-			this.layout = this.container.find('.hexmap').attr('data-layout');
+			this.setLayout(this.container.find('.hexmap').attr('data-layout'));
+
 			json = {'layout':this.layout,'hexes':{}};
 
 			// Get the data from the hexes
@@ -121,15 +126,55 @@
 		
 
 		this.getLeft = function(r,q){
-			return ((q - this.q.min + (Math.abs(r)%2==(this.layout.indexOf('odd')==0 ? 1 : 0) ? this.qoffset[0] : this.qoffset[1]))*this.hex.wide);
+			var dx = this.hex.wide*0.5;
+			var x = (q - this.q.min)*this.hex.wide;
+			if(this.type=="pointy"){
+				if(this.shift=="even"){
+					if(Math.abs(r)%2) x += 0;
+					else x += dx;
+				}else if(this.shift="odd"){
+					if(Math.abs(r)%2) x += dx;
+				}
+			}else if(this.type=="flat"){
+				x *= 0.75;
+			}
+			return x;
 		}
 		this.getBottom = function(r,q){
-			return ((r - this.r.min)*this.hex.tall*0.75);
+			var dy = this.hex.tall*0.5;
+			var y = (r - this.r.min)*this.hex.tall;
+//if(this.container.attr('id')=="hexmap-9") console.log(this.container,r,this.r.min,y,q,Math.abs(q)%2,this.shift)
+			if(this.type=="pointy"){
+				y *= 0.75;
+			}else if(this.type=="flat"){
+				if(this.shift=="even"){
+					if(Math.abs(q)%2==1) y += dy;
+					else y += 0;
+				}else if(this.shift="odd"){
+					if(Math.abs(q)%2==1) y -= dy;
+					else y += 0;
+				}
+			}
+			return y;
 		}
 
 		if(attr.file) this.load(attr.file);
 		else this.init();
 
+		return this;
+	}
+
+	HexMap.prototype.setLayout = function(layout){
+		if(layout!="odd-r" && layout!="odd-q" && layout!="even-r" && layout!="even-q") layout = "odd-r";
+		// odd-r  shoves odd rows by +½ column
+		// even-r  shoves even rows by +½ column
+		// odd-q  shoves odd columns by +½ row
+		// even-q  shoves even columns by +½ row
+		this.layout = layout;
+		this.type = (this.layout.indexOf('q')>0 ? 'flat':'pointy');
+		var otype = (this.layout.indexOf('r')>0 ? 'flat':'pointy');
+		this.shift = (this.layout.indexOf('odd')==0 ? 'odd':'even');
+		this.container.find('.hexmap').removeClass(otype).addClass(this.type);
 		return this;
 	}
 
@@ -159,7 +204,6 @@
 		*/
 		return this;
 	}
-
 	HexMap.prototype.init = function(){
 
 		var minr = 1e12;
@@ -170,7 +214,6 @@
 		for(var i = 0; i < hexes.length; i++){
 
 			this.hexes[i] = new Hex(this.hexes[i],{'el':hexes[i],'parent':this,'width':this.attr.width});
-
 			if(this.hexes[i].r > maxr) maxr = this.hexes[i].r;
 			if(this.hexes[i].r < minr) minr = this.hexes[i].r;
 			if(this.hexes[i].q > maxq) maxq = this.hexes[i].q;
@@ -191,23 +234,32 @@
 		this.q = {'min':minq,'max':maxq};
 
 		this.qoffset = [0,-0.5];
-		if(this.layout.indexOf('odd')==0 && Math.abs(this.r.min)%2==0){
+		if(this.shift=='odd' && Math.abs(this.r.min)%2==0){
 			this.qoffset = [0.5,0];
 		}
 
 		this.hex = {'wide': this.hexes[0].el[0].clientWidth,'tall':this.hexes[0].el[0].clientHeight};
 
+		// We want sizes to be integer multiples of 4 to avoid CSS leaving gaps
+		if(this.hex.wide%4!=0) this.hex.wide = Math.round(this.hex.wide/4)*4;
+		if(this.hex.tall%4!=0) this.hex.tall = Math.round(this.hex.tall/4)*4;
+
 		for(var i = 0; i < hexes.length; i++){
-			if(this.layout.indexOf('odd')==0){
+			if(this.shift=='odd'){
 				tq = this.hexes[i].q + (this.hexes[i].q % 2==1) ? 0 : -0.5;
 			}
 			if(tq < minq) minq =  tq;
 			if(tq > maxq) maxq =  tq;
 		}
 
-		this.wide = (maxq-minq + 1)*this.hex.wide;// + paddingWidth(this.container[0]);//marginWidth(this.container.find('.hexgrid')[0]);
-		this.tall = (maxr-minr + 1)*this.hex.tall*0.75 + this.hex.tall*0.25;// + paddingHeight(this.container[0]); // + marginHeight(this.container.find('.hexgrid')[0]);
-
+		if(this.type=="flat"){
+			this.wide = ((maxq-minq)*0.75 + 1)*this.hex.wide;// + paddingWidth(this.container[0]);//marginWidth(this.container.find('.hexgrid')[0]);
+			this.tall = ((maxr-minr) + 1)*this.hex.tall;//(maxr-minr + 1)*this.hex.wide*0.75 + this.hex.wide*0.25;// + paddingHeight(this.container[0]); // + marginHeight(this.container.find('.hexgrid')[0]);
+		}else{
+			this.wide = (maxq-minq + 1)*this.hex.wide;// + paddingWidth(this.container[0]);//marginWidth(this.container.find('.hexgrid')[0]);
+			this.tall = (maxr-minr + 1)*this.hex.tall*0.75 + this.hex.tall*0.25;// + paddingHeight(this.container[0]); // + marginHeight(this.container.find('.hexgrid')[0]);
+		}
+		
 		this.container.css({'width':this.wide+'px','height':this.tall.toFixed(1)+'px'}).find('.hexmap').css({'width':this.wide+'px','height':this.tall.toFixed(1)+'px'});
 		return this;
 	}
@@ -350,14 +402,7 @@
 
 	// Position all the hexes
 	HexMap.prototype.positionHexes = function(){
-		var el;
-		for(var i = 0; i < this.hexes.length; i++){
-			el = this.hexes[i].el;
-			el.css({
-				'left':this.getLeft(this.hexes[i].r,this.hexes[i].q)+'px',
-				'bottom':this.getBottom(this.hexes[i].r,this.hexes[i].q)+'px'
-			});
-		}		
+		for(var i = 0; i < this.hexes.length; i++) this.hexes[i].position(this.getLeft(this.hexes[i].r,this.hexes[i].q),this.getBottom(this.hexes[i].r,this.hexes[i].q),this.hex.wide,this.hex.tall);
 		return this;
 	}
 
@@ -369,6 +414,7 @@
 		if(attr.q) this.q = parseInt(this.el.attr('data-q'));
 		if(attr.n) this.n = this.el.find('.default').html();
 		if(attr.id) this.id = attr.id;
+		this.s = -this.q - this.r;
 
 		if(typeof attr.width==="number") this.el.css({'width':attr.width+'em','height':(attr.width*7.125/6)+'em'});
 
@@ -379,6 +425,29 @@
 		return this;
 	}
 	
+	Hex.prototype.position = function(x,y,w,h){
+		this.el.css({
+			'left':x+'px',
+			'bottom':y+'px',
+			'width':w+'px',
+			'height':h+'px'
+		});
+		return this;
+	}
+
+	/*
+	Hex.prototype.corner = function(i){
+		var angle_deg = 60 * i   + 30
+		var angle_rad = PI / 180 * angle_deg
+		return Point(center.x + size * cos(angle_rad),
+					 center.y + size * sin(angle_rad))
+	}
+	*/
+                 
+
+	function axial2cube(q,r){ return [q,r,-q-r]; }
+	function cube2axial(q,r,s){ return [q,r]; }
+
 	// Helper functions
 	function marginHeight(el) {
 		var style = getComputedStyle(el);
