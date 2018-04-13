@@ -356,7 +356,7 @@ console.log(this.wide,this.wide/this.hex.wide,maxq,minq,this.hex.wide)
 		if(this.container[0].offsetWidth < this.wide + padding){
 			w = this.container[0].offsetWidth - padding;
 			scale = Math.min(1,w/this.wide);
-			this.container.find('.hexmap').css({'height':(this.tall*scale).toFixed(1)+'px','transform':'scale('+(scale).toFixed(4)+')','transform-origin':'center center'});
+			this.container.find('.hexmap').css({'height':(this.tall*scale).toFixed(1)+'px','transform':'scale('+(scale).toFixed(4)+')','transform-origin':'bottom left'});
 		}else{
 			this.container.css({'width':this.wide+'px','height':this.tall+'px'}).find('.hexmap').css({'width':this.wide+'px','height':this.tall+'px','transform':'scale(1)'});
 		}

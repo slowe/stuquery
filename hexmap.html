@@ -739,16 +739,16 @@ S(document).ready(function(){
 <style>
 .ex-9 {
 	font-family: "Times New Roman", serif;
-	background-color: #fdedc6;
+	background-color: #fdf4d6;
 	padding: 2em;
 	position: relative;
-	color: #675e50;
+	color: #656058;
 }
 .compass {
 	position: absolute;
 	display: block;
 	padding: 0.06em 0.125em;
-	background-color: #fdedc6;
+	background-color: #fdf4d6;
 	font-size: 2em;
 	font-weight: 700;
 	font-family: "Copperplate Gothic Bold", serif;
@@ -779,39 +779,28 @@ S(document).ready(function(){
 }
 #hexmap-9 {
 	position: relative;
-	padding: 6% 10%;
+	padding: 6% 8.3333%;
 	margin: auto;
 	border-radius: 100%;
 	border: 2px solid rgba(0,0,0,0.5);
 }
-#hexmap-9 .outer {
-	border-radius: 100%;
-	position: relative;
-}
-#hexmap-9 .bigger {
-	position: absolute;
-	width: 110%;
-	height: 110%;
-	left: -5%;
-	top: -5%;
-	
-}
 #hexmap-9 .hex {
-	background-color: #675e50;
+	background-color: #656058;
 	font-family: "Arial Black","Copperplate Gothic Bold","Times New Roman", serif;
 }
 #hexmap-9 .hex .hexinner {
-	background-color: #fdedc6;
+	background-color: #fdf4d6;
 	color: inherit;
 	margin: 2px;
 }
 #hexmap-9 .hex .id, #hexmap-9 .hex .name {
 	font-weight: 700;
 	line-height: 1em;
-	text-shadow: 3px 3px 2px #fdedc6, -3px 3px 1px #fdedc6, -3px -3px 1px #fdedc6, 3px -3px 2px #fdedc6;
+	text-shadow: 3px 3px 2px #fdf4d6, -3px 3px 1px #fdf4d6, -3px -3px 1px #fdf4d6, 3px -3px 2px #fdf4d6;
 }
 #hexmap-9 .hex .id {
 	font-size: 2em;
+	font-family: "Times New Roman", serif;
 }
 #hexmap-9 .hex .name {
 	font-size: 1.3em;
@@ -825,19 +814,23 @@ S(document).ready(function(){
 	/* We have created the hexagon via clip-path so we have to simulate
 	a border using two nested elements. We can set the border colour
 	using "background" and the border width using "margin" */
-	background: #675e50;
-	color: #fdedc6;
+	background: #656058;
+	color: #fdf4d6;
 }
 #hexmap-9 .hex:hover .id, #hexmap-9 .hex:hover .name {
 	text-shadow: none;
 }
+.outer-london .name {
+	font-size: 1.4em;
+	font-family: "Times New Roman", serif;
+}
 .vertical {
-	background-color: #fdedc6;
+	background-color: #fdf4d6;
 	background-image: linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.15) 50%);
 	background-size: 4% 4%;
 }
 .horizontal {
-	background-color: #fdedc6;
+	background-color: #fdf4d6;
 	background-image: linear-gradient(0deg, transparent 50%, rgba(0,0,0,0.15) 50%);
 	background-size: 4% 4%;
 }
