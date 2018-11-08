@@ -20,6 +20,7 @@
 	margin: 0;
 	z-index: 1;
 }
+.hex:hover,. hex:focus { z-index: 2; }
 .hexmap.pointy .hex {
 	width: 6em;
 	height: 6.9282em;
@@ -53,7 +54,7 @@
 }
 .hexcontent { padding: 0.25em; font-size: 0.8em; line-height: 1.2em;}
 .when-selected { display: none;}
-.hex:hover .when-selected, .hex:focus .when-selected { display: block; font-size: 1em; }
+.hex:hover .when-selected, .hex:focus .when-selected { display: block; font-size: 1em;; }
 .hex .when-selected .value { font-size: 2em; font-weight: 700; }
 .hex:hover .default, .hex:hover .no-hover, .hex:focus .default, .hex:focus .no-hover { display: none; }
 
