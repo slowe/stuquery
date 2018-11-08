@@ -56,3 +56,12 @@
 .hex:hover .when-selected, .hex:focus .when-selected { display: block; font-size: 1em; }
 .hex .when-selected .value { font-size: 2em; font-weight: 700; }
 .hex:hover .default, .hex:hover .no-hover, .hex:focus .default, .hex:focus .no-hover { display: none; }
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.hexmap.pointy .hex, .hexmap.pointy .hexinner {
+		border-radius: 80% / 50%;
+	}
+	.hexmap.flat .hex, .hexmap.flat .hexinner {
+		border-radius: 50% / 80%;
+	}
+}
