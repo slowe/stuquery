@@ -20,7 +20,7 @@
 	margin: 0;
 	z-index: 1;
 }
-.hex:hover,. hex:focus { z-index: 2; }
+.hex:hover, .hex:focus { z-index: 2; }
 .hexmap.pointy .hex {
 	width: 6em;
 	height: 6.9282em;
@@ -58,11 +58,13 @@
 .hex .when-selected .value { font-size: 2em; font-weight: 700; }
 .hex:hover .default, .hex:hover .no-hover, .hex:focus .default, .hex:focus .no-hover { display: none; }
 
+/* Fudge for IE */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-	.hexmap.pointy .hex, .hexmap.pointy .hexinner {
-		border-radius: 80% / 50%;
-	}
-	.hexmap.flat .hex, .hexmap.flat .hexinner {
-		border-radius: 50% / 80%;
-	}
+	.hexmap.pointy .hex, .hexmap.pointy .hexinner { border-radius: 80% / 50%; }
+	.hexmap.flat .hex, .hexmap.flat .hexinner { border-radius: 50% / 80%; }
+}
+/* Fudge for Edge (and other browsers that support @supports but not clip-path */
+@supports not (clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)) {
+	.hexmap.pointy .hex, .hexmap.pointy .hexinner { border-radius: 80% / 50%; }
+	.hexmap.flat .hex, .hexmap.flat .hexinner { border-radius: 50% / 80%; }
 }
