@@ -84,14 +84,15 @@ S(document).ready(function(){
 
 		for(i = 0; i < el.length; i++){
 			v = S(el[i]).attr('value');
-			if(!el[i].checked){
-				functions[v].required = false;
-				for(var j = functions[v].start; j <= functions[v].end; j++) linestoremove.push(j);
-			}else{
-				functions[v].required = true;
+			if(functions[v]){
+				if(!el[i].checked){
+					functions[v].required = false;
+					for(var j = functions[v].start; j <= functions[v].end; j++) linestoremove.push(j);
+				}else{
+					functions[v].required = true;
+				}
 			}
 		}
-		functions['stuQuery'].required = true;
 
 		// Loop over internal functions and find out which ones we no longer need
 		for(f in functions){
@@ -124,8 +125,6 @@ S(document).ready(function(){
 			var n = whichFunctionsRequire(f,lines);
 			if(n.length > 0) functions[f].neededby = n;
 		}
-
-
 
 		txt = lines.join('\n');
 		S('#output').html(txt);
@@ -204,6 +203,8 @@ S(document).ready(function(){
 		fullcode = data;
 		S('#output').html(data);
 		update();
+		buildForm();
+
 	}
 
 	function error(e,a){
@@ -211,5 +212,4 @@ S(document).ready(function(){
 	}
 	S().ajax("js/stuquery.js",{'complete': success, 'error': error });
 
-	buildForm();
 });
