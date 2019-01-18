@@ -22,6 +22,14 @@
 		}
 		S().ajax("file.txt",{'complete': success, 'error': error });
 		S().ajax("nofile.txt",{'complete': success, 'error': error });
+		S().ajax("js/stuquery.js",{'el':S('.size'),'success':function(e,attr){
+			str = attr.header.replace(/.*Content-Length: ?([0-9]+)[\n\r]/,function(m,p1){ size = parseInt(p1); return p1; });
+			attr.el.html(((size||0)/1000).toFixed(1)+"kB");
+		}})
+		S().ajax("js/stuquery.min.js",{'el':S('.size-min'),'success':function(e,attr){
+			str = attr.header.replace(/.*Content-Length: ?([0-9]+)[\n\r]/,function(m,p1){ size = parseInt(p1); return p1; });
+			attr.el.html(((size||0)/1000).toFixed(1)+"kB");
+		}})
 	});
 	</script>
 	<style>
@@ -35,8 +43,8 @@
 	<div id="content">
 
 		<section id="downloads">
-			<a href="js/stuquery.js">stuquery.js (16.2kB)</a>
-			<a href="js/stuquery.min.js">stuquery.min.js (8.2kB)</a>
+			<a href="js/stuquery.js">stuquery.js (<span class="size">kB</span>)</a>
+			<a href="js/stuquery.min.js">stuquery.min.js (<span class="size-min">kB</span>)</a>
 		</section>
 
 		<h1 data="Some data">stuQuery<span class="version">v</span></h1>
