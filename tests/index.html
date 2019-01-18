@@ -138,7 +138,7 @@
 				var _obj = this;
 				console.log('test.noexist')
 				S().ajax('test.noexist',{
-					'complete':function(e){
+					'success':function(e){
 						console.log('content',e)
 						equal(e,'{ "test": "blah" }',"Loaded content that doesn't exist")
 						start();
