@@ -8,7 +8,7 @@
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
 		var elements;
-		this.stuquery = "1.0.18";
+		this.stuquery = "1.0.20";
 
 		this.getBy = function(e,s){
 			var i,m,k;
@@ -448,10 +448,14 @@
 		if(attrs.beforeSend) oReq = attrs.beforeSend.call((attrs['this'] ? attrs['this'] : this), oReq, attrs);
 
 		function complete(evt) {
+			attrs.header = oReq.getAllResponseHeaders();
 			if(oReq.status === 200) {
-				attrs.header = oReq.getAllResponseHeaders();
 				var rsp = oReq.response || oReq.responseText;
-				if(attrs['dataType']=="json") try { rsp = JSON.parse(rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n")) } catch(e){ error(e); };
+				if(attrs['dataType']=="json"){
+					try {
+						if(typeof rsp==="string") rsp = JSON.parse(rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n"));
+					} catch(e){ error(e); };
+				}
 
 				// Parse out content in the appropriate callback
 				if(attrs['dataType']=="script"){
@@ -472,7 +476,7 @@
 		function error(evt){
 			if(typeof attrs.error==="function") attrs.error.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
 		}
-	
+
 		function progress(evt){
 			if(typeof attrs.progress==="function") attrs.progress.call((attrs['this'] ? attrs['this'] : this),evt,attrs);
 		}
