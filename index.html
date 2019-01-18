@@ -23,12 +23,10 @@
 		S().ajax("file.txt",{'complete': success, 'error': error });
 		S().ajax("nofile.txt",{'complete': success, 'error': error });
 		S().ajax("js/stuquery.js",{'el':S('.size'),'success':function(e,attr){
-			str = attr.header.replace(/.*Content-Length: ?([0-9]+)[\n\r]/,function(m,p1){ size = parseInt(p1); return p1; });
-			attr.el.html(((size||0)/1000).toFixed(1)+"kB");
+			attr.el.html(((e.length||0)/1000).toFixed(1)+"kB");
 		}})
 		S().ajax("js/stuquery.min.js",{'el':S('.size-min'),'success':function(e,attr){
-			str = attr.header.replace(/.*Content-Length: ?([0-9]+)[\n\r]/,function(m,p1){ size = parseInt(p1); return p1; });
-			attr.el.html(((size||0)/1000).toFixed(1)+"kB");
+			attr.el.html(((e.length||0)/1000).toFixed(1)+"kB");
 		}})
 	});
 	</script>
