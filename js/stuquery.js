@@ -48,7 +48,9 @@
 		};
 		if(typeof els==="string") this.e = this.querySelector(document,els);
 		else if(typeof els==="object") this.e = (typeof els.length=="number") ? els : [els];
-		for(var it in this.e) this[it] = this.e[it];
+		for(var it in this.e){
+			if(this.e[it]) this[it] = this.e[it];
+		}
 		this.length = (this.e ? this.e.length : 0);
 
 		return this;
@@ -71,7 +73,10 @@
 		for(k = 0; k < tmp.length; k++){ result.push(tmp[k]); }
 		return result;
 	};
-	stuQuery.prototype.ready = function(f){ /in/.test(document.readyState) ? setTimeout('S(document).ready('+f+')',9) : f(); };
+	stuQuery.prototype.ready = function(f){
+		if(/in/.test(document.readyState)) setTimeout('S(document).ready('+f+')',9);
+		else f();
+	};
 	stuQuery.prototype.html = function(html){
 		// Return HTML or set the HTML
 		if(typeof html==="number") html = ''+html;
@@ -288,12 +293,16 @@
 			}
 			if(typeof css==="object"){
 				// Add the user-provided style to what was there
-				for(key in css) styles[key] = css[key];
+				for(key in css){
+					if(css[key]) styles[key] = css[key];
+				}
 				// Build the CSS string
 				var newstyle = '';
 				for(key in styles){
-					if(newstyle) newstyle += ';';
-					if(styles[key]) newstyle += key+':'+styles[key];
+					if(styles[key]){
+						if(newstyle) newstyle += ';';
+						if(styles[key]) newstyle += key+':'+styles[key];
+					}
 				}
 				// Update style
 				this[i].setAttribute('style',newstyle);
