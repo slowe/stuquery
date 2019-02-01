@@ -1,16 +1,20 @@
-// Version 0.2
-function SVG(id){
+/*
+	Stuquery SVG Builder
+*/
+function SVG(id,w,h){
 	if(!id) return this;
+	this.version = "0.1.4";
 	this.canvas = S('#'+id);
-	this.w = this.canvas[0].offsetWidth;
-	this.h = this.canvas[0].offsetHeight;
-	
+	this.w = parseInt(w || this.canvas[0].offsetWidth);
+	this.h = parseInt(h || this.canvas[0].offsetHeight);
+	this.id = id;
 	this.canvas.html('<svg height="'+this.h+'" version="1.1" width="'+this.w+'" viewBox="0 0 '+this.w+' '+this.h+'" xmlns="http://www.w3.org/2000/svg"><desc>Created by stuQuery SVG</desc></svg>');
 	this.paper = S(this.canvas.find('svg')[0]);
 
 	// Initialise
 	this.nodes = new Array();
 	this.clippaths = new Array();
+	this.patterns = new Array();
 	
 	function Path(path){
 		this.path = path;
@@ -92,17 +96,9 @@ function SVG(id){
 		if(!this.attributes) this.attributes = {};
 		if(!this.el || this.el.length == 0) this.el = S('#'+this.id);
 		for(a in attr){
-			b = a;
-			// If we are updating the path
-			if(a == "path" || a == "d"){
-				if(typeof attr[a]!=="string"){
-					var path = new Path(attr[a]);
-					attr[a] = path.path;
-				}
-				b = "d";
-			}
-			this.attributes[b] = attr[a];
-			this.el.attr(b,attr[a]);
+			if(typeof attr[a]==="string") attr[a] = attr[a].replace(/\"/g,"\'");
+			this.attributes[a] = attr[a];
+			this.el.attr(a,attr[a]);
 		}
 		this.orig.attributes = JSON.parse(JSON.stringify(this.attributes));
 		return this;
@@ -160,7 +156,8 @@ function SVG(id){
 		return this.nodes[this.nodes.length-1];
 	}
 	this.rect = function(x,y,w,h,r){
-		this.nodes.push(new Node({'x':x,'y':y,'width':w,'height':h,'r':r,'rx':r,'ry':r,'type':'rect'}));
+		if(r) this.nodes.push(new Node({'x':x,'y':y,'width':w,'height':h,'r':r,'rx':r,'ry':r,'type':'rect'}));
+		else this.nodes.push(new Node({'x':x,'y':y,'width':w,'height':h,'type':'rect'}));
 		return this.nodes[this.nodes.length-1];
 	}
 	this.path = function(path){
@@ -175,18 +172,25 @@ function SVG(id){
 		this.clippaths.push(new Node(o));
 		return this.clippaths[this.clippaths.length-1];
 	}
+	this.pattern = function(o){
+		this.patterns.push(o);
+		return this.patterns[this.patterns.length-1];
+	}
 
 	return this;
 }
 SVG.prototype.clear = function(){
 	this.nodes = new Array();
 	this.clippaths = new Array();
+	this.patterns = new Array();
 	this.draw();
 	return this;
-}	
-SVG.prototype.draw = function(){
+}
+SVG.prototype.draw = function(head){
 	var dom = "<desc>Created by stuQuery SVG</desc>";
-
+	if(this.patterns.length > 0){
+		for(var i = 0; i < this.patterns.length; i++) dom += this.patterns[i];
+	}
 	if(this.clippaths.length > 0){
 		dom += '<defs>';
 		for(var i = 0; i < this.clippaths.length; i++){
@@ -212,7 +216,9 @@ SVG.prototype.draw = function(){
 	for(var i = 0; i < this.nodes.length; i++){
 		var t = this.nodes[i].type;
 		var arr = (this.nodes[i].text) ? this.nodes[i].text.split(/\n/) : [];
-		if(!this.nodes[i].id) this.nodes[i].id = 'svg-node-'+i;
+		if(!this.nodes[i].id) this.nodes[i].id = this.id+'-svg-node-'+i;
+		// Set the ID if we've been given one
+		if(this.nodes[i].attributes && this.nodes[i].attributes['id']) this.nodes[i].id = this.nodes[i].attributes['id'];
 
 		if(this.nodes[i].type){
 			dom += '<'+t;
