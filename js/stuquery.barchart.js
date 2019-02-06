@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.9.1";
+		var ver = "0.9.3";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -184,20 +184,38 @@
 		}
 		return this;
 	}
+	BarChart.prototype.getYRange = function(){
+		var mx = 0;
+		var mn = 0;
+		// Find the peak value
+		for(var b = 0; b < this.nbins; b++){
+			if(this.bins[b].value > mx) mx = this.bins[b].value;
+			var v = 0;
+			for(var s = 0; s < this.bins[b].values.length; s++) v += (this.bins[b].values[s]);
+			if(v < 0) mn = v;
+		}
+		return {'min':mn,'max':mx};
+	}
 	BarChart.prototype.draw = function(){
 
-		var id = this.target.substr(1);
+		var id = this.target.substr(1).replace(/^([^\s]+).*$/,function(m,p1){return p1;});
 		if(!this.target || !this.bins) return this;
 
 		var mx = 0;
 		var mn = 0;
 	
 		if(this.nbins > 0){
-		
-			if(S(this.target+' .label').length == 0) S(this.target).append('<span class="label">label</span>');
-			if(!this.lineheight) this.lineheight = S(this.target).find('.label')[0].offsetHeight;
+			S(this.target).addClass('barchart');
+			
+
+			if(typeof this.lineheight!=="number"){
+				S(this.target).append('<table class="remove"><tr><td><span class="label">label</span></td></tr></table>');
+				styles = window.getComputedStyle(S(this.target).find('table .label')[0]);
+				this.lineheight = parseInt(styles.lineHeight)+parseInt(styles.paddingBottom)+parseInt(styles.paddingTop);
+				S(this.target).find('.remove').remove();
+			}
 			// Set the height of the graph
-			if(!this.height) this.height = S(this.target)[0].offsetHeight || 200;
+			if(!this.height) this.height = S(this.target)[0].offsetHeight || parseInt(S(this.target).css('height')) || 200;
 			h = this.height-this.lineheight;
 
 			mn = (this.attr.ymin) ? this.attr.ymin : 0;
@@ -211,7 +229,7 @@
 			}
 
 			// Build the basic graph structure
-			if(!this.drawn) S(this.target).addClass('barchart').html('<div class="grid" style="height:'+(h)+'px;"></div><table style="height:'+this.height+'px"><tr style="vertical-align:bottom;"></tr></table><div style="clear:both;"></div>');
+			if(!this.drawn) S(this.target).html('<div class="grid" style="height:'+(h)+'px;"></div><table style="height:'+this.height+'px"><tr style="vertical-align:bottom;"></tr></table><div style="clear:both;"></div>');
 
 			// Draw the grid
 			if(this.attr.ymax && this.attr.ymax > mx) mx = this.attr.ymax;
@@ -221,6 +239,7 @@
 			var r = mx-mn;
 			for(var g = 0; g <= grid.max; g+= grid.inc) output += '<div class="line" style="bottom:'+(h*(g-mn)/r)+'px;"><span>'+(this.attr.units || "")+this.formatNumber(g)+'</span></div>';
 			S(this.target+' .grid').html(output);
+
 
 			var maketable = (S(this.target+' table td').length == 0);
 			output = "";
@@ -302,6 +321,7 @@
 				S(this.target).on('mouseleave',{me:this},function(e){ if(e.data){ e.data.me.trigger("mouseleave",{event:e}); } })
 				S(this.target).on('mouseover',{me:this},function(e){ e.data.me.trigger("mouseover",{event:e}); })
 			}
+
 			// Attach the events
 			if(!this.drawn){
 				S(this.target+' .bar')
