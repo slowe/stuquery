@@ -7,7 +7,7 @@
 
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
-		this.stuquery = "1.0.21";
+		this.stuquery = "1.0.22";
 
 		this.getBy = function(e,s){
 			var i,m,k;
@@ -294,12 +294,12 @@
 			if(typeof css==="object"){
 				// Add the user-provided style to what was there
 				for(key in css){
-					if(css[key]) styles[key] = css[key];
+					if(typeof css[key]!=="undefined") styles[key] = css[key];
 				}
 				// Build the CSS string
 				var newstyle = '';
 				for(key in styles){
-					if(styles[key]){
+					if(typeof styles[key]!=="undefined"){
 						if(newstyle) newstyle += ';';
 						if(styles[key]) newstyle += key+':'+styles[key];
 					}
