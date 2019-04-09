@@ -7,7 +7,7 @@
 
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
-		this.stuquery = "1.0.22";
+		this.stuquery = "1.0.24";
 
 		this.getBy = function(e,s){
 			var i,m,k;
@@ -458,8 +458,9 @@
 		function complete(evt) {
 			attrs.header = oReq.getAllResponseHeaders();
 			var rsp;
-			if(oReq.status === 200) {
-				rsp = oReq.response || oReq.responseText;
+			if(oReq.status == 200 || oReq.status == 201 || oReq.status == 202) {
+				rsp = oReq.response;
+				if(oReq.responseType=="" || oReq.responseType=="text") rsp = oReq.responseText;
 				if(attrs.dataType=="json"){
 					try {
 						if(typeof rsp==="string") rsp = JSON.parse(rsp.replace(/[\n\r]/g,"\\n").replace(/^([^\(]+)\((.*)\)([^\)]*)$/,function(e,a,b,c){ return (a==cb) ? b:''; }).replace(/\\n/g,"\n"));
