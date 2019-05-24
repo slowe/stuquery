@@ -7,7 +7,7 @@
 
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
-		this.stuquery = "1.0.24";
+		this.stuquery = "1.0.25";
 
 		this.getBy = function(e,s){
 			var i,m,k;
@@ -438,7 +438,8 @@
 		if(attrs.data) qs += (qs ? '&':'')+attrs.data;
 
 		// Build the URL to query
-		attrs.url = url+(qs ? '?'+qs:'');
+		if(attrs.method=="POST") attrs.url = url;
+		else attrs.url = url+(qs ? '?'+qs:'');
 
 		if(attrs.dataType=="jsonp"){
 			var script = document.createElement('script');
@@ -496,10 +497,12 @@
 			catch(err){ error(err); }
 		}
 
-		try{ oReq.open('GET', attrs.url); }
+		try{ oReq.open((attrs.method||'GET'), attrs.url, true); }
 		catch(err){ error(err); }
 
-		try{ oReq.send(); }
+		if(attrs.method=="POST") oReq.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+
+		try{ oReq.send((attrs.method=="POST" ? qs : null)); }
 		catch(err){ error(err); }
 
 		return this;
