@@ -7,7 +7,7 @@
 
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
-		this.stuquery = "1.0.27";
+		this.stuquery = "1.0.25";
 
 		this.getBy = function(e,s){
 			var i,m,k;
@@ -108,7 +108,7 @@
 		}
 		return this;
 	};
-	stuQuery.prototype.before = function(t){
+	stuQuery.prototype.before=function(t){
 		var i,d,e,j;
 		for(i = 0 ; i < this.length ; i++){
 			d = document.createElement('div');
@@ -246,52 +246,31 @@
 	};
 	stuQuery.prototype.hasClass = function(cls){
 		// Check if a DOM element has the specified class
-		var i,c;
 		var result = true;
-		for(i = 0; i < this.length; i++){
-			c = this[i].getAttribute('class');
-			if(c){
-				if(!c.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) result = false;
-			}else result = false;
+		for(var i = 0; i < this.length; i++){
+			if(!this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) result = false;
 		}
 		return result;
 	};
 	stuQuery.prototype.toggleClass = function(cls){
 		// Toggle a class on a DOM element
-		var i,c;
-		for(i = 0; i < this.length; i++){
-			c = this[i].getAttribute('class');
-			if(c){
-				if(c.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) c = c.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'');
-				else c = (cls+' '+cls).replace(/^ /,'');
-			}else{
-				c = cls;
-			}
-			this[i].setAttribute('class',c);
+		for(var i = 0; i < this.length; i++){
+			if(this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this[i].className = this[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'');
+			else this[i].className = (this[i].className+' '+cls).replace(/^ /,'');
 		}
 		return this;
 	};
 	stuQuery.prototype.addClass = function(cls){
 		// Add a class on a DOM element
-		var c,i;
-		for(i = 0; i < this.length; i++){
-			c = this[i].getAttribute('class');
-			if(c){
-				if(!c.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) c = (c+' '+cls).replace(/^ /,'');
-			}else c = cls;
-			this[i].setAttribute('class',c);
+		for(var i = 0; i < this.length; i++){
+			if(!this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this[i].className = (this[i].className+' '+cls).replace(/^ /,'');
 		}
 		return this;
 	};
 	stuQuery.prototype.removeClass = function(cls){
 		// Remove a class on a DOM element
-		var i,c;
-		for(i = 0; i < this.length; i++){
-			c = this[i].getAttribute('class');
-			if(c!=""){
-				while(c.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) c = c.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'').replace(/^ /,'');
-				this[i].setAttribute('class',c||"");
-			}
+		for(var i = 0; i < this.length; i++){
+			while(this[i].className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) this[i].className = this[i].className.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'').replace(/^ /,'');
 		}
 		return this;
 	};
@@ -434,7 +413,7 @@
 		// error: function - a function executed on an error
 		// cache: break the cache
 		// dataType: json - will convert the text to JSON
-		//			  jsonp - will add a callback function and convert the results to JSON
+		//           jsonp - will add a callback function and convert the results to JSON
 
 		if(typeof url!=="string") return false;
 		if(!attrs) attrs = {};
@@ -476,7 +455,6 @@
 		oReq.addEventListener("progress", progress);
 		var responseTypeAware = 'responseType' in oReq;
 		if(attrs.beforeSend) oReq = attrs.beforeSend.call((attrs['this'] ? attrs['this'] : this), oReq, attrs);
-		if(attrs.dataType=="script") oReq.overrideMimeType('text/javascript');
 
 		function complete(evt) {
 			attrs.header = oReq.getAllResponseHeaders();
