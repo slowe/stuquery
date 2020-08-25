@@ -24,15 +24,10 @@
 	.hljs-attribute { color:#D73058; }
 	.hljs-attr { color: #bdb76b; } 
 	</style>
-	<script src="extra/highlight.pack.js" type="text/javascript"></script>
 	<style>
 	#barchartbasic,#barchart1,#barchart2,#barchart3,#barchart4,#barchart5,#barchart6,#barchartbasic {
 		height: 300px;
 	}
-	.series-0 { background-color: #999999!important; }
-	.series-1 { background-color: #722EA5!important; }
-	.series-2 { background-color: #1DD3A7!important; }
-	.series-3 { background-color: #F9BC26!important; }
 	.key ul { list-style: none; margin: 0px; }
 	.key li { display: inline-block; line-height: 1em;}
 	.key .item { width: 1em; height: 1em; display: inline-block; top: 0.15em; position: relative;  }
@@ -55,11 +50,11 @@
 
 		<section id="downloads">
 			<a href="js/stuquery.barchart.js">stuquery.barchart.js (13.1kB)</a>
-			<a href="js/stuquery.barchart.min.js">minified (8.6kB)</a>
+			<!--<a href="js/stuquery.barchart.min.js">minified (8.6kB)</a>-->
 			<a href="css/stuquery.barchart.css">css (2.1kB)</a>
 		</section>
 
-		<h1>stuQuery barchart</h1>
+		<h1>stuQuery barchart<sup class="version"></sup></h1>
 		
 		<p>This is a simple HTML barchart library that makes use of <a href="index.html">stuQuery</a>. Being created from simple HTML elements, it is easy to style the barcharts with CSS.</p>
 	
@@ -429,6 +424,9 @@ var chart = new S.barchart('#barchart', {
 	<script language="javascript" type="text/javascript" src="js/formatexamples.js"></script>
 	<script>
 	makeExamples({"order":["result","how"]});
+	S(document).ready(function(){
+		S('.version').html(chart.version());
+	});
 	</script>
 </body>
 </html>
