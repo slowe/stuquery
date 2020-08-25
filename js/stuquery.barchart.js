@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.9.5";
+		var ver = "0.9.7";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -23,7 +23,7 @@
 		this.attr.formatY = (typeof this.attr.formatY==="undefined") ? function(v){ return this.attr.units+v; } : this.attr.formatY;
 		this.attr.formatBar = (typeof this.attr.formatBar==="undefined") ? function(key,val,series){ return ""; } : this.attr.formatBar;
 		this.parent = (typeof this.attr.parent==="undefined") ? this : this.attr.parent;
-	
+
 		this.drawn = false;
 		this.max = this.attr.max || undefined;
 		this.min = this.attr.min || undefined;
@@ -149,7 +149,7 @@
 				this.drawn = false;
 				this.bins = [];
 
-				// Set main value		
+				// Set main value
 				this.max = binning.max;
 				this.min = binning.min;
 				this.inc = binning.inc;
@@ -207,10 +207,9 @@
 
 		var mx = 0;
 		var mn = 0;
-	
+
 		if(this.nbins > 0){
-			S(this.target).addClass('barchart');
-			
+			S(this.target).addClass('barchart').css({'margin-bottom':'2.25em'});
 
 			if(typeof this.lineheight!=="number"){
 				S(this.target).append('<table class="remove"><tr><td><span class="label">label</span></td></tr></table>');
@@ -229,35 +228,26 @@
 				if(this.bins[b].value > mx) mx = this.bins[b].value;
 				var v = 0;
 				for(var s = 0; s < this.bins[b].values.length; s++) v += (this.bins[b].values[s]);
-				if(v < 0) mn = v;
+				if(v < 0 && v < mn) mn = v;
 			}
 
 			// Build the basic graph structure
-			if(!this.drawn) S(this.target).html('<div class="grid" style="height:'+(h)+'px;"></div><table style="height:'+h+'px"><tr style="vertical-align:bottom;"></tr></table><div style="clear:both;"></div>');
+			if(!this.drawn) S(this.target).html('<div class="grid" style="height:100%;"></div><table style="height:100%"><tr style="vertical-align:bottom;"></tr></table><div style="clear:both;"></div>');
 
 			// Draw the grid
 			if(this.attr.ymax && this.attr.ymax > mx) mx = this.attr.ymax;
 			var grid = this.getGrid(mn, mx);
 			var output = "";
-			var key,hbar,ha,hb,idbar, p;	
+			var key,hbar,ha,hb,idbar, p;
 			var r = mx-mn;
-			for(var g = 0; g <= grid.max; g+= grid.inc) output += '<div class="line" style="bottom:'+(h*(g-mn)/r)+'px;"><span>'+(typeof this.attr.formatY==="function" ? this.attr.formatY.call(this,g,{'units':this.attr.units}) : (this.attr.units || "")+this.formatNumber(g))+'</span></div>';
+			h = 100;	// percent-based
+
+			for(var g = 0; g <= grid.max; g+= grid.inc) output += '<div class="line" style="bottom:'+(h*(g-mn)/r).toFixed(4)+'%;"><span>'+(typeof this.attr.formatY==="function" ? this.attr.formatY.call(this,g,{'units':this.attr.units}) : (this.attr.units || "")+this.formatNumber(g))+'</span></div>';
 			S(this.target+' .grid').html(output);
 
 
 			var maketable = (S(this.target+' table td').length == 0);
 			output = "";
-
-			// Calculate positive/negative extents
-			pos = 0;
-			neg = 0;
-			for(var b = 0; b < this.nbins; b++){
-				var v = 0;
-				for(var s = 0; s < this.bins[b].values.length; s++) v += (this.bins[b].values[s]);
-				pos = Math.max(pos,v);
-				neg = Math.min(neg,v);
-			}
-			hpos = h*(pos/r);
 
 			for(var b = 0; b < this.nbins; b++){
 				horig = -1;
@@ -265,24 +255,23 @@
 				hbar = h*(mx > 0 ? Math.abs(this.bins[b].value/r) : 0);
 				var v = 0;
 				for(var s = 0; s < this.bins[b].values.length; s++) v += (this.bins[b].values[s]);
-				hb = Math.round(h*Math.abs(v)/r);
-				if(v >= 0){
-					hc = Math.round(h*Math.abs(neg)/r);
-					ha = h - hb - hc;
-				}else{
-					hc = 0;
-					ha = h - hb - hc;
-				}
-
-				// If the value is negative we shift it down a pixel to see the zero line
-				//if(this.bins[b].value < 0){ ha++; hb--; }
+				htop = h*((v < 0 ? mx : mx-v)/r);
+				hbot = Math.abs(h*((v >= 0 ? mn : v-mn)/r));
+				if(isNaN(htop)) htop = h;
+				hb = hbar;
+				if(horig < 0) horig = htop+hb;
+				//if(this.bins[b].value >= 0 && ha+hb != horig) h = (horig-hb);
+				hc = h-htop-hb;
+				if(htop < 0) htop = 0;
+				if(hbot < 0) hbot = 0;
+				if(hc < 0) hc = 0;
 				idbar = id+'-bar-'+(typeof key==="string" ? b : key.replace(/ /g,'-'));
 				this.bins[b].id = idbar;
 
 				cls = (!this.bins[b].selected ? ' deselected' : '');
 				cls = (cls ? ' ':'') + this.attr.formatBar.call(this,key,this.bins[b].value);
 				if(maketable){
-					output += '<td id="'+idbar+'" style="width:'+(100/this.nbins).toFixed(3)+'%;" class="'+(!this.bins[b].selected ? ' deselected' : '')+cls+'" data-index="'+b+'"><div class="antibar" style="height:'+ha+'px;"></div>';
+					output += '<td id="'+idbar+'" style="width:'+(100/this.nbins).toFixed(3)+'%;height:100%;" class="'+(!this.bins[b].selected ? ' deselected' : '')+cls+'" data-index="'+b+'"><div class="antibar" style="height:'+htop.toFixed(4)+'%;"></div>';
 
 					// Build individual series
 					if(this.bins[b].values.length > 0){
@@ -291,26 +280,27 @@
 						var html = "";
 						var v = 0;
 						for(var s = this.bins[b].values.length - 1; s >= 0; s--){
-							v += this.bins[b].values[s];
+							v += Math.abs(this.bins[b].values[s]);
 						}
 						for(var s = this.bins[b].values.length - 1; s >= 0; s--){
 							//hbb = Math.floor(h*(mx > 0 ? Math.abs(this.bins[b].values[s]/r) : 0));
-							hbb = Math.round(hb*(Math.abs(this.bins[b].values[s])/Math.abs(v)));
+							hbb = hb*(Math.abs(this.bins[b].values[s])/v);
 							if(isNaN(hbb)) hbb = 0;
-							output += '<a href="#" class="bar '+this.attr.formatBar.call(this,key,this.bins[b].values[s],s)+'" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s])+'" data-index-series="'+s+'" style="height:'+hbb+'px;"></a>';
+							output += '<a href="#" class="bar '+this.attr.formatBar.call(this,key,this.bins[b].values[s],s)+'" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s])+'" data-index-series="'+s+'" style="height:'+hbb+'%;"></a>';
 						}
 					}else{
 						hbb = 0;
 						output += '<a href="#" class="bar '+this.attr.formatBar.call(this,key,0,s)+'" title="'+key+': '+(this.attr.units || "")+this.formatNumber(0)+'" data-index-series="'+s+'" style="height:'+hbb+'px;"></a>';
 					}
-					output += '<div class="antibar" style="height:'+hc+'px;"></div><div class="barbase" style="top:'+(hpos-0.5)+'px"></div>'+(((typeof key==="string" && key.indexOf('-01')) || key.indexOf('-')==-1) ? '<span class="label" style="top:'+(hpos)+'px">'+this.attr.formatX.call(this,key)+'</span>' : '')+'</td>';
+
+					output += '<div class="antibar" style="height:'+hbot.toFixed(4)+'%;"></div><div class="barbase"></div>'+(((typeof key==="string" && key.indexOf('-01')) || key.indexOf('-')==-1) ? '<span class="label">'+this.attr.formatX.call(this,key)+'</span>' : '')+'</td>';
 
 				}else{
 					p = S('#'+idbar+'');
 					// Update top antibar
-					S(p.find('.antibar')[0]).css({'height':ha+'px'});
+					S(p.find('.antibar')[0]).css({'height':htop.toFixed(4)+'%'});
 					// Update bottom antibar
-					S(p.find('.antibar')[1]).css({'height':hc+'px'});
+					S(p.find('.antibar')[1]).css({'height':hbot.toFixed(4)+'%'});
 
 					// Update each series bar height
 					var bars = p.find('.bar');
@@ -319,15 +309,14 @@
 						s = parseInt(seriesbar.attr('data-index-series'));
 						var v = 0;
 						for(var s2 = this.bins[b].values.length - 1; s2 >= 0; s2--){
-							v += this.bins[b].values[s2];
+							v += Math.abs(this.bins[b].values[s2]);
 						}
-						hbb = Math.round(hb*(Math.abs(this.bins[b].values[s])/Math.abs(v)));
+						hbb = Math.round(hb*(Math.abs(this.bins[b].values[s])/v));
 						if(isNaN(hbb)) hbb = 0;
 						seriesbar.css({'height':hbb+'px'}).attr('title',key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s]));
 					}
 					
-					p.find('.label').html(this.attr.formatX.call(this,key)).css({'top':hpos+'px'});
-					p.find('.barbase').css({'top':(hpos-0.5)+'px'});
+					p.find('.label').html(this.attr.formatX.call(this,key));
 				}
 			}
 
