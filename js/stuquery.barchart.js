@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.9.7";
+		var ver = "0.9.8";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -260,7 +260,6 @@
 				if(isNaN(htop)) htop = h;
 				hb = hbar;
 				if(horig < 0) horig = htop+hb;
-				//if(this.bins[b].value >= 0 && ha+hb != horig) h = (horig-hb);
 				hc = h-htop-hb;
 				if(htop < 0) htop = 0;
 				if(hbot < 0) hbot = 0;
@@ -286,7 +285,7 @@
 							//hbb = Math.floor(h*(mx > 0 ? Math.abs(this.bins[b].values[s]/r) : 0));
 							hbb = hb*(Math.abs(this.bins[b].values[s])/v);
 							if(isNaN(hbb)) hbb = 0;
-							output += '<a href="#" class="bar '+this.attr.formatBar.call(this,key,this.bins[b].values[s],s)+'" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s])+'" data-index-series="'+s+'" style="height:'+hbb+'%;"></a>';
+							output += '<a href="#" class="bar '+this.attr.formatBar.call(this,key,this.bins[b].values[s],s)+'" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s])+'" data-index-series="'+s+'" style="height:'+hbb.toFixed(4)+'%;"></a>';
 						}
 					}else{
 						hbb = 0;
@@ -297,6 +296,7 @@
 
 				}else{
 					p = S('#'+idbar+'');
+
 					// Update top antibar
 					S(p.find('.antibar')[0]).css({'height':htop.toFixed(4)+'%'});
 					// Update bottom antibar
@@ -311,9 +311,9 @@
 						for(var s2 = this.bins[b].values.length - 1; s2 >= 0; s2--){
 							v += Math.abs(this.bins[b].values[s2]);
 						}
-						hbb = Math.round(hb*(Math.abs(this.bins[b].values[s])/v));
+						hbb = hb*(Math.abs(this.bins[b].values[s])/v);
 						if(isNaN(hbb)) hbb = 0;
-						seriesbar.css({'height':hbb+'px'}).attr('title',key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s]));
+						seriesbar.css({'height':hbb.toFixed(4)+'%'}).attr('title',key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s]));
 					}
 					
 					p.find('.label').html(this.attr.formatX.call(this,key));
