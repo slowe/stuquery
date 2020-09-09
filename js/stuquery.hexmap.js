@@ -32,8 +32,7 @@
 	// Main function
 	function HexMap(el,attr){
 	
-		this.version = "0.3.2";
-		this.idprefix = "hex-";
+		this.version = "0.3.3";
 		this.events = {resize:""};
 		this.zoom = 1;
 		this.hexes = new Array();
