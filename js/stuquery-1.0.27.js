@@ -7,7 +7,7 @@
 
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
-		this.stuquery = "1.0.28";
+		this.stuquery = "1.0.27";
 
 		this.getBy = function(e,s){
 			var i,m,k;
@@ -260,19 +260,39 @@
 		// Toggle a class on a DOM element
 		var i,c;
 		for(i = 0; i < this.length; i++){
-			if(this[i].classList.contains(cls)) this[i].classList.remove(cls);
-			else this[i].classList.add(cls);
+			c = this[i].getAttribute('class');
+			if(c){
+				if(c.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) c = c.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'');
+				else c = (cls+' '+cls).replace(/^ /,'');
+			}else{
+				c = cls;
+			}
+			this[i].setAttribute('class',c);
 		}
 		return this;
 	};
 	stuQuery.prototype.addClass = function(cls){
 		// Add a class on a DOM element
-		for(var i = 0; i < this.length; i++) this[i].classList.add(cls);
+		var c,i;
+		for(i = 0; i < this.length; i++){
+			c = this[i].getAttribute('class');
+			if(c){
+				if(!c.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) c = (c+' '+cls).replace(/^ /,'');
+			}else c = cls;
+			this[i].setAttribute('class',c);
+		}
 		return this;
 	};
 	stuQuery.prototype.removeClass = function(cls){
 		// Remove a class on a DOM element
-		for(var i = 0; i < this.length; i++) this[i].classList.remove(cls);
+		var i,c;
+		for(i = 0; i < this.length; i++){
+			c = this[i].getAttribute('class');
+			if(c!=""){
+				while(c.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"))) c = c.replace(new RegExp("(\\s|^)" + cls + "(\\s|$)", "g")," ").replace(/ $/,'').replace(/^ /,'');
+				this[i].setAttribute('class',c||"");
+			}
+		}
 		return this;
 	};
 	stuQuery.prototype.css = function(css){
