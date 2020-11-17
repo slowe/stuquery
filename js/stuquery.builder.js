@@ -44,7 +44,7 @@ S(document).ready(function(){
 		for(x in q){
 			if(typeof q[x]==="function"){
 				key = '.'+x
-				form += '<input type="checkbox" name="function" value="'+key+'" checked="checked" />'+key+'()<br />';
+				form += '<input type="checkbox" name="function" value="'+key+'" checked="checked" id="fn_'+key+'" /><label for="fn_'+key+'">'+key+'()</label><br />';
 			}
 		}
 		S('#builder').html(form);
@@ -134,8 +134,7 @@ S(document).ready(function(){
 
 		S('#output').html(html(outcode));
 
-		var min = UglifyJS.parse(outcode);
-		mincode = min.print_to_string();
+		var mincode = Uglify(outcode,'test.js');
 
 		// Update DOM elements
 		S('#size').html((outcode.length/1000).toFixed(1));
@@ -210,6 +209,6 @@ S(document).ready(function(){
 	function error(e,a){
 		S('#output').append('<p>Failed to load '+a.url+'<\/p>');
 	}
-	S().ajax("js/stuquery.js",{'complete': success, 'error': error });
+	S().ajax("js/stuquery.js",{'dataType':'text','complete': success, 'error': error });
 
 });
