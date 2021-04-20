@@ -7,7 +7,7 @@
 
 	function stuQuery(els){
 		// Make our own fake, tiny, version of jQuery simulating the parts we need
-		this.stuquery = "1.0.28";
+		this.stuquery = "1.0.29";
 
 		this.getBy = function(e,s){
 			var i,m,k;
@@ -74,8 +74,8 @@
 		return result;
 	};
 	stuQuery.prototype.ready = function(f){
-		if(/in/.test(document.readyState)) setTimeout('S(document).ready('+f+')',9);
-		else f();
+		if(document.readyState != 'loading') f();
+		else document.addEventListener('DOMContentLoaded', f);
 	};
 	stuQuery.prototype.html = function(html){
 		// Return HTML or set the HTML
