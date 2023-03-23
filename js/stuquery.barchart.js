@@ -12,7 +12,7 @@
 
 	function BarChart(target,attr){
 
-		var ver = "0.9.9";
+		var ver = "0.9.10";
 		this.target = target;
 		if(S(this.target).length == 0) return {};
 		this.attr = attr || {};
@@ -52,13 +52,13 @@
 		return this;
 	};
 
-  BarChart.prototype.toggleBin = function(b){
+	BarChart.prototype.toggleBin = function(b){
 		this.bins[b].selected = !this.bins[b].selected;
 		S('#'+this.bins[b].id+'').toggleClass('deselected');
 		return this;
 	};
 
-  // A function to provide the data
+	// A function to provide the data
 	// Our assumption is that the bins will be the same as any previous data
 	// If you need to update the scales, call setBins afterwards
 	BarChart.prototype.setData = function(data){
@@ -66,12 +66,12 @@
 		return this;
 	};
 
-  // A function to set/change any scaling
+	// A function to set/change any scaling
 	BarChart.prototype.setBins = function(attr){
 		if(!attr) attr = {};
 
 		var calc = false;
-    var b,r,s;
+		var b,r,s;
 
 		var typ = (this.data.length > 0 && typeof this.data[0][0]==="string") ? "string" : "number";
 		if(this.typ && typ!=this.typ) calc = true;
@@ -123,10 +123,10 @@
 			}
 			// Empty bins
 			for(b in this.bins){
-        if(this.bins[b]){
-          this.bins[b].value = 0;
-          this.bins[b].values = [];
-        }
+				if(this.bins[b]){
+					this.bins[b].value = 0;
+					this.bins[b].values = [];
+				}
 			}
 		}else{
 			// We are in a number based binning regime
@@ -142,8 +142,8 @@
 				// Get binning of data
 				// If we've set properties we use them, unless we're forcing a recalculation
 				if(attr.inc && !attr.update){
-					binning.max = (attr.max) ? attr.max : e;
-					binning.min = (attr.min) ? attr.min : s;
+					binning.max = (typeof attr.max==="number") ? attr.max : e;
+					binning.min = (typeof attr.min==="number") ? attr.min : s;
 					binning.inc = attr.inc;
 				}else{
 					binning = this.getGrid(s,e,attr.mintick);
@@ -194,7 +194,7 @@
 		return this;
 	};
 
-  BarChart.prototype.getYRange = function(){
+	BarChart.prototype.getYRange = function(){
 		var mx = 0;
 		var mn = 0;
 		// Find the peak value
@@ -207,14 +207,14 @@
 		return {'min':mn,'max':mx};
 	};
 
-  BarChart.prototype.draw = function(){
+	BarChart.prototype.draw = function(){
 
 		var id = this.target.substr(1).replace(/^([^\s]+).*$/,function(m,p1){return p1;});
 		if(!this.target || !this.bins) return this;
 
 		var mx = 0;
 		var mn = 0;
-    var b,v,s;
+		var b,v,s;
 
 		if(this.nbins > 0){
 			S(this.target).addClass('barchart').css({'margin-bottom':'2.25em'});
@@ -250,7 +250,12 @@
 			var r = mx-mn;
 			h = 100;	// percent-based
 
-			for(var g = 0; g <= grid.max; g+= grid.inc) output += '<div class="line" style="bottom:'+(h*(g-mn)/r).toFixed(4)+'%;"><span>'+(typeof this.attr.formatY==="function" ? this.attr.formatY.call(this,g,{'units':this.attr.units}) : (this.attr.units || "")+this.formatNumber(g))+'</span></div>';
+			// Only draw lines within the mn-mx range
+			for(var g = grid.min; g <= grid.max; g+= grid.inc){
+				if(g >= mn && g <= mx){
+					output += '<div class="line" style="bottom:'+(h*(g-mn)/r).toFixed(4)+'%;"><span>'+(typeof this.attr.formatY==="function" ? this.attr.formatY.call(this,g,{'units':this.attr.units}) : (this.attr.units || "")+this.formatNumber(g))+'</span></div>';
+				}
+			}
 			S(this.target+' .grid').html(output);
 
 
@@ -260,7 +265,7 @@
 			for(b = 0; b < this.nbins; b++){
 				horig = -1;
 				key = this.bins[b].key;
-				hbar = h*(mx > 0 ? Math.abs(this.bins[b].value/r) : 0);
+				hbar = Math.abs(h*(this.bins[b].value/r));
 				v = 0;
 				for(s = 0; s < this.bins[b].values.length; s++) v += (this.bins[b].values[s]);
 				htop = h*((v < 0 ? mx : mx-v)/r);
@@ -290,8 +295,7 @@
 							v += Math.abs(this.bins[b].values[s]);
 						}
 						for(s = this.bins[b].values.length - 1; s >= 0; s--){
-							//hbb = Math.floor(h*(mx > 0 ? Math.abs(this.bins[b].values[s]/r) : 0));
-							hbb = hb*(Math.abs(this.bins[b].values[s])/v);
+							hbb = Math.abs(hb*((this.bins[b].values[s])/v));
 							if(isNaN(hbb)) hbb = 0;
 							output += '<a href="#" class="bar '+this.attr.formatBar.call(this,key,this.bins[b].values[s],s)+'" title="'+key+': '+(this.attr.units || "")+this.formatNumber(this.bins[b].values[s])+'" data-index-series="'+s+'" style="height:'+hbb.toFixed(4)+'%;"></a>';
 						}
@@ -363,7 +367,7 @@
 		return this;
 	};
 
-  BarChart.prototype.off = function(ev){
+	BarChart.prototype.off = function(ev){
 		if(typeof ev != "string") return this;
 		if(typeof this.events[ev]=="object") this.events[ev] = [];
 		return this;

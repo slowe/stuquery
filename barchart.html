@@ -25,7 +25,7 @@
 	.hljs-attr { color: #bdb76b; } 
 	</style>
 	<style>
-	#barchartbasic,#barchart1,#barchart2,#barchart3,#barchart4,#barchart5,#barchart6,#barchartbasic {
+	#barchartbasic {
 		height: 300px;
 	}
 	.key ul { list-style: none; margin: 0px; }
@@ -86,6 +86,9 @@
 				// Draw the chart
 				chart.setData(data).setBins({'mintick':5}).draw();
 				</script>
+				<style>
+				#barchartbasic { height: 300px; }
+				</style>
 			</div>
 		</section>
 		<h2>Options</h2>
@@ -170,6 +173,9 @@ var chart = new S.barchart('#barchart', {
 				S('#year2').on('click',function(){ inc = 2; chart1.setBins({'inc':inc}).draw(); });
 				S('#year1').on('click',function(){ inc = 1; chart1.setBins({'inc':inc}).draw(); });
 				</script>
+				<style>
+				#barchart1 { height: 300px; }
+				</style>
 			</div>
 		</section>
 
@@ -239,6 +245,9 @@ var chart = new S.barchart('#barchart', {
 					chart2.setData(mydata).setBins({'update':true}).draw();
 				});
 				</script>
+				<style>
+				#barchart2 { height: 300px; }
+				</style>
 			</div>
 		</section>
 
@@ -273,6 +282,7 @@ var chart = new S.barchart('#barchart', {
 				});
 				</script>
 				<style>
+				#barchart3 { height: 300px; }
 				#barchart3 .bar {
 					background: radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 0 -28px,
 					radial-gradient(circle closest-side, #f9f9fa 13px, rgba(255,255,255,0) 0) 25px -28px #178CFF;
@@ -331,7 +341,9 @@ var chart = new S.barchart('#barchart', {
 					S('.balloon').remove();
 				});
 				</script>
-			
+				<style>
+				#barchart4 { height: 300px; }
+				</style>
 			</div>
 		</section>
 
@@ -372,17 +384,66 @@ var chart = new S.barchart('#barchart', {
 				chart5.setData(data5).setBins().draw();
 				</script>
 
-				<style>#barchart5 td.negative .bar { background-color: #F9BC26; }</style>
+				<style>
+				#barchart5 { height: 300px; }
+				#barchart5 td.negative .bar { background-color: #F9BC26; }
+				</style>
 			</div>
 		</section>
 
 
 		<section class="example">
 			<h2 id="ex6">Example 6</h2>
-			<p>This is an example of a stacked bar chart. The key is hardcoded separately.</p>
+			<p>This chart shows time bins with only negative (or zero) values.</p>
 			<div class="example-code">
 				<div id="barchart6" style="margin-bottom:1em;"></div>
-				<div id="barchart6-key" class="key">
+
+				<script>
+				// Define the data
+				var data6 = [["00:00",-1],["00:30",-2],["01:00",-3],["01:30",-5],["02:00",-7],["02:30",-6],["03:00",-5],["03:30",-4.5],["04:00",-4],["04:30",-3.5],["05:00",-3],["05:30",-2],["06:00",-1.6],["06:30",-1.2],["07:00",-1],["07:30",-0.8],["08:00",-0.7],["08:30",-0.8],["09:00",-0.9],["09:30",-0.95],["10:00",-1],["10:30",-3],["11:00",-4],["11:30",-2],["12:00",-0.3],["12:30",-0.9],["13:00",-3.3],["13:30",-5.7],["14:00",-0.1],["14:30",-1.6],["15:00",-0.6],["15:30",-0.9],["16:00",-3],["16:30",-3.5],["17:00",-3.4],["17:30",-2.6],["18:00",-3.6],["18:30",-2],["19:00",-0.7],["19:30",0],["20:00",0],["20:30",-0.6],["21:00",-5.5],["21:30",-16],["22:00",-13.6],["22:30",-2.8],["23:00",-0.6],["23:30",-0.2],["00:00",0]];
+
+				// Create the barchart object
+				var chart6 = new S.barchart('#barchart6', {
+					// Only display an x-axis label every decade
+					'formatKey': function (key) {
+						keyHours = Number(key.split(":")[0]);
+						keyMinutes = Number(key.split(":")[1]);
+						return (keyHours % 4 == 0 && keyMinutes == 0 ? key : '');
+					},
+					'formatBar':function(key,val){ return (val < 0 ? "negative":""); }
+				});
+
+				// Add events
+				chart6.on('barover', function (e) {
+					// Get the bin
+					var b = S(e.event.currentTarget).attr('data-index');
+
+					// Remove any existing information balloon
+					S('.balloon').remove();
+
+					// Add a new information balloon
+					S(e.event.currentTarget).find('.bar').append('<div class="balloon">' + this.bins[b].key + ': ' + (this.bins[b].value) + '</div>')
+				});
+
+				//  draw the chart
+				chart6.setData(data6).setBins().draw();
+				</script>
+
+				<style>
+				#barchart6 { height: 300px; }
+				#barchart6 td.negative .bar { background-color: #F9BC26; }
+				</style>
+			</div>
+		</section>
+
+
+
+		<section class="example">
+			<h2 id="ex7">Example 7</h2>
+			<p>This is an example of a stacked bar chart. The key is hardcoded separately.</p>
+			<div class="example-code">
+				<div id="barchart7" style="margin-bottom:1em;"></div>
+				<div id="barchart7-key" class="key">
 					<ul>
 						<li><span class="item series-0"></span> Coal</li>
 						<li><span class="item series-1"></span> Gas</li>
@@ -392,13 +453,13 @@ var chart = new S.barchart('#barchart', {
 				</div>
 				<script>
 				// Define the data
-				var data6 = [["Big Gas Co.",[5,100,0,0]],["Friendly Energy Co.",[40,40,15,5]],["Energetique",[30,80,5,5]],["Helios Power",[0,0,0,20]]];
-				var chart6 = new S.barchart('#barchart6', {
+				var data7 = [["Big Gas Co.",[5,100,0,0]],["Friendly Energy Co.",[40,40,15,5]],["Energetique",[30,80,5,5]],["Helios Power",[0,0,0,20]]];
+				var chart7 = new S.barchart('#barchart7', {
 					'formatBar':function(key,val,series){ return (typeof series==="number" ? "series-"+series : ""); }
 				});
 
 				// Add events
-				chart6.on('barover', function (e) {
+				chart7.on('barover', function (e) {
 					// Get the bin
 					var b = S(e.event.currentTarget).attr('data-index');
 
@@ -410,13 +471,14 @@ var chart = new S.barchart('#barchart', {
 
 				});
 				//  draw the chart
-				chart6.setData(data6).setBins().draw();
+				chart7.setData(data7).setBins().draw();
 			</script>
 			<style>
-			#barchart6 .bar .series-0 { background-color: #999999!important; }
-			#barchart6 .bar .series-1 { background-color: #722EA5!important; }
-			#barchart6 .bar .series-2 { background-color: #1DD3A7!important; }
-			#barchart6 .bar .series-3 { background-color: #F9BC26!important; }
+			#barchart7 { height: 300px; }
+			#barchart7 .bar .series-0 { background-color: #999999!important; }
+			#barchart7 .bar .series-1 { background-color: #722EA5!important; }
+			#barchart7 .bar .series-2 { background-color: #1DD3A7!important; }
+			#barchart7 .bar .series-3 { background-color: #F9BC26!important; }
 			</style>
 		</section>
 	</div>
