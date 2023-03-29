@@ -921,38 +921,6 @@ S(document).ready(function(){
 
 
 
-
-		<section id="html">
-			<h2><a href="#html">Hex map from HTML elements</a></h2>
-			<p>Sometimes you'd rather have a pre-generated hex map in the page as raw HTML rather than a JSON blob that gets converted. You can do that and attach a <code>hexmap</code> object to the element.</p>
-			<div class="example">
-<!-- HTML -->
-<div id="hexmap-11"></div>
-
-<!-- Javascript -->
-<script>
-// Note that we only need to call any Javascript if we want to do
-// anything interactive with the HexMap. If not, we can skip it.
-S(document).ready(function(){
-	var hexmap = S.hexmap('hexmap-11');
-	hexmap.load('wards-leeds-2018.hexjson');
-/*	hexmap.setClass(function(id,hex){
-		return (id=="D" ? "forest":"");
-	});*/
-});
-</script>
-
-<!-- CSS -->
-<style>
-
-</style>
-</div>
-		</section>
-
-
-
-
-
 	</div>
 
 

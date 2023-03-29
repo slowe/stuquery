@@ -32,7 +32,7 @@
 	// Main function
 	function HexMap(el,attr){
 	
-		this.version = "0.3.3";
+		this.version = "0.3.4";
 		this.events = {resize:""};
 		this.zoom = 1;
 		this.hexes = new Array();
@@ -429,9 +429,13 @@ console.log(this.wide,this.wide/this.hex.wide,maxq,minq,this.hex.wide)
 
 		if(typeof attr.width==="number") this.el.css({'width':attr.width+'em','height':(attr.width*7.125/6)+'em'});
 
-		this.setColour = function(css){ this.el.find('.hexinner').css(css); }
-		this.setContent = function(html){ this.el.find('.hexcontent').html(html); }
-		this.setClass = function(c){ this.el.find('.hexinner').attr('class','').addClass('hexinner'+(c ? ' '+c:'')); }
+		this.setColour = function(css){ this.el.find('.hexinner').css(css); };
+		this.setContent = function(html){ this.el.find('.hexcontent').html(html); };
+		this.setClass = function(c){
+			var inner = this.el.find('.hexinner');
+			inner.attr('class','').addClass('hexinner');
+			if(c) inner.addClass(c);
+		};
 
 		return this;
 	}
